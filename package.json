@@ -14,7 +14,8 @@
     "playground": "turbo run dev --filter=@discuss-ds/playground",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build --filter=@discuss-ds/tokens --filter=@discuss-ds/ui && changeset publish"
+    "release": "turbo run build --filter=@discuss-ds/tokens --filter=@discuss-ds/ui && changeset publish",
+    "tokens:check": "node scripts/check-figma-drift.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",

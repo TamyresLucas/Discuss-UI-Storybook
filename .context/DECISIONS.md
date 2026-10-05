@@ -259,3 +259,22 @@ yet).
 
 **Status:** Settled. Revisit when the packages are actually published — see
 [TECH_STACK_DS.md](./TECH_STACK_DS.md).
+
+---
+
+## Motion tokens stay placeholders until Figma defines them
+
+**Decision:** `--sys-motion-*` (150/200/300ms + three cubic-bezier curves) in
+`tokens.css` remain starter values. As of the 2026-10-05 Figma sync the file
+has no motion variables (collections: Primitives, Semantic, Typography, Border
+Radius, Spacing, Opacity, Z-Index), so there is nothing to mirror.
+
+**Why:** Figma is the source of truth; inventing durations/easings in code
+would create exactly the drift the sync process exists to prevent.
+
+**How to apply:** Components may consume `--sys-motion-*`, but treat the
+values as provisional. When design adds a Motion collection, replace these
+values and delete this entry's "placeholder" status in `tokens.css` and
+`DESIGN_TOKENS.md`.
+
+**Status:** Deferred — blocked on a Figma motion spec.

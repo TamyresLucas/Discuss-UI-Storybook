@@ -127,3 +127,17 @@ orchid/600), solid `success`/`warning` = 500 fills with 800 text,
 then mirror here). Figma text styles (`heading/h1`…) are mirrored as `sys-text-*`
 tokens + `text-<name>` utilities (the auto-line-height `p` and `table-head`
 styles are intentionally skipped).
+
+**Still placeholder:** `sys-motion-*` (duration/easing) — Figma has no motion
+variables yet; see [DECISIONS.md](./DECISIONS.md#motion-tokens-stay-placeholders-until-figma-defines-them).
+
+## Re-syncing with Figma
+
+1. Export the file's variables with a read-only `use_figma` call (aliases
+   resolved) and replace `packages/tokens/figma-snapshot.json`.
+2. Run `pnpm tokens:check` — it diffs `tokens.css` against the snapshot
+   (primitives, semantic Light/Dark, radius, spacing, opacity, z-index, font
+   sizes/weights) and exits 1 on any mismatch. The Figma-name → code-name map
+   for semantic tokens lives in `scripts/check-figma-drift.mjs`.
+3. Fix `tokens.css` until the check passes, add a changeset, and update this
+   doc if a naming gap changes.
