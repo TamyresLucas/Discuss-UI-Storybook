@@ -279,6 +279,128 @@
   --shadow-none: var(--sys-shadow-none);
 }
 
+/* Composite type styles — one class per Figma text style. Built only from
+   --sys-text-* tokens (packages/tokens/src/tokens.css). */
+@utility text-heading-h1 {
+  font-family: var(--sys-text-heading-h1-font-family);
+  font-weight: var(--sys-text-heading-h1-font-weight);
+  font-size: var(--sys-text-heading-h1-font-size);
+  line-height: var(--sys-text-heading-h1-line-height);
+  letter-spacing: var(--sys-text-heading-h1-letter-spacing);
+}
+@utility text-heading-h2 {
+  font-family: var(--sys-text-heading-h2-font-family);
+  font-weight: var(--sys-text-heading-h2-font-weight);
+  font-size: var(--sys-text-heading-h2-font-size);
+  line-height: var(--sys-text-heading-h2-line-height);
+  letter-spacing: var(--sys-text-heading-h2-letter-spacing);
+}
+@utility text-heading-h3 {
+  font-family: var(--sys-text-heading-h3-font-family);
+  font-weight: var(--sys-text-heading-h3-font-weight);
+  font-size: var(--sys-text-heading-h3-font-size);
+  line-height: var(--sys-text-heading-h3-line-height);
+  letter-spacing: var(--sys-text-heading-h3-letter-spacing);
+}
+@utility text-heading-h4 {
+  font-family: var(--sys-text-heading-h4-font-family);
+  font-weight: var(--sys-text-heading-h4-font-weight);
+  font-size: var(--sys-text-heading-h4-font-size);
+  line-height: var(--sys-text-heading-h4-line-height);
+  letter-spacing: var(--sys-text-heading-h4-letter-spacing);
+}
+@utility text-body-section {
+  font-family: var(--sys-text-body-section-font-family);
+  font-weight: var(--sys-text-body-section-font-weight);
+  font-size: var(--sys-text-body-section-font-size);
+  line-height: var(--sys-text-body-section-line-height);
+  letter-spacing: var(--sys-text-body-section-letter-spacing);
+}
+@utility text-body-base {
+  font-family: var(--sys-text-body-base-font-family);
+  font-weight: var(--sys-text-body-base-font-weight);
+  font-size: var(--sys-text-body-base-font-size);
+  line-height: var(--sys-text-body-base-line-height);
+  letter-spacing: var(--sys-text-body-base-letter-spacing);
+}
+@utility text-body-small {
+  font-family: var(--sys-text-body-small-font-family);
+  font-weight: var(--sys-text-body-small-font-weight);
+  font-size: var(--sys-text-body-small-font-size);
+  line-height: var(--sys-text-body-small-line-height);
+  letter-spacing: var(--sys-text-body-small-letter-spacing);
+}
+@utility text-body-xs {
+  font-family: var(--sys-text-body-xs-font-family);
+  font-weight: var(--sys-text-body-xs-font-weight);
+  font-size: var(--sys-text-body-xs-font-size);
+  line-height: var(--sys-text-body-xs-line-height);
+  letter-spacing: var(--sys-text-body-xs-letter-spacing);
+}
+@utility text-body-xxs {
+  font-family: var(--sys-text-body-xxs-font-family);
+  font-weight: var(--sys-text-body-xxs-font-weight);
+  font-size: var(--sys-text-body-xxs-font-size);
+  line-height: var(--sys-text-body-xxs-line-height);
+  letter-spacing: var(--sys-text-body-xxs-letter-spacing);
+}
+@utility text-ui-label {
+  font-family: var(--sys-text-ui-label-font-family);
+  font-weight: var(--sys-text-ui-label-font-weight);
+  font-size: var(--sys-text-ui-label-font-size);
+  line-height: var(--sys-text-ui-label-line-height);
+  letter-spacing: var(--sys-text-ui-label-letter-spacing);
+}
+@utility text-ui-label-large {
+  font-family: var(--sys-text-ui-label-large-font-family);
+  font-weight: var(--sys-text-ui-label-large-font-weight);
+  font-size: var(--sys-text-ui-label-large-font-size);
+  line-height: var(--sys-text-ui-label-large-line-height);
+  letter-spacing: var(--sys-text-ui-label-large-letter-spacing);
+}
+@utility text-ui-badge {
+  font-family: var(--sys-text-ui-badge-font-family);
+  font-weight: var(--sys-text-ui-badge-font-weight);
+  font-size: var(--sys-text-ui-badge-font-size);
+  line-height: var(--sys-text-ui-badge-line-height);
+  letter-spacing: var(--sys-text-ui-badge-letter-spacing);
+}
+@utility text-ui-caption {
+  font-family: var(--sys-text-ui-caption-font-family);
+  font-weight: var(--sys-text-ui-caption-font-weight);
+  font-size: var(--sys-text-ui-caption-font-size);
+  line-height: var(--sys-text-ui-caption-line-height);
+  letter-spacing: var(--sys-text-ui-caption-letter-spacing);
+}
+@utility text-ui-overline {
+  font-family: var(--sys-text-ui-overline-font-family);
+  font-weight: var(--sys-text-ui-overline-font-weight);
+  font-size: var(--sys-text-ui-overline-font-size);
+  line-height: var(--sys-text-ui-overline-line-height);
+  letter-spacing: var(--sys-text-ui-overline-letter-spacing);
+}
+@utility text-ui-code {
+  font-family: var(--sys-text-ui-code-font-family);
+  font-weight: var(--sys-text-ui-code-font-weight);
+  font-size: var(--sys-text-ui-code-font-size);
+  line-height: var(--sys-text-ui-code-line-height);
+  letter-spacing: var(--sys-text-ui-code-letter-spacing);
+}
+@utility text-ui-placeholder {
+  font-family: var(--sys-text-ui-placeholder-font-family);
+  font-weight: var(--sys-text-ui-placeholder-font-weight);
+  font-size: var(--sys-text-ui-placeholder-font-size);
+  line-height: var(--sys-text-ui-placeholder-line-height);
+  letter-spacing: var(--sys-text-ui-placeholder-letter-spacing);
+}
+@utility text-ui-input-value {
+  font-family: var(--sys-text-ui-input-value-font-family);
+  font-weight: var(--sys-text-ui-input-value-font-weight);
+  font-size: var(--sys-text-ui-input-value-font-size);
+  line-height: var(--sys-text-ui-input-value-line-height);
+  letter-spacing: var(--sys-text-ui-input-value-letter-spacing);
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);

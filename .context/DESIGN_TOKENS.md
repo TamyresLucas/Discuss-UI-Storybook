@@ -64,7 +64,7 @@ fractional utility classes.
 Current groups: `sys-color-*` (primitive scales — `plum`, `orchid`, `oat`,
 `plum-muted`, `black`, `dandelion`, `coral`, `success` — plus the semantic
 layer aliasing them), `sys-space-*`, `sys-radius-*`, `sys-font-*`,
-`sys-line-height-*`, `sys-tracking-*`, `sys-opacity-*`, `sys-shadow-*`,
+`sys-line-height-*`, `sys-tracking-*`, `sys-text-*` (composite type styles: `heading-h1`…`ui-input-value`, exposed as `text-<name>` utilities), `sys-opacity-*`, `sys-shadow-*`,
 `sys-focus-ring-*`, `sys-motion-*`, `sys-z-*`. New component families add
 their own `comp-<component>-*` group only if/when they actually need one —
 don't overload an existing component's namespace for an unrelated one.
@@ -124,5 +124,6 @@ Figma's values literally: `accent` = orchid/500 (text `accent-foreground` =
 orchid/600), solid `success`/`warning` = 500 fills with 800 text,
 `destructive-foreground` = coral/600, and `muted-foreground` = the literal
 `#806a98` (a detached value in Figma — alias it to a primitive in Figma first,
-then mirror here). Figma text styles (`heading/h1`…) are not mirrored as
-tokens yet.
+then mirror here). Figma text styles (`heading/h1`…) are mirrored as `sys-text-*`
+tokens + `text-<name>` utilities (the auto-line-height `p` and `table-head`
+styles are intentionally skipped).
