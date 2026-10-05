@@ -16,8 +16,13 @@
  * hardcode a raw value in this block; add the sys/comp token first, then
  * alias it here. See ../../../../.context/DESIGN_TOKENS.md.
  */
-@theme {
+@theme inline {
   /*
+   * `inline` is required for dark mode: a plain `@theme { --color-x: var(--sys-…) }`
+   * is resolved once at :root, so a [data-theme='dark'] ancestor's overrides
+   * never reach the utilities. `inline` emits the var(--sys-…) reference straight
+   * into each utility so it resolves at the element.
+   *
    * Reset every namespace the "no arbitrary values" rule in CLAUDE.md governs
    * (color, spacing, radius, font-size, font-weight, line-height, shadow,
    * font-family) before re-declaring only the token-backed entries below.

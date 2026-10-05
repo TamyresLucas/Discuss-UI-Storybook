@@ -92,7 +92,7 @@ export const FormLabel = React.forwardRef<HTMLLabelElement, FormLabelProps>(
       <Label
         ref={ref}
         htmlFor={formItemId}
-        className={cn(error && 'text-destructive', className)}
+        className={cn(error && 'text-destructive-foreground', className)}
         {...props}
       />
     );
@@ -125,7 +125,7 @@ export const FormDescription = React.forwardRef<HTMLParagraphElement, FormDescri
       <p
         ref={ref}
         id={formDescriptionId}
-        className={cn('text-sm text-muted-foreground', className)}
+        className={cn('text-sm text-secondary-muted-foreground', className)}
         {...props}
       />
     );
@@ -145,7 +145,7 @@ export const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessagePro
     }
 
     return (
-      <p ref={ref} id={formMessageId} className={cn('text-sm text-destructive', className)} {...props}>
+      <p ref={ref} id={formMessageId} className={cn('text-sm text-destructive-foreground', className)} {...props}>
         {body}
       </p>
     );

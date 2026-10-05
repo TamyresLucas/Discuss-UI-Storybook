@@ -21,7 +21,7 @@ export const RadioGroupItem = React.forwardRef<
   <RadioGroupPrimitive.Item
     ref={ref}
     className={cn(
-      'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-input bg-background transition-colors',
+      'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-input bg-surface transition-colors',
       'disabled:cursor-not-allowed disabled:opacity-50',
       // Brand override: selected controls use `ring`, not `primary`/`accent`.
       'data-[state=checked]:border-ring',

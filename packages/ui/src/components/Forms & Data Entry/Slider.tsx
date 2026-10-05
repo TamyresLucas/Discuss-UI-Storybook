@@ -28,7 +28,7 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
             key={index}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
-            className="block h-4 w-4 rounded-full border border-primary bg-background shadow-sm transition-colors disabled:pointer-events-none disabled:opacity-50"
+            className="block h-4 w-4 rounded-full border border-primary bg-surface shadow-sm transition-colors disabled:pointer-events-none disabled:opacity-50"
           />
         ))}
       </SliderPrimitive.Root>

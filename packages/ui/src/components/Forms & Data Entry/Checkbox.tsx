@@ -16,10 +16,10 @@ export const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimiti
     <CheckboxPrimitive.Root
       ref={ref}
       className={cn(
-        'peer inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-input bg-background transition-colors',
+        'peer inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-input bg-surface transition-colors',
         'disabled:cursor-not-allowed disabled:opacity-50',
         // Brand override: selected controls use `ring`, not `primary`/`accent`.
-        'data-[state=checked]:border-ring data-[state=checked]:bg-ring data-[state=checked]:text-primary-foreground',
+        'data-[state=checked]:border-ring data-[state=checked]:bg-ring data-[state=checked]:text-label',
         className,
       )}
       {...props}

@@ -32,7 +32,7 @@ export const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrim
     <SelectPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-4 py-2.5 text-base text-foreground transition-colors',
+        'flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-surface px-4 py-2.5 text-base text-foreground transition-colors',
         'disabled:cursor-not-allowed disabled:opacity-50',
         'data-[placeholder]:text-muted-foreground',
         className,
@@ -86,7 +86,7 @@ export const SelectItem = React.forwardRef<React.ElementRef<typeof SelectPrimiti
       ref={ref}
       className={cn(
         'relative flex cursor-default items-center gap-2 rounded-sm py-2 pr-4 pl-8 text-sm text-popover-foreground select-none',
-        'outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground',
+        'outline-none data-[highlighted]:bg-accent-soft data-[highlighted]:text-accent-soft-foreground',
         className,
       )}
       {...props}
