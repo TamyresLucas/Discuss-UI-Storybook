@@ -71,6 +71,14 @@
   --color-warning-foreground: var(--sys-color-warning-foreground);
   --color-info: var(--sys-color-info);
   --color-info-foreground: var(--sys-color-info-foreground);
+  --color-info-border: var(--sys-color-info-border);
+
+  /* Figma-only semantic additions */
+  --color-surface: var(--sys-color-surface-background);
+  --color-surface-foreground: var(--sys-color-surface-foreground);
+  --color-accent-muted: var(--sys-color-accent-muted);
+  --color-input-accent: var(--sys-color-input-accent);
+  --color-secondary-muted-foreground: var(--sys-color-secondary-muted-foreground);
 
   /* Soft variants (brand extension) — tags, badges, alerts, banners, toasts */
   --color-destructive-soft: var(--sys-color-destructive-soft);
@@ -202,6 +210,8 @@
 
   /* Border radius */
   --radius-none: var(--sys-radius-none);
+  --radius-xxs: var(--sys-radius-xxs);
+  --radius-xs: var(--sys-radius-xs);
   --radius-sm: var(--sys-radius-sm);
   --radius: var(--sys-radius);
   --radius-md: var(--sys-radius-md);
@@ -259,10 +269,14 @@
   --tracking-wider: var(--sys-tracking-wider);
   --tracking-widest: var(--sys-tracking-widest);
 
-  /* Shadow — not yet in the Figma spec; starter placeholder (see tokens.css). */
+  /* Shadow — Figma effect styles shadow/xs…2xl. */
+  --shadow-xs: var(--sys-shadow-xs);
   --shadow-sm: var(--sys-shadow-sm);
   --shadow-md: var(--sys-shadow-md);
   --shadow-lg: var(--sys-shadow-lg);
+  --shadow-xl: var(--sys-shadow-xl);
+  --shadow-2xl: var(--sys-shadow-2xl);
+  --shadow-none: var(--sys-shadow-none);
 }
 
 body {

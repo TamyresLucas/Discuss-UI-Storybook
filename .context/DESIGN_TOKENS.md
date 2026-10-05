@@ -93,10 +93,8 @@ dark mode, the fix is almost always "this component hardcoded a `sys.*`/color
 literal instead of using its `comp.*` alias," not "add a dark-mode override to
 the component."
 
-**Currently no `[data-theme='dark']` block exists** — the Figma token
-reference this system was sourced from is explicitly marked "Light mode
-values shown," and dark values haven't been sourced yet. The dark-mode
-toolbar in Storybook is inert until that block is added.
+The `[data-theme='dark']` block in `tokens.css` is sourced from the Figma
+"Semantic" collection's Dark mode (2026-10-05).
 
 ## CSS variable syntax rules
 
@@ -113,18 +111,18 @@ toolbar in Storybook is inert until that block is added.
 
 ## Status
 
-The color palette (all 8 primitive scales + the 55 semantic tokens),
-spacing, radius, and typography scales were sourced directly from Figma
-(`Discuss-Design-System`, the "Design Tokens Reference" and "DESIGN.md"
-pages, via the Figma Dev Mode MCP connection) on 2026-09-15 and are **real
-brand values**, not placeholders — see [design.md](../design.md) for what
-each token means and the full "Component Token Patterns"/"How to Choose
-Color Tokens" usage guidance from that source.
+Re-synced against the Figma file's local variables and effect styles on
+2026-10-05. Primitives, spacing, typography and z-index were unchanged; radius
+(`xs`, `xxs`), opacity (30–95), shadows (`xs`…`2xl`, `none`), dark mode and the
+Figma-only semantic tokens (`surface`, `accent-muted`, `input-accent`,
+`secondary-muted-foreground`, `info-border`) were added; card/popover,
+`muted-foreground`, `info`, and the `accent-soft`/`primary-soft` triplets were
+re-pointed to match Figma.
 
-**Still placeholder, pending a real spec:** `sys-shadow-*` (elevation) and
-`sys-motion-*` (duration/easing) — the Figma token reference doesn't cover
-either yet. Don't treat their current values as settled; replace them the
-same way this pass replaced the color/spacing/typography placeholders, once
-sourced.
-
-**Not yet defined at all:** dark mode (`[data-theme='dark']` — see above).
+**Figma is the source of truth.** Code keeps shadcn-style names but takes
+Figma's values literally: `accent` = orchid/500 (text `accent-foreground` =
+orchid/600), solid `success`/`warning` = 500 fills with 800 text,
+`destructive-foreground` = coral/600, and `muted-foreground` = the literal
+`#806a98` (a detached value in Figma — alias it to a primitive in Figma first,
+then mirror here). Figma text styles (`heading/h1`…) are not mirrored as
+tokens yet.

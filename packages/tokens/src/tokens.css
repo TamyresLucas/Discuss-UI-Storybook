@@ -7,9 +7,11 @@
  * See ../../.context/DESIGN_TOKENS.md.
  *
  * Sourced from Figma (Discuss-Design-System, "Design Tokens Reference" +
- * "DESIGN.md" pages) on 2026-09-15 — these are real brand values, not
- * placeholders. Light mode only; dark mode values are not yet defined in
- * Figma (see the dark-mode block below).
+ * "DESIGN.md" pages) on 2026-09-15, re-synced against the file's local
+ * variables (Primitives / Semantic Light+Dark / Typography / Border Radius /
+ * Spacing / Opacity / Z-Index + effect styles) on 2026-10-05. These are real
+ * brand values, not placeholders. Dark mode is defined in the
+ * [data-theme='dark'] block at the bottom.
  */
 
 :root {
@@ -64,6 +66,9 @@
   --sys-color-plum-muted-800: #563876;
   --sys-color-plum-muted-900: #3e1c62;
   --sys-color-plum-muted-950: #26004f;
+
+  /* sys.color — White. Surfaces (cards, popovers, info). */
+  --sys-color-white: #ffffff;
 
   /* sys.color — Black. Pure neutral gray scale. Info badges, secondary-foreground. */
   --sys-color-black-50: #f7f7f7;
@@ -120,36 +125,49 @@
   /* sys.color — Semantic tokens (shadcn X / X-foreground naming). Light mode. */
   --sys-color-background: var(--sys-color-oat-50);
   --sys-color-foreground: var(--sys-color-plum-950);
-  --sys-color-card: var(--sys-color-plum-muted-50);
-  --sys-color-card-foreground: var(--sys-color-plum-muted-950);
-  --sys-color-popover: var(--sys-color-plum-muted-50);
-  --sys-color-popover-foreground: var(--sys-color-plum-muted-950);
+  /* Figma: surface-background / surface-foreground (white / black-800 in light). */
+  --sys-color-surface-background: var(--sys-color-white);
+  --sys-color-surface-foreground: var(--sys-color-black-800);
+  --sys-color-card: var(--sys-color-surface-background);
+  --sys-color-card-foreground: var(--sys-color-surface-foreground);
+  --sys-color-popover: var(--sys-color-surface-background);
+  --sys-color-popover-foreground: var(--sys-color-surface-foreground);
 
   --sys-color-primary: var(--sys-color-plum-950);
   --sys-color-primary-foreground: var(--sys-color-plum-50);
   --sys-color-secondary: var(--sys-color-oat-100);
   --sys-color-secondary-foreground: var(--sys-color-black-800);
-  --sys-color-accent: var(--sys-color-orchid-100);
-  --sys-color-accent-foreground: var(--sys-color-orchid-900);
+  /* Figma `foreground`: default body text on neutral surfaces. */
+  --sys-color-foreground-text: var(--sys-color-black-800);
+  --sys-color-accent: var(--sys-color-orchid-500);
+  --sys-color-accent-foreground: var(--sys-color-orchid-600);
   --sys-color-destructive: var(--sys-color-coral-600);
-  --sys-color-destructive-foreground: var(--sys-color-coral-50);
+  --sys-color-destructive-foreground: var(--sys-color-coral-600);
   --sys-color-muted: var(--sys-color-plum-muted-200);
-  --sys-color-muted-foreground: var(--sys-color-plum-muted-500);
+  /* Figma foreground-muted is a literal #806a98 (not aliased to a primitive). */
+  --sys-color-muted-foreground: #806a98;
+  /* Figma foreground-secondary-muted. */
+  --sys-color-secondary-muted-foreground: var(--sys-color-black-600);
+  /* Figma background-accent-muted. */
+  --sys-color-accent-muted: var(--sys-color-orchid-300);
 
   --sys-color-border: var(--sys-color-plum-muted-200);
   --sys-color-input: var(--sys-color-plum-muted-300);
+  /* Figma foreground-input-accent: checked/selected control fill. */
+  --sys-color-input-accent: var(--sys-color-orchid-500);
   /* Brand override: selected controls (checkbox/radio/switch/toggle) and focus
      rings use `ring` (orchid/500), never `primary` — see DESIGN.md "Important:
      Selected States Use ring, Not primary". */
   --sys-color-ring: var(--sys-color-orchid-500);
 
   /* sys.color — Status (shadcn extensions) */
-  --sys-color-success: var(--sys-color-success-100);
+  --sys-color-success: var(--sys-color-success-500);
   --sys-color-success-foreground: var(--sys-color-success-800);
-  --sys-color-warning: var(--sys-color-plum-100);
-  --sys-color-warning-foreground: var(--sys-color-plum-800);
-  --sys-color-info: var(--sys-color-black-100);
-  --sys-color-info-foreground: var(--sys-color-black-800);
+  --sys-color-warning: var(--sys-color-dandelion-500);
+  --sys-color-warning-foreground: var(--sys-color-dandelion-800);
+  --sys-color-info: var(--sys-color-surface-background);
+  --sys-color-info-foreground: var(--sys-color-foreground-text);
+  --sys-color-info-border: var(--sys-color-border);
 
   /* sys.color — Soft variants (brand extension). Light-fill + dark-text +
      mid-tone-border triplet for tags, badges, alerts, banners, toasts. */
@@ -162,11 +180,11 @@
   --sys-color-success-soft: var(--sys-color-success-50);
   --sys-color-success-soft-foreground: var(--sys-color-success-900);
   --sys-color-success-soft-border: var(--sys-color-success-200);
-  --sys-color-accent-soft: var(--sys-color-orchid-50);
-  --sys-color-accent-soft-foreground: var(--sys-color-orchid-700);
+  --sys-color-accent-soft: var(--sys-color-orchid-100);
+  --sys-color-accent-soft-foreground: var(--sys-color-orchid-900);
   --sys-color-accent-soft-border: var(--sys-color-orchid-200);
-  --sys-color-primary-soft: var(--sys-color-plum-50);
-  --sys-color-primary-soft-foreground: var(--sys-color-plum-700);
+  --sys-color-primary-soft: var(--sys-color-plum-100);
+  --sys-color-primary-soft-foreground: var(--sys-color-plum-800);
   --sys-color-primary-soft-border: var(--sys-color-plum-200);
 
   /* sys.color — Charts */
@@ -191,6 +209,8 @@
   /* sys.radius — base --radius = 8px (0.5rem). radius-sm is a brand override
      at 6px (shadcn derives 4px) for a softer brand feel. */
   --sys-radius-none: 0px;
+  --sys-radius-xxs: 0.125rem;
+  --sys-radius-xs: 0.25rem;
   --sys-radius-sm: 0.375rem;
   --sys-radius: 0.5rem;
   --sys-radius-md: 0.5rem;
@@ -277,8 +297,15 @@
   --sys-opacity-10: 0.1;
   --sys-opacity-20: 0.2;
   --sys-opacity-25: 0.25;
+  --sys-opacity-30: 0.3;
+  --sys-opacity-40: 0.4;
   --sys-opacity-50: 0.5;
+  --sys-opacity-60: 0.6;
+  --sys-opacity-70: 0.7;
   --sys-opacity-75: 0.75;
+  --sys-opacity-80: 0.8;
+  --sys-opacity-90: 0.9;
+  --sys-opacity-95: 0.95;
   --sys-opacity-100: 1;
 
   /* sys.z — standard layering convention (code parity only, not directly
@@ -290,11 +317,15 @@
   --sys-z-40: 40;
   --sys-z-50: 50;
 
-  /* sys.shadow — not yet in the Figma token spec; kept as a starter
-     placeholder pending the real elevation spec. */
-  --sys-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  /* sys.shadow — mirrors the Figma effect styles shadow/xs…2xl (same stack as
+     Tailwind's defaults). shadow/none = no shadow. */
+  --sys-shadow-none: 0 0 #0000;
+  --sys-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --sys-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --sys-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --sys-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --sys-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --sys-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
   /* sys.focus — always visible, never suppressed by components. Uses `ring`
      per the brand override above, not `primary`/`accent`. */
@@ -313,9 +344,76 @@
 }
 
 /*
- * Dark mode is not yet defined in the Figma source (the token reference page
- * is explicitly marked "Light mode values shown"). No [data-theme='dark']
- * overrides exist yet — do not invent dark values here; add them once the
- * real dark-mode spec is sourced from Figma, following the same pattern as
- * the light-mode semantic tokens above (redefine sys.color.* only).
+ * Dark mode — sourced from the Figma "Semantic" collection's Dark mode
+ * (2026-10-05). Only sys.color.* semantic values are redefined; primitives are
+ * mode-independent. Figma is the source of truth for every value here.
  */
+[data-theme='dark'] {
+  --sys-color-background: var(--sys-color-plum-muted-950);
+  --sys-color-foreground: var(--sys-color-plum-muted-50);
+  --sys-color-foreground-text: var(--sys-color-plum-muted-200);
+  --sys-color-surface-background: var(--sys-color-plum-muted-900);
+  --sys-color-surface-foreground: var(--sys-color-black-200);
+  --sys-color-card: var(--sys-color-surface-background);
+  --sys-color-card-foreground: var(--sys-color-surface-foreground);
+  --sys-color-popover: var(--sys-color-surface-background);
+  --sys-color-popover-foreground: var(--sys-color-surface-foreground);
+
+  --sys-color-primary: var(--sys-color-plum-50);
+  --sys-color-primary-foreground: var(--sys-color-plum-950);
+  --sys-color-secondary: var(--sys-color-plum-muted-800);
+  --sys-color-secondary-foreground: var(--sys-color-plum-muted-200);
+  --sys-color-secondary-muted-foreground: var(--sys-color-plum-muted-300);
+  --sys-color-accent: var(--sys-color-orchid-300);
+  --sys-color-accent-foreground: var(--sys-color-orchid-300);
+  --sys-color-accent-muted: var(--sys-color-orchid-600);
+  --sys-color-destructive: var(--sys-color-coral-500);
+  --sys-color-destructive-foreground: var(--sys-color-coral-400);
+  --sys-color-success: var(--sys-color-success-400);
+  --sys-color-success-foreground: var(--sys-color-success-200);
+  --sys-color-warning: var(--sys-color-dandelion-400);
+  --sys-color-warning-foreground: var(--sys-color-dandelion-200);
+  --sys-color-muted: var(--sys-color-plum-muted-800);
+  --sys-color-muted-foreground: var(--sys-color-plum-muted-400);
+
+  --sys-color-border: var(--sys-color-plum-muted-700);
+  --sys-color-input: var(--sys-color-plum-muted-700);
+  --sys-color-input-accent: var(--sys-color-orchid-500);
+  --sys-color-ring: var(--sys-color-orchid-500);
+
+  --sys-color-info: var(--sys-color-surface-background);
+  --sys-color-info-foreground: var(--sys-color-foreground-text);
+  --sys-color-info-border: var(--sys-color-border);
+
+  --sys-color-destructive-soft: var(--sys-color-coral-950);
+  --sys-color-destructive-soft-foreground: var(--sys-color-coral-200);
+  --sys-color-destructive-soft-border: var(--sys-color-coral-800);
+  --sys-color-warning-soft: var(--sys-color-dandelion-900);
+  --sys-color-warning-soft-foreground: var(--sys-color-dandelion-200);
+  --sys-color-warning-soft-border: var(--sys-color-dandelion-800);
+  --sys-color-success-soft: var(--sys-color-success-900);
+  --sys-color-success-soft-foreground: var(--sys-color-success-100);
+  --sys-color-success-soft-border: var(--sys-color-success-800);
+  --sys-color-accent-soft: var(--sys-color-orchid-800);
+  --sys-color-accent-soft-foreground: var(--sys-color-orchid-100);
+  --sys-color-accent-soft-border: var(--sys-color-orchid-800);
+  --sys-color-primary-soft: var(--sys-color-plum-900);
+  --sys-color-primary-soft-foreground: var(--sys-color-plum-200);
+  --sys-color-primary-soft-border: var(--sys-color-plum-800);
+
+  --sys-color-chart-1: var(--sys-color-orchid-400);
+  --sys-color-chart-2: var(--sys-color-success-400);
+  --sys-color-chart-3: var(--sys-color-dandelion-400);
+  --sys-color-chart-4: var(--sys-color-coral-400);
+  --sys-color-chart-5: var(--sys-color-plum-300);
+
+  --sys-color-sidebar-background: var(--sys-color-background);
+  --sys-color-sidebar-foreground: var(--sys-color-foreground);
+  --sys-color-sidebar-primary: var(--sys-color-primary);
+  --sys-color-sidebar-primary-foreground: var(--sys-color-primary-foreground);
+  --sys-color-sidebar-accent: var(--sys-color-secondary);
+  --sys-color-sidebar-accent-foreground: var(--sys-color-foreground);
+  --sys-color-sidebar-muted: var(--sys-color-muted);
+  --sys-color-sidebar-muted-foreground: var(--sys-color-muted-foreground);
+  --sys-color-sidebar-border: var(--sys-color-border);
+}
