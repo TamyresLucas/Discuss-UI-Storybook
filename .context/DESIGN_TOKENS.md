@@ -119,14 +119,62 @@ Figma-only semantic tokens (`surface`, `accent-muted`, `input-accent`,
 `muted-foreground`, `info`, and the `accent-soft`/`primary-soft` triplets were
 re-pointed to match Figma.
 
-**Figma is the source of truth.** Code keeps shadcn-style names but takes
-Figma's values literally: `accent` = orchid/500 (text `accent-foreground` =
-orchid/600), solid `success`/`warning` = 500 fills with 800 text,
-`destructive-foreground` = coral/600, and `muted-foreground` = plum-muted/600
-(Figma's `foreground-muted` was a detached `#806a98` until it was re-bound to
-the primitive on 2026-10-05). Figma text styles (`heading/h1`…) are mirrored as `sys-text-*`
-tokens + `text-<name>` utilities (the auto-line-height `p` and `table-head`
-styles are intentionally skipped).
+**Figma is the source of truth.** Code keeps shadcn-style names and takes
+Figma's values literally: `accent`/`accent-foreground` = Figma
+`background-accent`/`foreground-accent`, `destructive-foreground` = Figma
+`foreground-destructive`, `muted-foreground` = `foreground-muted`, and so on
+(`pnpm tokens:check` enforces this). Figma text styles (`heading/h1`…) are
+mirrored as `sys-text-*` tokens + `text-<name>` utilities (the auto-line-height
+`p` and `table-head` styles are intentionally skipped).
+
+### Which slot to use (contrast-driven)
+
+- **Text on a dark fill** (primary, destructive, any dark button/chip): use
+  `text-label` (Figma `foreground-label`). It is deliberately neutral — never
+  tied to primary/destructive/accent. `primary-foreground` is only a
+  shadcn-compat alias of the same value.
+- **`*-foreground` is NOT "text on the matching solid fill".** In Figma,
+  `foreground-destructive` / `-accent` / `-success` / `-warning` are text
+  colours for feedback on a page/surface (destructive alert, error message,
+  destructive ghost button, link). Putting them on their own solid fill gives
+  1.0–3.5:1. No Figma component sets text on a solid success/warning fill.
+- **Hover/selected surfaces** use the *soft* pair (`bg-accent-soft
+  text-accent-soft-foreground`); the primary button hover fill is
+  `primary-hover` (= Figma `foreground-accent-soft`).
+- **Field backgrounds** are `bg-surface` (Figma `surface-background`, white
+  in Light), which is what border (≥3:1) and placeholder (≥4.5:1) contrast
+  are measured against. Helper text uses `secondary-muted-foreground`;
+  `muted-foreground` is for placeholders and disabled states.
+- Button outline borders (`border`) and disabled-state text are exempt from
+  WCAG contrast (a labelled button is identified by its label; disabled
+  controls are exempt). Form-field borders (`input`) are not.
+
+### Dark overlays
+
+Figma darkens fills for hover/selected states with a raw black fill at 3%, 5%
+or 10% (no Figma variables exist for these yet), so they are code-derived
+tokens mixed from `black-950` — never a literal:
+`--sys-color-overlay-dark-3|5|10` (3% = destructive-soft hover, 5% =
+subtle/selected/editable-tag over `secondary`, 10% = destructive hover) and the
+opaque results `--sys-color-destructive-hover` / `--sys-color-destructive-soft-hover`.
+**Ask design to create matching Figma variables** so these can join the drift
+check.
+
+### Dark mode and Tailwind
+
+`packages/ui/src/styles/globals.css` uses `@theme inline`. Without `inline`,
+`--color-primary: var(--sys-color-primary)` is resolved once at `:root`, so a
+`[data-theme='dark']` ancestor never reaches the utilities (dark mode silently
+rendered Light colours). Also: any derived `--sys-*` token that aliases another
+changing token must be redefined inside the `[data-theme='dark']` block.
+
+### Open design gaps
+
+- No on-solid-fill text token for success/warning (not needed by any current
+  Figma component).
+- The primary Tag uses the primitive `plum/500` for text: 2.63:1 in Dark. It
+  needs a semantic token in Figma; build it with that token.
+- The 3/5/10% overlays have no Figma variables (see above).
 
 **Still placeholder:** `sys-motion-*` (duration/easing) — Figma has no motion
 variables yet; see [DECISIONS.md](./DECISIONS.md#motion-tokens-stay-placeholders-until-figma-defines-them).
