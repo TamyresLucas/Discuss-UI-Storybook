@@ -1,0 +1,279 @@
+@import 'tailwindcss';
+@import '@discuss-ds/tokens/css';
+
+/*
+ * Tailwind v4 automatic content detection walks the Vite project root
+ * (apps/storybook, apps/playground) — it never reaches into a sibling
+ * workspace package like packages/ui, since that lives outside that root
+ * entirely. Without this, every Tailwind utility class used inside
+ * packages/ui/src/components/** silently fails to generate any CSS.
+ */
+@source '../components';
+
+/*
+ * Tailwind v4 theme layer — every entry here MUST alias an existing sys- or
+ * comp- token from @discuss-ds/tokens (packages/tokens/src/tokens.css). Never
+ * hardcode a raw value in this block; add the sys/comp token first, then
+ * alias it here. See ../../../../.context/DESIGN_TOKENS.md.
+ */
+@theme {
+  /*
+   * Reset every namespace the "no arbitrary values" rule in CLAUDE.md governs
+   * (color, spacing, radius, font-size, font-weight, line-height, shadow,
+   * font-family) before re-declaring only the token-backed entries below.
+   * Without this, built-in Tailwind scales stay available underneath ours —
+   * e.g. bg-red-500, rounded-xl, p-7, font-extrabold all silently still
+   * generate CSS from Tailwind defaults, a complete bypass around
+   * @discuss-ds/tokens that no lint rule catches. `transparent`/`currentColor`
+   * are special-cased by the Tailwind engine, not sourced from --color-*, so
+   * resetting it does not affect them.
+   */
+  --color-*: initial;
+  --spacing-*: initial;
+  --radius-*: initial;
+  --text-*: initial;
+  --font-weight-*: initial;
+  --leading-*: initial;
+  --tracking-*: initial;
+  --shadow-*: initial;
+  --font-family-*: initial;
+
+  /* Core surfaces */
+  --color-background: var(--sys-color-background);
+  --color-foreground: var(--sys-color-foreground);
+  --color-card: var(--sys-color-card);
+  --color-card-foreground: var(--sys-color-card-foreground);
+  --color-popover: var(--sys-color-popover);
+  --color-popover-foreground: var(--sys-color-popover-foreground);
+
+  /* Interactive */
+  --color-primary: var(--sys-color-primary);
+  --color-primary-foreground: var(--sys-color-primary-foreground);
+  --color-secondary: var(--sys-color-secondary);
+  --color-secondary-foreground: var(--sys-color-secondary-foreground);
+  --color-accent: var(--sys-color-accent);
+  --color-accent-foreground: var(--sys-color-accent-foreground);
+  --color-destructive: var(--sys-color-destructive);
+  --color-destructive-foreground: var(--sys-color-destructive-foreground);
+  --color-muted: var(--sys-color-muted);
+  --color-muted-foreground: var(--sys-color-muted-foreground);
+
+  /* Structural */
+  --color-border: var(--sys-color-border);
+  --color-input: var(--sys-color-input);
+  /* Brand override: selected controls + focus rings use `ring`, not `primary`. */
+  --color-ring: var(--sys-color-ring);
+
+  /* Status (shadcn extensions) */
+  --color-success: var(--sys-color-success);
+  --color-success-foreground: var(--sys-color-success-foreground);
+  --color-warning: var(--sys-color-warning);
+  --color-warning-foreground: var(--sys-color-warning-foreground);
+  --color-info: var(--sys-color-info);
+  --color-info-foreground: var(--sys-color-info-foreground);
+
+  /* Soft variants (brand extension) — tags, badges, alerts, banners, toasts */
+  --color-destructive-soft: var(--sys-color-destructive-soft);
+  --color-destructive-soft-foreground: var(--sys-color-destructive-soft-foreground);
+  --color-destructive-soft-border: var(--sys-color-destructive-soft-border);
+  --color-warning-soft: var(--sys-color-warning-soft);
+  --color-warning-soft-foreground: var(--sys-color-warning-soft-foreground);
+  --color-warning-soft-border: var(--sys-color-warning-soft-border);
+  --color-success-soft: var(--sys-color-success-soft);
+  --color-success-soft-foreground: var(--sys-color-success-soft-foreground);
+  --color-success-soft-border: var(--sys-color-success-soft-border);
+  --color-accent-soft: var(--sys-color-accent-soft);
+  --color-accent-soft-foreground: var(--sys-color-accent-soft-foreground);
+  --color-accent-soft-border: var(--sys-color-accent-soft-border);
+  --color-primary-soft: var(--sys-color-primary-soft);
+  --color-primary-soft-foreground: var(--sys-color-primary-soft-foreground);
+  --color-primary-soft-border: var(--sys-color-primary-soft-border);
+
+  /* Charts */
+  --color-chart-1: var(--sys-color-chart-1);
+  --color-chart-2: var(--sys-color-chart-2);
+  --color-chart-3: var(--sys-color-chart-3);
+  --color-chart-4: var(--sys-color-chart-4);
+  --color-chart-5: var(--sys-color-chart-5);
+
+  /* Sidebar */
+  --color-sidebar-background: var(--sys-color-sidebar-background);
+  --color-sidebar-foreground: var(--sys-color-sidebar-foreground);
+  --color-sidebar-primary: var(--sys-color-sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sys-color-sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sys-color-sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sys-color-sidebar-accent-foreground);
+  --color-sidebar-muted: var(--sys-color-sidebar-muted);
+  --color-sidebar-muted-foreground: var(--sys-color-sidebar-muted-foreground);
+  --color-sidebar-border: var(--sys-color-sidebar-border);
+  --color-sidebar-ring: var(--sys-color-sidebar-ring);
+
+  /* Primitive scales — exposed for the rare case a component legitimately
+     needs a raw step (e.g. a chart needing more than 5 series colors), not
+     for general component styling (components use the semantic tokens above). */
+  --color-plum-50: var(--sys-color-plum-50);
+  --color-plum-100: var(--sys-color-plum-100);
+  --color-plum-200: var(--sys-color-plum-200);
+  --color-plum-300: var(--sys-color-plum-300);
+  --color-plum-400: var(--sys-color-plum-400);
+  --color-plum-500: var(--sys-color-plum-500);
+  --color-plum-600: var(--sys-color-plum-600);
+  --color-plum-700: var(--sys-color-plum-700);
+  --color-plum-800: var(--sys-color-plum-800);
+  --color-plum-900: var(--sys-color-plum-900);
+  --color-plum-950: var(--sys-color-plum-950);
+  --color-orchid-50: var(--sys-color-orchid-50);
+  --color-orchid-100: var(--sys-color-orchid-100);
+  --color-orchid-200: var(--sys-color-orchid-200);
+  --color-orchid-300: var(--sys-color-orchid-300);
+  --color-orchid-400: var(--sys-color-orchid-400);
+  --color-orchid-500: var(--sys-color-orchid-500);
+  --color-orchid-600: var(--sys-color-orchid-600);
+  --color-orchid-700: var(--sys-color-orchid-700);
+  --color-orchid-800: var(--sys-color-orchid-800);
+  --color-orchid-900: var(--sys-color-orchid-900);
+  --color-orchid-950: var(--sys-color-orchid-950);
+  --color-oat-50: var(--sys-color-oat-50);
+  --color-oat-100: var(--sys-color-oat-100);
+  --color-oat-200: var(--sys-color-oat-200);
+  --color-oat-300: var(--sys-color-oat-300);
+  --color-oat-400: var(--sys-color-oat-400);
+  --color-oat-500: var(--sys-color-oat-500);
+  --color-oat-600: var(--sys-color-oat-600);
+  --color-oat-700: var(--sys-color-oat-700);
+  --color-oat-800: var(--sys-color-oat-800);
+  --color-oat-900: var(--sys-color-oat-900);
+  --color-oat-950: var(--sys-color-oat-950);
+  --color-plum-muted-50: var(--sys-color-plum-muted-50);
+  --color-plum-muted-100: var(--sys-color-plum-muted-100);
+  --color-plum-muted-200: var(--sys-color-plum-muted-200);
+  --color-plum-muted-300: var(--sys-color-plum-muted-300);
+  --color-plum-muted-400: var(--sys-color-plum-muted-400);
+  --color-plum-muted-500: var(--sys-color-plum-muted-500);
+  --color-plum-muted-600: var(--sys-color-plum-muted-600);
+  --color-plum-muted-700: var(--sys-color-plum-muted-700);
+  --color-plum-muted-800: var(--sys-color-plum-muted-800);
+  --color-plum-muted-900: var(--sys-color-plum-muted-900);
+  --color-plum-muted-950: var(--sys-color-plum-muted-950);
+  --color-black-50: var(--sys-color-black-50);
+  --color-black-100: var(--sys-color-black-100);
+  --color-black-200: var(--sys-color-black-200);
+  --color-black-300: var(--sys-color-black-300);
+  --color-black-400: var(--sys-color-black-400);
+  --color-black-500: var(--sys-color-black-500);
+  --color-black-600: var(--sys-color-black-600);
+  --color-black-700: var(--sys-color-black-700);
+  --color-black-800: var(--sys-color-black-800);
+  --color-black-900: var(--sys-color-black-900);
+  --color-black-950: var(--sys-color-black-950);
+  --color-dandelion-50: var(--sys-color-dandelion-50);
+  --color-dandelion-100: var(--sys-color-dandelion-100);
+  --color-dandelion-200: var(--sys-color-dandelion-200);
+  --color-dandelion-300: var(--sys-color-dandelion-300);
+  --color-dandelion-400: var(--sys-color-dandelion-400);
+  --color-dandelion-500: var(--sys-color-dandelion-500);
+  --color-dandelion-600: var(--sys-color-dandelion-600);
+  --color-dandelion-700: var(--sys-color-dandelion-700);
+  --color-dandelion-800: var(--sys-color-dandelion-800);
+  --color-dandelion-900: var(--sys-color-dandelion-900);
+  --color-dandelion-950: var(--sys-color-dandelion-950);
+  --color-coral-50: var(--sys-color-coral-50);
+  --color-coral-100: var(--sys-color-coral-100);
+  --color-coral-200: var(--sys-color-coral-200);
+  --color-coral-300: var(--sys-color-coral-300);
+  --color-coral-400: var(--sys-color-coral-400);
+  --color-coral-500: var(--sys-color-coral-500);
+  --color-coral-600: var(--sys-color-coral-600);
+  --color-coral-700: var(--sys-color-coral-700);
+  --color-coral-800: var(--sys-color-coral-800);
+  --color-coral-900: var(--sys-color-coral-900);
+  --color-coral-950: var(--sys-color-coral-950);
+  --color-success-50: var(--sys-color-success-50);
+  --color-success-100: var(--sys-color-success-100);
+  --color-success-200: var(--sys-color-success-200);
+  --color-success-300: var(--sys-color-success-300);
+  --color-success-400: var(--sys-color-success-400);
+  --color-success-500: var(--sys-color-success-500);
+  --color-success-600: var(--sys-color-success-600);
+  --color-success-700: var(--sys-color-success-700);
+  --color-success-800: var(--sys-color-success-800);
+  --color-success-900: var(--sys-color-success-900);
+  --color-success-950: var(--sys-color-success-950);
+
+  /* Border radius */
+  --radius-none: var(--sys-radius-none);
+  --radius-sm: var(--sys-radius-sm);
+  --radius: var(--sys-radius);
+  --radius-md: var(--sys-radius-md);
+  --radius-lg: var(--sys-radius-lg);
+  --radius-xl: var(--sys-radius-xl);
+  --radius-2xl: var(--sys-radius-2xl);
+  --radius-full: var(--sys-radius-full);
+
+  /* Spacing — CSS custom property names cannot contain a literal ".", so the
+     fractional steps (0.5/1.5/2.5) cannot exist as named --spacing-N.5
+     overrides. Instead, set Tailwind own --spacing multiplier to our 4px-grid
+     unit: every p-, gap-, etc. utility Tailwind computes from it is still a
+     4px-grid multiple, matching design.md section 2 exactly, so this is not
+     reopening the arbitrary-value gap the reset above closes for color/
+     radius/font-size/etc — the spacing rule is any multiple of 4px, not only
+     these named steps. */
+  --spacing: var(--sys-space-unit);
+
+  /* Typography */
+  --font-family-sans: var(--sys-font-family-sans);
+  --font-family-display: var(--sys-font-family-display);
+  --font-family-mono: var(--sys-font-family-mono);
+
+  --text-xs: var(--sys-font-size-xs);
+  --text-sm: var(--sys-font-size-sm);
+  --text-base: var(--sys-font-size-base);
+  --text-lg: var(--sys-font-size-lg);
+  --text-xl: var(--sys-font-size-xl);
+  --text-2xl: var(--sys-font-size-2xl);
+  --text-3xl: var(--sys-font-size-3xl);
+  --text-4xl: var(--sys-font-size-4xl);
+  --text-5xl: var(--sys-font-size-5xl);
+
+  --font-weight-thin: var(--sys-font-weight-thin);
+  --font-weight-extralight: var(--sys-font-weight-extralight);
+  --font-weight-light: var(--sys-font-weight-light);
+  --font-weight-normal: var(--sys-font-weight-normal);
+  --font-weight-medium: var(--sys-font-weight-medium);
+  --font-weight-semibold: var(--sys-font-weight-semibold);
+  --font-weight-bold: var(--sys-font-weight-bold);
+  --font-weight-extrabold: var(--sys-font-weight-extrabold);
+  --font-weight-black: var(--sys-font-weight-black);
+
+  --leading-none: var(--sys-line-height-none);
+  --leading-tight: var(--sys-line-height-tight);
+  --leading-snug: var(--sys-line-height-snug);
+  --leading-normal: var(--sys-line-height-normal);
+  --leading-relaxed: var(--sys-line-height-relaxed);
+  --leading-loose: var(--sys-line-height-loose);
+
+  --tracking-tighter: var(--sys-tracking-tighter);
+  --tracking-tight: var(--sys-tracking-tight);
+  --tracking-normal: var(--sys-tracking-normal);
+  --tracking-wide: var(--sys-tracking-wide);
+  --tracking-wider: var(--sys-tracking-wider);
+  --tracking-widest: var(--sys-tracking-widest);
+
+  /* Shadow — not yet in the Figma spec; starter placeholder (see tokens.css). */
+  --shadow-sm: var(--sys-shadow-sm);
+  --shadow-md: var(--sys-shadow-md);
+  --shadow-lg: var(--sys-shadow-lg);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-family-sans);
+}
+
+/* Visible focus ring on every interactive element — never suppressed. See
+   ../../../../.context/ACCESSIBILITY_GUIDELINES.md. */
+:focus-visible {
+  outline: var(--sys-focus-ring-width) solid var(--sys-focus-ring-color);
+  outline-offset: var(--sys-focus-ring-offset);
+}

@@ -3,9 +3,15 @@
   "configurations": [
     {
       "name": "storybook",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "storybook"],
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@discuss-ds/storybook", "run", "storybook"],
       "port": 6006
+    },
+    {
+      "name": "playground",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@discuss-ds/playground", "run", "dev"],
+      "port": 5173
     }
   ]
 }
