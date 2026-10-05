@@ -75,6 +75,13 @@
 
   /* Figma-only semantic additions */
   --color-surface: var(--sys-color-surface-background);
+  --color-label: var(--sys-color-label);
+  --color-primary-hover: var(--sys-color-primary-hover);
+  --color-destructive-hover: var(--sys-color-destructive-hover);
+  --color-destructive-soft-hover: var(--sys-color-destructive-soft-hover);
+  --color-overlay-dark-3: var(--sys-color-overlay-dark-3);
+  --color-overlay-dark-5: var(--sys-color-overlay-dark-5);
+  --color-overlay-dark-10: var(--sys-color-overlay-dark-10);
   --color-surface-foreground: var(--sys-color-surface-foreground);
   --color-accent-muted: var(--sys-color-accent-muted);
   --color-input-accent: var(--sys-color-input-accent);

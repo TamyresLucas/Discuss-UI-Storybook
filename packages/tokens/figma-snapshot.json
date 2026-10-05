@@ -137,11 +137,11 @@
    "#d6bbf7"
   ],
   "background-destructive": [
-   "#dd3725",
+   "#ba2b1b",
    "#f2695a"
   ],
   "foreground-destructive": [
-   "#dd3725",
+   "#ba2b1b",
    "#f97e70"
   ],
   "foreground-border": [
@@ -149,8 +149,8 @@
    "#6b5287"
   ],
   "foreground-input-muted": [
-   "#c2b8ce",
-   "#6b5287"
+   "#9785ab",
+   "#9785ab"
   ],
   "foreground-ring": [
    "#a364e8",

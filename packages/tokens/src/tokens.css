@@ -134,15 +134,19 @@
   --sys-color-popover-foreground: var(--sys-color-surface-foreground);
 
   --sys-color-primary: var(--sys-color-plum-950);
-  --sys-color-primary-foreground: var(--sys-color-plum-50);
+  --sys-color-primary-foreground: var(--sys-color-label);
+  /* Figma foreground-label: neutral label colour for text on dark fills
+     (primary, destructive, …). Not tied to any one role — components set it
+     on any dark fill. primary-foreground is only the shadcn-compat alias. */
+  --sys-color-label: var(--sys-color-plum-50);
   --sys-color-secondary: var(--sys-color-oat-100);
   --sys-color-secondary-foreground: var(--sys-color-black-800);
   /* Figma `foreground`: default body text on neutral surfaces. */
   --sys-color-foreground-text: var(--sys-color-black-800);
   --sys-color-accent: var(--sys-color-orchid-500);
   --sys-color-accent-foreground: var(--sys-color-orchid-600);
-  --sys-color-destructive: var(--sys-color-coral-600);
-  --sys-color-destructive-foreground: var(--sys-color-coral-600);
+  --sys-color-destructive: var(--sys-color-coral-700);
+  --sys-color-destructive-foreground: var(--sys-color-coral-700);
   --sys-color-muted: var(--sys-color-plum-muted-200);
   --sys-color-muted-foreground: var(--sys-color-plum-muted-600);
   /* Figma foreground-secondary-muted. */
@@ -151,7 +155,7 @@
   --sys-color-accent-muted: var(--sys-color-orchid-300);
 
   --sys-color-border: var(--sys-color-plum-muted-200);
-  --sys-color-input: var(--sys-color-plum-muted-300);
+  --sys-color-input: var(--sys-color-plum-muted-500);
   /* Figma foreground-input-accent: checked/selected control fill. */
   --sys-color-input-accent: var(--sys-color-orchid-500);
   /* Brand override: selected controls (checkbox/radio/switch/toggle) and focus
@@ -167,6 +171,19 @@
   --sys-color-info: var(--sys-color-surface-background);
   --sys-color-info-foreground: var(--sys-color-foreground-text);
   --sys-color-info-border: var(--sys-color-border);
+
+  /* sys.color — Dark overlays. Figma applies these as raw black fills (3/5/10%)
+     on top of another fill for hover/selected states; no Figma variables exist
+     for them yet, so they are code-derived. Mixed from black-950, never a
+     literal. 3% = destructive-soft hover, 5% = subtle/selected/editable-tag
+     over secondary, 10% = destructive hover. */
+  --sys-color-overlay-dark-3: color-mix(in srgb, var(--sys-color-black-950) 3%, transparent);
+  --sys-color-overlay-dark-5: color-mix(in srgb, var(--sys-color-black-950) 5%, transparent);
+  --sys-color-overlay-dark-10: color-mix(in srgb, var(--sys-color-black-950) 10%, transparent);
+  /* Hover fills as opaque colours (an overlay on top of the base fill). */
+  --sys-color-primary-hover: var(--sys-color-accent-soft-foreground);
+  --sys-color-destructive-hover: color-mix(in srgb, var(--sys-color-destructive), var(--sys-color-black-950) 10%);
+  --sys-color-destructive-soft-hover: color-mix(in srgb, var(--sys-color-destructive-soft), var(--sys-color-black-950) 3%);
 
   /* sys.color — Soft variants (brand extension). Light-fill + dark-text +
      mid-tone-border triplet for tags, badges, alerts, banners, toasts. */
@@ -449,7 +466,13 @@
   --sys-color-popover-foreground: var(--sys-color-surface-foreground);
 
   --sys-color-primary: var(--sys-color-plum-50);
-  --sys-color-primary-foreground: var(--sys-color-plum-950);
+  --sys-color-primary-foreground: var(--sys-color-label);
+  --sys-color-label: var(--sys-color-plum-950);
+  /* Derived tokens must be redefined here: a var() alias on :root is resolved
+     there, so it would not pick up this scope's overrides otherwise. */
+  --sys-color-primary-hover: var(--sys-color-accent-soft-foreground);
+  --sys-color-destructive-hover: color-mix(in srgb, var(--sys-color-destructive), var(--sys-color-black-950) 10%);
+  --sys-color-destructive-soft-hover: color-mix(in srgb, var(--sys-color-destructive-soft), var(--sys-color-black-950) 3%);
   --sys-color-secondary: var(--sys-color-plum-muted-800);
   --sys-color-secondary-foreground: var(--sys-color-plum-muted-200);
   --sys-color-secondary-muted-foreground: var(--sys-color-plum-muted-300);
@@ -466,7 +489,7 @@
   --sys-color-muted-foreground: var(--sys-color-plum-muted-400);
 
   --sys-color-border: var(--sys-color-plum-muted-700);
-  --sys-color-input: var(--sys-color-plum-muted-700);
+  --sys-color-input: var(--sys-color-plum-muted-500);
   --sys-color-input-accent: var(--sys-color-orchid-500);
   --sys-color-ring: var(--sys-color-orchid-500);
 
