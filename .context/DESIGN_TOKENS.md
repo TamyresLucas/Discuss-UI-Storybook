@@ -122,9 +122,9 @@ re-pointed to match Figma.
 **Figma is the source of truth.** Code keeps shadcn-style names but takes
 Figma's values literally: `accent` = orchid/500 (text `accent-foreground` =
 orchid/600), solid `success`/`warning` = 500 fills with 800 text,
-`destructive-foreground` = coral/600, and `muted-foreground` = the literal
-`#806a98` (a detached value in Figma — alias it to a primitive in Figma first,
-then mirror here). Figma text styles (`heading/h1`…) are mirrored as `sys-text-*`
+`destructive-foreground` = coral/600, and `muted-foreground` = plum-muted/600
+(Figma's `foreground-muted` was a detached `#806a98` until it was re-bound to
+the primitive on 2026-10-05). Figma text styles (`heading/h1`…) are mirrored as `sys-text-*`
 tokens + `text-<name>` utilities (the auto-line-height `p` and `table-head`
 styles are intentionally skipped).
 

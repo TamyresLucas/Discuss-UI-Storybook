@@ -144,8 +144,7 @@
   --sys-color-destructive: var(--sys-color-coral-600);
   --sys-color-destructive-foreground: var(--sys-color-coral-600);
   --sys-color-muted: var(--sys-color-plum-muted-200);
-  /* Figma foreground-muted is a literal #806a98 (not aliased to a primitive). */
-  --sys-color-muted-foreground: #806a98;
+  --sys-color-muted-foreground: var(--sys-color-plum-muted-600);
   /* Figma foreground-secondary-muted. */
   --sys-color-secondary-muted-foreground: var(--sys-color-black-600);
   /* Figma background-accent-muted. */
