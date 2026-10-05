@@ -47,6 +47,21 @@ describe('Button', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
+  it('supports the Figma size and variant set', () => {
+    render(
+      <>
+        <Button variant="subtle" size="sm">
+          Subtle
+        </Button>
+        <Button variant="link">Link</Button>
+        <Button variant="destructive" size="icon" aria-label="Delete" />
+      </>,
+    );
+    expect(screen.getByRole('button', { name: 'Subtle' })).toHaveClass('h-8');
+    expect(screen.getByRole('button', { name: 'Link' })).toHaveClass('underline');
+    expect(screen.getByRole('button', { name: 'Delete' })).toHaveClass('size-10');
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<Button>Save changes</Button>);
     expect(await axe(container)).toHaveNoViolations();

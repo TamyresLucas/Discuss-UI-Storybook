@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Label } from './Label';
-import { RadioGroup, RadioGroupItem } from './RadioGroup';
+import { RadioGroup, RadioGroupFieldItem, RadioGroupItem } from './RadioGroup';
 
 const meta = {
   title: 'Forms & Data Entry/Radio Group',
@@ -11,7 +11,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Single-select option group for exclusive choices. Source: shadcn.',
+        component:
+          'Single-select option group for exclusive choices. `RadioGroupFieldItem` lays out the label and optional description. Source: shadcn. Figma: Radio Group (24).',
       },
     },
   },
@@ -47,4 +48,14 @@ export const Default: Story = {
     await expect(english).not.toBeChecked();
     await expect(args.onValueChange).toHaveBeenCalledWith('pt');
   },
+};
+
+export const WithDescriptions: Story = {
+  render: (args) => (
+    <RadioGroup {...args}>
+      <RadioGroupFieldItem value="en" label="Radio option" description="Additional description text for this option." />
+      <RadioGroupFieldItem value="pt" label="Radio option" description="Additional description text for this option." />
+      <RadioGroupFieldItem value="es" disabled label="Radio option" description="Additional description text for this option." />
+    </RadioGroup>
+  ),
 };

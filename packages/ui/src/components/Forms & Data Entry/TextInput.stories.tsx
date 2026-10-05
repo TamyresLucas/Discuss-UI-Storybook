@@ -10,13 +10,14 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Standard single-line input field. Source: shadcn.',
+        component:
+          'Standard single-line input field. Pass `label`, `description` and `message` to render the full field with helper text and success / error states. Source: shadcn. Figma: Text Input (19).',
       },
     },
   },
   tags: ['autodocs', 'status:review', 'source-shadcn'],
   argTypes: {
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    status: { control: 'inline-radio', options: ['default', 'success', 'error'] },
     disabled: { control: 'boolean' },
   },
   args: { placeholder: 'you@example.com', 'aria-label': 'Email' },
@@ -34,3 +35,13 @@ export const Default: Story = {
   },
 };
 export const Disabled: Story = { args: { disabled: true } };
+
+const field = { label: 'Email', description: 'Enter your email address', 'aria-label': undefined, placeholder: 'Email address' };
+export const WithLabel: Story = { args: field };
+export const Filled: Story = { args: { ...field, defaultValue: 'pietro@email.com' } };
+export const Success: Story = {
+  args: { ...field, defaultValue: 'pietro@email.com', status: 'success', message: 'Enter your email address' },
+};
+export const Error: Story = {
+  args: { ...field, defaultValue: 'pietro@email', status: 'error', message: 'Enter your email address' },
+};

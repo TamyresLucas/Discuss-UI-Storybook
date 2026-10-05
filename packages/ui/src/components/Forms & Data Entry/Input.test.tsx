@@ -31,6 +31,18 @@ describe('Input', () => {
     expect(input).toHaveValue('');
   });
 
+  it('links label, helper text and error state to the control', () => {
+    render(<Input label="Email" description="Enter your email address" status="error" message="Enter a valid email" />);
+    const input = screen.getByRole('textbox', { name: 'Email' });
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAccessibleDescription('Enter a valid email');
+  });
+
+  it('shows the helper text when there is no status message', () => {
+    render(<Input label="Email" description="Enter your email address" />);
+    expect(screen.getByRole('textbox', { name: 'Email' })).toHaveAccessibleDescription('Enter your email address');
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<Input aria-label="Email" />);
     expect(await axe(container)).toHaveNoViolations();

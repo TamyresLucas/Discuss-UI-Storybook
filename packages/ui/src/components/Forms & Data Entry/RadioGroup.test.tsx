@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
-import { RadioGroup, RadioGroupItem } from './RadioGroup';
+import { RadioGroup, RadioGroupFieldItem, RadioGroupItem } from './RadioGroup';
 
 describe('RadioGroup', () => {
   it('renders each option and none checked by default', () => {
@@ -38,6 +38,21 @@ describe('RadioGroup', () => {
 
     expect(screen.getByRole('radio', { name: 'English' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'Portuguese' })).not.toBeChecked();
+  });
+
+  it('labels and describes options with RadioGroupFieldItem', async () => {
+    const user = userEvent.setup();
+    render(
+      <RadioGroup aria-label="Plan">
+        <RadioGroupFieldItem value="a" label="Option A" description="First choice" />
+        <RadioGroupFieldItem value="b" label="Option B" disabled />
+      </RadioGroup>,
+    );
+
+    expect(screen.getByRole('radio', { name: 'Option A' })).toHaveAccessibleDescription('First choice');
+    await user.click(screen.getByText('Option A'));
+    expect(screen.getByRole('radio', { name: 'Option A' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Option B' })).toBeDisabled();
   });
 
   it('has no accessibility violations', async () => {

@@ -25,6 +25,11 @@ describe('Textarea', () => {
     expect(screen.getByRole('textbox', { name: 'Notes' })).toHaveValue('');
   });
 
+  it('renders a labelled field with a success message', () => {
+    render(<Textarea label="Description" status="success" message="Looks good" />);
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveAccessibleDescription('Looks good');
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<Textarea aria-label="Notes" />);
     expect(await axe(container)).toHaveNoViolations();

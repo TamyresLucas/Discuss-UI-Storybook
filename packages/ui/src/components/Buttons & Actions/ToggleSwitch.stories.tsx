@@ -10,7 +10,7 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'On/off toggle with label (Translate, Autotranslate). Source: shadcn.',
+        component: 'On/off toggle with label (Translate, Autotranslate). 44×24 track. Source: shadcn. Figma: Toggle / Switch (17).',
       },
     },
   },
@@ -33,3 +33,4 @@ export const Default: Story = {
 };
 export const CheckedByDefault: Story = { args: { defaultChecked: true } };
 export const Disabled: Story = { args: { disabled: true } };
+export const CheckedDisabled: Story = { args: { defaultChecked: true, disabled: true } };

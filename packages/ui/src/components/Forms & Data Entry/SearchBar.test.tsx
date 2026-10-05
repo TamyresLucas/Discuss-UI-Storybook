@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { SearchBar } from './SearchBar';
 
@@ -19,6 +19,19 @@ describe('SearchBar', () => {
     await user.type(input, 'onboarding');
 
     expect(input).toHaveValue('onboarding');
+  });
+
+  it('clears the field and refocuses it from the clear button', async () => {
+    const user = userEvent.setup();
+    const onClear = vi.fn();
+    render(<SearchBar aria-label="Search" defaultValue="Design systems" onClear={onClear} />);
+
+    await user.click(screen.getByRole('button', { name: 'Clear search' }));
+
+    expect(screen.getByRole('searchbox', { name: 'Search' })).toHaveValue('');
+    expect(screen.getByRole('searchbox', { name: 'Search' })).toHaveFocus();
+    expect(onClear).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
   });
 
   it('has no accessibility violations', async () => {

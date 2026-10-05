@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import { Gear } from '@phosphor-icons/react';
+
+import { Field } from './Field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './Select';
 
 const meta = {
@@ -10,7 +13,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Full select with dropdown (timezone, language). Source: shadcn.',
+        component:
+          'Full select with dropdown (timezone, language). Compose with `Field` for a label, and pass `icon` to `SelectTrigger` for the leading glyph. Source: shadcn. Figma: Select / Dropdown (22).',
       },
     },
   },
@@ -48,4 +52,39 @@ export const Default: Story = {
     await expect(trigger).toHaveTextContent('Portuguese');
     await expect(args.onValueChange).toHaveBeenCalledWith('pt');
   },
+};
+
+export const WithLabel: Story = {
+  render: (args) => (
+    <div className="w-80">
+      <Field label="Category">
+        {(control) => (
+          <Select {...args}>
+            <SelectTrigger {...control}>
+              <SelectValue placeholder="Select an option" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="research">Research</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
+      </Field>
+    </div>
+  ),
+};
+export const WithIcon: Story = {
+  render: (args) => (
+    <div className="w-80">
+      <Select {...args} defaultValue="design">
+        <SelectTrigger aria-label="Category" icon={<Gear size={16} aria-hidden />}>
+          <SelectValue placeholder="Select an option" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="design">Design</SelectItem>
+          <SelectItem value="research">Research</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  ),
 };

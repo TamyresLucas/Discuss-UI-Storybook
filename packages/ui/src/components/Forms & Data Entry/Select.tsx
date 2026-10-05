@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { CaretDown } from '@phosphor-icons/react';
 import { Select as SelectPrimitive } from 'radix-ui';
 
 import { cn } from '../../lib/utils';
@@ -7,41 +8,35 @@ export const Select = SelectPrimitive.Root;
 export const SelectValue = SelectPrimitive.Value;
 export const SelectGroup = SelectPrimitive.Group;
 
-const ChevronDownIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <path
-      d="M2.5 4.5L6 8L9.5 4.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 const CheckIcon = () => (
   <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
     <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
-export type SelectTriggerProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>;
+export interface SelectTriggerProps extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {
+  /** Leading icon (Figma: "With label = No" shows a gear). */
+  icon?: React.ReactNode;
+}
 
+// Figma: Select / Dropdown (22) — 40px, 8px radius; the open ("select") state takes the accent border.
 export const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrimitive.Trigger>, SelectTriggerProps>(
-  ({ className, children, ...props }, ref) => (
+  ({ className, children, icon, ...props }, ref) => (
     <SelectPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-surface px-4 py-2.5 text-base text-foreground transition-colors',
+        'flex h-10 w-full items-center gap-2 rounded-md border border-input bg-surface px-3 py-2 text-left text-ui-input-value text-surface-foreground transition-colors',
+        'hover:border-input-accent data-[state=open]:border-input-accent',
         'disabled:cursor-not-allowed disabled:opacity-50',
         'data-[placeholder]:text-muted-foreground',
         className,
       )}
       {...props}
     >
-      {children}
-      <SelectPrimitive.Icon className="text-muted-foreground">
-        <ChevronDownIcon />
+      {icon && <span className="flex shrink-0 text-surface-foreground">{icon}</span>}
+      <span className="min-w-0 flex-1 truncate">{children}</span>
+      <SelectPrimitive.Icon className="shrink-0 text-surface-foreground">
+        <CaretDown size={16} aria-hidden />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   ),

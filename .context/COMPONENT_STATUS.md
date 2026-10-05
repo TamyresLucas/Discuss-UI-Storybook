@@ -11,16 +11,21 @@ screen-reader testing requirement in
 [ACCESSIBILITY_GUIDELINES.md](./ACCESSIBILITY_GUIDELINES.md), not just
 automated a11y checks.
 
-**Current summary:** 61 / 76 components at `Planned` (story scaffolded with
-the shared `Placeholder`, no implementation yet). 0 `In Progress`, 15
+**Current summary:** 43 / 76 components at `Planned` (story scaffolded with
+the shared `Placeholder`, no implementation yet). 0 `In Progress`, 33
 `Review` (the Button family, Toggle (Switch), Label, Text Input, Checkbox,
-Radio Group, Search Bar, Textarea, Select (Dropdown), Slider, Form —
+Radio Group, Search Bar, Textarea, Select (Dropdown), Slider, Form, Tab
+Navigation, Tab Item, Progress, Tag (Status Badge), Removable Tag (Chip), Table, Table Header Row, Table Row, Pagination, Dialog (Modal), Dropdown Menu, Tooltip, Toast (Sonner), User Message Bubble, AI Response Container, Chat Input, AI Mini Avatar, Timestamp —
 implemented, passes automated a11y checks, not yet screen-reader tested), 0
 `Stable`, 0 `Deprecated`. The original Storybook scaffold (`Example/Button`,
 `Header`, `Page`) has been removed — it predated this taxonomy and was
 never part of it.
 
-**New dependency:** `react-hook-form` (^7.88.0) was added to `packages/ui`
+**New dependency:** `@phosphor-icons/react` (Figma's icon set) and `react-day-picker` (Calendar — there is no Radix calendar primitive) were added to `packages/ui`.
+
+**Also added** (Figma components outside the original 76-row queue, all at `Review`): `Role Tag` (in `Tags & Badges`); `Toggle (Menu)` (Buttons & Actions); `Numerical Input`, `Input with Action`, `Calendar`, `Date & Time Picker` and the shared `Field` wrapper (Forms & Data Entry); `Table Column` (cell-type story for Table, Data Display); `Toast Inline` (in Overlays & Feedback); `Question Types` — `Question Card`, `Question Header`, `Question Option` (+ Other / editor row), `Open End Answer`, `Rating Scale`, `Rank List`, `File Upload`, `Media` (video player, image preview, thumbnails), `Question Type Icons`; `File Attachment`, `Ask AI Toggle`, `Topic Card`, `Project Selector`, `Chat Choices` and `Ask AI Input` (Conversation & AI Chat). Toast is built on Radix Toast, not the `sonner` package the name suggests.
+
+**Earlier dependency:** `react-hook-form` (^7.88.0) was added to `packages/ui`
 to build `Form` — the first component whose upstream shadcn source isn't a
 pure `radix-ui` wrapper. See [DECISIONS.md](./DECISIONS.md) if this needs a
 recorded rationale.
@@ -37,8 +42,8 @@ recorded rationale.
 | 4 | Sidebar Nav Item | Custom | Planned |
 | 5 | Project Switcher | Custom | Planned |
 | 6 | Breadcrumb | shadcn | Planned |
-| 7 | Tab Navigation | shadcn | Planned |
-| 8 | Tab Item | shadcn | Planned |
+| 7 | Tab Navigation | shadcn | Review |
+| 8 | Tab Item | shadcn | Review |
 | 9 | Collapsible | shadcn | Planned |
 | 10 | Command Palette | shadcn | Planned |
 | 11 | Sheet | shadcn | Planned |
@@ -72,16 +77,16 @@ recorded rationale.
 
 | # | Component | Source | Stage |
 |---|---|---|---|
-| 27 | Table | shadcn | Planned |
-| 28 | Table Header Row | shadcn | Planned |
-| 29 | Table Row | shadcn | Planned |
+| 27 | Table | shadcn | Review |
+| 28 | Table Header Row | shadcn | Review |
+| 29 | Table Row | shadcn | Review |
 | 30 | Card | shadcn | Planned |
 | 31 | Session Card | Custom | Planned |
 | 32 | Sentiment Card | Custom | Planned |
 | 33 | Method Card | Custom | Planned |
 | 34 | Suggestion Card | Custom | Planned |
 | 35 | Video Player Card | Custom | Planned |
-| 36 | Progress | shadcn | Planned |
+| 36 | Progress | shadcn | Review |
 | 37 | Hover Card | shadcn | Planned |
 | 38 | Skeleton | shadcn | Planned |
 | 39 | Aspect Ratio | shadcn | Planned |
@@ -91,10 +96,10 @@ recorded rationale.
 | # | Component | Source | Stage |
 |---|---|---|---|
 | 40 | Badge | shadcn | Planned |
-| 41 | Tag (Status Badge) | Custom | Planned |
+| 41 | Tag (Status Badge) | Custom | Review |
 | 42 | ID Badge | Custom | Planned |
 | 43 | Count Badge | Custom | Planned |
-| 44 | Removable Tag (Chip) | Custom | Planned |
+| 44 | Removable Tag (Chip) | Custom | Review |
 
 ## Identity & People (3)
 
@@ -108,22 +113,22 @@ recorded rationale.
 
 | # | Component | Source | Stage |
 |---|---|---|---|
-| 48 | Dialog (Modal) | shadcn | Planned |
+| 48 | Dialog (Modal) | shadcn | Review |
 | 49 | Popover | shadcn | Planned |
-| 50 | Dropdown Menu | shadcn | Planned |
-| 51 | Tooltip | shadcn | Planned |
-| 52 | Toast (Sonner) | shadcn | Planned |
+| 50 | Dropdown Menu | shadcn | Review |
+| 51 | Tooltip | shadcn | Review |
+| 52 | Toast (Sonner) | shadcn | Review |
 | 53 | Alert Dialog | shadcn | Planned |
 
 ## Conversation & AI Chat (5)
 
 | # | Component | Source | Stage |
 |---|---|---|---|
-| 54 | User Message Bubble | Custom | Planned |
-| 55 | AI Response Container | Custom | Planned |
-| 56 | Chat Input | Custom | Planned |
-| 57 | AI Mini Avatar | Custom | Planned |
-| 58 | Timestamp | Custom | Planned |
+| 54 | User Message Bubble | Custom | Review |
+| 55 | AI Response Container | Custom | Review |
+| 56 | Chat Input | Custom | Review |
+| 57 | AI Mini Avatar | Custom | Review |
+| 58 | Timestamp | Custom | Review |
 
 ## Files & Documents (2)
 
@@ -151,7 +156,7 @@ recorded rationale.
 | 68 | More Menu (…) | Custom | Planned |
 | 69 | Link Action | Custom | Planned |
 | 70 | Context Menu | shadcn | Planned |
-| 71 | Pagination | shadcn | Planned |
+| 71 | Pagination | shadcn | Review |
 | 72 | Skeleton Line | Custom | Planned |
 
 ## Research-Specific (4)
