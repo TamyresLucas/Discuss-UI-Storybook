@@ -3,36 +3,25 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "storybook": "turbo run storybook --filter=@discuss-ds/storybook",
+    "build-storybook": "turbo run build --filter=@discuss-ds/storybook",
+    "playground": "turbo run dev --filter=@discuss-ds/playground",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build --filter=@discuss-ds/tokens --filter=@discuss-ds/ui && changeset publish",
+    "tokens:check": "node scripts/check-figma-drift.mjs"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
     "oxlint": "^1.81.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0",
-    "storybook": "^10.6.0",
-    "@storybook/react-vite": "^10.6.0",
-    "@chromatic-com/storybook": "latest",
-    "@storybook/addon-vitest": "^10.6.0",
-    "@storybook/addon-a11y": "^10.6.0",
-    "@storybook/addon-docs": "^10.6.0",
-    "@storybook/addon-mcp": "^10.6.0",
-    "vitest": "latest",
-    "playwright": "latest",
-    "@vitest/browser-playwright": "latest",
-    "@vitest/coverage-v8": "latest"
+    "turbo": "^2.3.3",
+    "typescript": "~6.0.2"
   }
 }

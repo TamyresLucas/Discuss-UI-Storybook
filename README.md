@@ -1,32 +1,35 @@
-# React + TypeScript + Vite
+# Discuss Design System
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A pnpm/Turborepo monorepo for Discuss's component library.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+packages/tokens      @discuss-ds/tokens  — design tokens (CSS custom properties)
+packages/ui          @discuss-ds/ui      — components + Storybook stories
+apps/storybook       @discuss-ds/storybook — the docs/dev surface
+apps/playground      @discuss-ds/playground — throwaway app for manual smoke tests
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+See [CLAUDE.md](CLAUDE.md) and [.context/](.context/) for the full contribution
+rules (tokens, component contracts, accessibility bar, Storybook conventions,
+component build queue) before adding or changing a component. See
+[design.md](design.md) for the design language/rationale, and
+[.context/PROJECT_CONTEXT.md](.context/PROJECT_CONTEXT.md) for who this
+system is built for.
+
+## Getting started
+
+```bash
+pnpm install
+pnpm storybook   # http://localhost:6006
+```
+
+## Other commands
+
+```bash
+pnpm playground        # dev server for apps/playground, http://localhost:5173
+pnpm build              # turbo: build every package/app
+pnpm lint                # turbo: oxlint every package/app
+pnpm build-storybook    # static Storybook build (apps/storybook/storybook-static)
+pnpm changeset          # record a change to tokens/ui for the changelog
+pnpm version-packages   # apply pending changesets: bump versions + write CHANGELOGs
+```

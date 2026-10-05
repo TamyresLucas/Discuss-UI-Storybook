@@ -1,0 +1,378 @@
+{
+ "_meta": {
+  "source": "figma:qlxLGnxeaX0fDjaq5YMh2d (Discuss Design System) local variables, aliases resolved",
+  "syncedAt": "2026-10-05",
+  "refresh": "Re-export via use_figma (read-only) and replace this file, then run `pnpm tokens:check`."
+ },
+ "Primitives": {
+  "plum/50": "#f6f2fb",
+  "plum/100": "#ece3f4",
+  "plum/200": "#d6c4e6",
+  "plum/300": "#b99cd3",
+  "plum/400": "#9871b8",
+  "plum/500": "#7b4f9e",
+  "plum/600": "#613a82",
+  "plum/700": "#4c2c68",
+  "plum/800": "#391f50",
+  "plum/900": "#2e1449",
+  "plum/950": "#26004f",
+  "orchid/50": "#faf6fe",
+  "orchid/100": "#f2eafd",
+  "orchid/200": "#e8d9fb",
+  "orchid/300": "#d6bbf7",
+  "orchid/400": "#c196f2",
+  "orchid/500": "#a364e8",
+  "orchid/600": "#8d44d9",
+  "orchid/700": "#7832be",
+  "orchid/800": "#662d9c",
+  "orchid/900": "#54267d",
+  "orchid/950": "#380f5c",
+  "dandelion/50": "#fffcea",
+  "dandelion/100": "#fff6c5",
+  "dandelion/200": "#ffed85",
+  "dandelion/300": "#ffdd46",
+  "dandelion/400": "#ffcb1b",
+  "dandelion/500": "#ffad00",
+  "dandelion/600": "#e28400",
+  "dandelion/700": "#bb5b02",
+  "dandelion/800": "#984608",
+  "dandelion/900": "#7c3a0b",
+  "dandelion/950": "#481d00",
+  "coral/50": "#fef3f2",
+  "coral/100": "#fee5e2",
+  "coral/200": "#fecfca",
+  "coral/300": "#fdada4",
+  "coral/400": "#f97e70",
+  "coral/500": "#f2695a",
+  "coral/600": "#dd3725",
+  "coral/700": "#ba2b1b",
+  "coral/800": "#9a271a",
+  "coral/900": "#80261c",
+  "coral/950": "#45100a",
+  "oat/50": "#f9f9f6",
+  "oat/100": "#f5f5ef",
+  "oat/200": "#f0f0e5",
+  "oat/300": "#e3e3d3",
+  "oat/400": "#d3d1bb",
+  "oat/500": "#bdb893",
+  "oat/600": "#a79962",
+  "oat/700": "#877645",
+  "oat/800": "#685831",
+  "oat/900": "#463920",
+  "oat/950": "#2b2212",
+  "black/50": "#f7f7f7",
+  "black/100": "#ededed",
+  "black/200": "#dbdbdb",
+  "black/300": "#c2c2c2",
+  "black/400": "#a3a3a3",
+  "black/500": "#808080",
+  "black/600": "#616161",
+  "black/700": "#454545",
+  "black/800": "#2e2e2e",
+  "black/900": "#1a1a1a",
+  "black/950": "#000000",
+  "plum-muted/50": "#f4f2f6",
+  "plum-muted/100": "#e9e5ed",
+  "plum-muted/200": "#d8d1df",
+  "plum-muted/300": "#c2b8ce",
+  "plum-muted/400": "#ad9ebc",
+  "plum-muted/500": "#9785ab",
+  "plum-muted/600": "#816b99",
+  "plum-muted/700": "#6b5287",
+  "plum-muted/800": "#563876",
+  "plum-muted/900": "#3e1c62",
+  "plum-muted/950": "#26004f",
+  "success/50": "#effcf7",
+  "success/100": "#d7f8eb",
+  "success/200": "#aff0d7",
+  "success/300": "#7be2be",
+  "success/400": "#48d3a6",
+  "success/500": "#25be8c",
+  "success/600": "#16ad7f",
+  "success/700": "#0e9e74",
+  "success/800": "#0c7458",
+  "success/900": "#0b5f4a",
+  "success/950": "#04362b",
+  "White": "#ffffff"
+ },
+ "Semantic": {
+  "page-background": [
+   "#f9f9f6",
+   "#26004f"
+  ],
+  "foreground-primary": [
+   "#26004f",
+   "#f4f2f6"
+  ],
+  "background-primary": [
+   "#26004f",
+   "#f6f2fb"
+  ],
+  "foreground-label": [
+   "#f6f2fb",
+   "#26004f"
+  ],
+  "background-secondary": [
+   "#f5f5ef",
+   "#563876"
+  ],
+  "foreground": [
+   "#2e2e2e",
+   "#d8d1df"
+  ],
+  "background-muted": [
+   "#d8d1df",
+   "#563876"
+  ],
+  "foreground-muted": [
+   "#816b99",
+   "#ad9ebc"
+  ],
+  "background-accent": [
+   "#a364e8",
+   "#d6bbf7"
+  ],
+  "foreground-accent": [
+   "#8d44d9",
+   "#d6bbf7"
+  ],
+  "background-destructive": [
+   "#ba2b1b",
+   "#f2695a"
+  ],
+  "foreground-destructive": [
+   "#ba2b1b",
+   "#f97e70"
+  ],
+  "foreground-border": [
+   "#d8d1df",
+   "#6b5287"
+  ],
+  "foreground-input-muted": [
+   "#9785ab",
+   "#9785ab"
+  ],
+  "foreground-ring": [
+   "#a364e8",
+   "#a364e8"
+  ],
+  "chart-1": [
+   "#a364e8",
+   "#c196f2"
+  ],
+  "chart-2": [
+   "#25be8c",
+   "#48d3a6"
+  ],
+  "chart-3": [
+   "#ffad00",
+   "#ffcb1b"
+  ],
+  "chart-4": [
+   "#f2695a",
+   "#f97e70"
+  ],
+  "chart-5": [
+   "#9871b8",
+   "#b99cd3"
+  ],
+  "background-success": [
+   "#25be8c",
+   "#48d3a6"
+  ],
+  "foreground-success": [
+   "#0c7458",
+   "#aff0d7"
+  ],
+  "background-warning": [
+   "#ffad00",
+   "#ffcb1b"
+  ],
+  "foreground-warning": [
+   "#984608",
+   "#ffed85"
+  ],
+  "background-info": [
+   "#ffffff",
+   "#3e1c62"
+  ],
+  "foreground-info": [
+   "#2e2e2e",
+   "#d8d1df"
+  ],
+  "foreground-info-border": [
+   "#d8d1df",
+   "#6b5287"
+  ],
+  "background-destructive-soft": [
+   "#fef3f2",
+   "#45100a"
+  ],
+  "foreground-destructive-soft": [
+   "#9a271a",
+   "#fecfca"
+  ],
+  "foreground-destructive-soft-border": [
+   "#fecfca",
+   "#9a271a"
+  ],
+  "background-warning-soft": [
+   "#fffcea",
+   "#7c3a0b"
+  ],
+  "foreground-warning-soft": [
+   "#984608",
+   "#ffed85"
+  ],
+  "foreground-warning-soft-border": [
+   "#ffed85",
+   "#984608"
+  ],
+  "background-success-soft": [
+   "#effcf7",
+   "#0b5f4a"
+  ],
+  "foreground-success-soft": [
+   "#0b5f4a",
+   "#d7f8eb"
+  ],
+  "foreground-success-soft-border": [
+   "#aff0d7",
+   "#0c7458"
+  ],
+  "background-accent-soft": [
+   "#f2eafd",
+   "#662d9c"
+  ],
+  "foreground-accent-soft": [
+   "#54267d",
+   "#f2eafd"
+  ],
+  "border-accent-soft": [
+   "#e8d9fb",
+   "#662d9c"
+  ],
+  "background-primary-soft": [
+   "#ece3f4",
+   "#2e1449"
+  ],
+  "foreground-primary-soft": [
+   "#391f50",
+   "#d6c4e6"
+  ],
+  "foreground-primary-soft-border": [
+   "#d6c4e6",
+   "#391f50"
+  ],
+  "foreground-secondary-muted": [
+   "#616161",
+   "#c2b8ce"
+  ],
+  "foreground-input-accent": [
+   "#a364e8",
+   "#a364e8"
+  ],
+  "surface-background": [
+   "#ffffff",
+   "#3e1c62"
+  ],
+  "surface-foreground": [
+   "#2e2e2e",
+   "#dbdbdb"
+  ],
+  "background-accent-muted": [
+   "#d6bbf7",
+   "#8d44d9"
+  ]
+ },
+ "Border Radius": {
+  "radius-none": 0,
+  "radius-sm": 6,
+  "radius-md": 8,
+  "radius-lg": 12,
+  "radius-xl": 16,
+  "radius-2xl": 24,
+  "radius-full": 9999,
+  "radius": 8,
+  "radius-xs": 4,
+  "radius-xxs": 2
+ },
+ "Spacing": {
+  "spacing/0": 0,
+  "spacing/0-5": 2,
+  "spacing/1": 4,
+  "spacing/1-5": 6,
+  "spacing/2": 8,
+  "spacing/2-5": 10,
+  "spacing/3": 12,
+  "spacing/4": 16,
+  "spacing/5": 20,
+  "spacing/6": 24,
+  "spacing/8": 32,
+  "spacing/10": 40,
+  "spacing/12": 48,
+  "spacing/16": 64,
+  "spacing/20": 80,
+  "spacing/24": 96
+ },
+ "Opacity": {
+  "opacity/0": 0,
+  "opacity/5": 5,
+  "opacity/10": 10,
+  "opacity/20": 20,
+  "opacity/25": 25,
+  "opacity/30": 30,
+  "opacity/40": 40,
+  "opacity/50": 50,
+  "opacity/60": 60,
+  "opacity/70": 70,
+  "opacity/75": 75,
+  "opacity/80": 80,
+  "opacity/90": 90,
+  "opacity/95": 95,
+  "opacity/100": 100
+ },
+ "Z-Index": {
+  "z/0": 0,
+  "z/10": 10,
+  "z/20": 20,
+  "z/30": 30,
+  "z/40": 40,
+  "z/50": 50
+ },
+ "Typography": {
+  "font-size/xs": 12,
+  "font-size/sm": 14,
+  "font-size/base": 16,
+  "font-size/lg": 18,
+  "font-size/xl": 20,
+  "font-size/2xl": 24,
+  "font-size/3xl": 30,
+  "font-size/4xl": 36,
+  "font-size/5xl": 48,
+  "font-thin": 100,
+  "font-extralight": 200,
+  "font-light": 300,
+  "font-normal": 400,
+  "font-medium": 500,
+  "font-semibold": 600,
+  "font-bold": 700,
+  "font-extrabold": 800,
+  "font-black": 900,
+  "tracking-tighter": -0.8,
+  "tracking-tight": -0.4,
+  "tracking-normal": 0,
+  "tracking-wide": 0.4,
+  "tracking-wider": 0.8,
+  "tracking-widest": 1.6,
+  "leading-none": 100,
+  "leading-tight": 125,
+  "leading-snug": 137.5,
+  "leading-normal": 150,
+  "leading-relaxed": 162.5,
+  "leading-loose": 200,
+  "font-sans": "Inter",
+  "font-display": "Bricolage Grotesque",
+  "font-mono": "JetBrains Mono"
+ }
+}
