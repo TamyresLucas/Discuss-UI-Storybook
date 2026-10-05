@@ -1,3 +1,4 @@
+import { Plus } from '@phosphor-icons/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
@@ -10,13 +11,15 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Filled button with icon + label (New activity, Join Meeting). Source: shadcn.',
+        component:
+          'Filled button with icon + label (New activity, Join Meeting), plus the destructive and link types. Source: shadcn. Figma: Buttons (13).',
       },
     },
   },
   tags: ['autodocs', 'status:review', 'source-shadcn'],
   argTypes: {
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    variant: { control: 'select', options: ['default', 'destructive', 'link'] },
+    size: { control: 'select', options: ['md', 'lg'] },
     disabled: { control: 'boolean' },
   },
   args: { variant: 'default', onClick: fn() },
@@ -27,6 +30,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: { children: 'New activity' },
+  render: (args) => (
+    <Button {...args}>
+      <Plus size={16} aria-hidden />
+      {args.children}
+    </Button>
+  ),
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: 'New activity' });
@@ -34,8 +43,14 @@ export const Default: Story = {
     await expect(args.onClick).toHaveBeenCalledTimes(1);
   },
 };
+export const Destructive: Story = {
+  args: { children: 'Destructive', variant: 'destructive' },
+  render: Default.render,
+};
+export const Link: Story = { args: { children: 'Link', variant: 'link' } };
 export const Disabled: Story = {
   args: { children: 'New activity', disabled: true },
+  render: Default.render,
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: 'New activity' });

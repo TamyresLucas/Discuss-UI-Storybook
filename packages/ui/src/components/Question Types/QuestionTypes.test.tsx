@@ -1,0 +1,256 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe } from 'jest-axe';
+import * as React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
+import { RadioGroup } from '../Forms & Data Entry/RadioGroup';
+import { FileUploadItem, FileUploadZone } from './FileUpload';
+import { ImagePreview, ImageThumbnails, VideoPlayer } from './Media';
+import { OpenEndAnswer } from './OpenEndAnswer';
+import { QuestionCard } from './QuestionCard';
+import { QuestionHeader } from './QuestionHeader';
+import { QuestionOption, QuestionOptionEditor, QuestionOtherOption } from './QuestionOption';
+import { QuestionTypeIcon } from './QuestionTypeIcon';
+import { RankList } from './RankList';
+import { RatingScale } from './RatingScale';
+
+describe('QuestionHeader', () => {
+  it('shows the eyebrow, title and required marker', () => {
+    render(<QuestionHeader number={1} title="Pick one" required />);
+    expect(screen.getByText('Question 01')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Pick one*');
+    expect(screen.getByText('(required)')).toBeInTheDocument();
+  });
+
+  it('shows a dismissable error banner', async () => {
+    const user = userEvent.setup();
+    const onDismissError = vi.fn();
+    render(<QuestionHeader number={1} title="Pick one" error="Please answer." onDismissError={onDismissError} />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Please answer.');
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+    expect(onDismissError).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the mandatory message by default', () => {
+    render(<QuestionHeader number={1} title="Pick one" required error />);
+    expect(screen.getByRole('alert')).toHaveTextContent('This question is mandatory.');
+  });
+
+  it('editor mode edits the title and counts characters', async () => {
+    const user = userEvent.setup();
+    const Controlled = () => {
+      const [text, setText] = React.useState('Hi');
+      return <QuestionHeader number={2} editor title={text} onTitleChange={setText} maxLength={20} actions={<button type="button">Delete</button>} />;
+    };
+    render(<Controlled />);
+    await user.type(screen.getByRole('textbox', { name: 'Question title' }), '!!');
+    expect(screen.getByText('4/20 characters')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+  });
+});
+
+describe('QuestionOption', () => {
+  it('selects one radio option at a time and marks it accent', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <RadioGroup aria-label="Role" onValueChange={onValueChange}>
+        <QuestionOption value="a" label="Designer" />
+        <QuestionOption value="b" label="Engineer" />
+      </RadioGroup>,
+    );
+    await user.click(screen.getByText('Engineer'));
+    expect(onValueChange).toHaveBeenCalledWith('b');
+    expect(screen.getByRole('radio', { name: 'Engineer' })).toBeChecked();
+  });
+
+  it('toggles checkbox options independently', async () => {
+    const user = userEvent.setup();
+    const onCheckedChange = vi.fn();
+    render(<QuestionOption kind="checkbox" label="Observers" onCheckedChange={onCheckedChange} />);
+    await user.click(screen.getByText('Observers'));
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
+  });
+
+  it('submits the "other" answer with the button or Enter', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<QuestionOtherOption aria-label="Other" onSubmit={onSubmit} />);
+    await user.type(screen.getByRole('textbox', { name: 'Other' }), 'Founder{enter}');
+    expect(onSubmit).toHaveBeenLastCalledWith('Founder');
+    await user.click(screen.getByRole('button', { name: 'Confirm answer' }));
+    expect(onSubmit).toHaveBeenCalledTimes(2);
+  });
+
+  it('editor row edits, removes and adds', async () => {
+    const user = userEvent.setup();
+    const onRemove = vi.fn();
+    const onAdd = vi.fn();
+    render(<QuestionOptionEditor label="Radio option" onRemove={onRemove} onAdd={onAdd} />);
+    await user.click(screen.getByRole('button', { name: 'Remove option' }));
+    await user.click(screen.getByRole('button', { name: 'Add option' }));
+    expect(onRemove).toHaveBeenCalledTimes(1);
+    expect(onAdd).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('RatingScale', () => {
+  it('selects a rating and reports it', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<RatingScale aria-label="Rating" onValueChange={onValueChange} lowLabel="Low" highLabel="High" />);
+    await user.click(screen.getByRole('radio', { name: '4' }));
+    expect(onValueChange).toHaveBeenCalledWith(4);
+    expect(screen.getByRole('radio', { name: '4' })).toBeChecked();
+    expect(screen.getAllByRole('radio')).toHaveLength(5);
+  });
+});
+
+describe('OpenEndAnswer', () => {
+  it('counts characters up to the limit', async () => {
+    const user = userEvent.setup();
+    render(<OpenEndAnswer aria-label="Answer" maxLength={10} />);
+    expect(screen.getByText('0/10 characters')).toBeInTheDocument();
+    await user.type(screen.getByRole('textbox', { name: 'Answer' }), 'hello');
+    expect(screen.getByText('5/10 characters')).toBeInTheDocument();
+  });
+});
+
+describe('RankList', () => {
+  const items = [
+    { id: 'a', label: 'Quality' },
+    { id: 'b', label: 'Service' },
+    { id: 'c', label: 'Price' },
+  ];
+
+  it('numbers the rows by position', () => {
+    render(<RankList items={items} onItemsChange={() => {}} />);
+    expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(['1Quality', '2Service', '3Price']);
+  });
+
+  it('moves a row with the arrow keys and announces it', async () => {
+    const user = userEvent.setup();
+    const onItemsChange = vi.fn();
+    render(<RankList items={items} onItemsChange={onItemsChange} />);
+
+    screen.getAllByRole('button', { name: /Reorder, position 1 of 3/ })[0]!.focus();
+    await user.keyboard('{ArrowDown}');
+
+    expect(onItemsChange).toHaveBeenCalledWith([items[1], items[0], items[2]]);
+    expect(screen.getByRole('status')).toHaveTextContent('Moved to position 2 of 3');
+  });
+
+  it('does nothing when moving past the ends', async () => {
+    const user = userEvent.setup();
+    const onItemsChange = vi.fn();
+    render(<RankList items={items} onItemsChange={onItemsChange} />);
+    screen.getAllByRole('button', { name: /Reorder, position 1 of 3/ })[0]!.focus();
+    await user.keyboard('{ArrowUp}');
+    expect(onItemsChange).not.toHaveBeenCalled();
+  });
+
+  it('reorders by drag and drop', () => {
+    const onItemsChange = vi.fn();
+    render(<RankList items={items} onItemsChange={onItemsChange} />);
+    const rows = screen.getAllByRole('listitem');
+    fireEvent.dragStart(rows[0]!);
+    fireEvent.dragOver(rows[2]!);
+    fireEvent.drop(rows[2]!);
+    expect(onItemsChange).toHaveBeenCalledWith([items[1], items[2], items[0]]);
+  });
+});
+
+describe('FileUpload', () => {
+  it('reports files chosen with the input', async () => {
+    const user = userEvent.setup();
+    const onFiles = vi.fn();
+    render(<FileUploadZone hint="PDF only" onFiles={onFiles} data-testid="input" />);
+    const file = new File(['x'], 'brief.pdf', { type: 'application/pdf' });
+    await user.upload(screen.getByTestId('input'), file);
+    expect(onFiles).toHaveBeenCalledWith([file]);
+    expect(screen.getByText('PDF only')).toBeInTheDocument();
+  });
+
+  it('shows progress while uploading and a status tag afterwards', () => {
+    const { rerender } = render(<FileUploadItem name="a.pdf" size="1KB" status="uploading" progress={44} timeLeft="2 seconds left" />);
+    expect(screen.getByRole('progressbar', { name: 'Uploading a.pdf' })).toHaveAttribute('aria-valuenow', '44');
+    expect(screen.getByText('44%')).toBeInTheDocument();
+    expect(screen.getByText(/2 seconds left/)).toBeInTheDocument();
+
+    rerender(<FileUploadItem name="a.pdf" status="complete" />);
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.getByText('Complete')).toBeInTheDocument();
+
+    rerender(<FileUploadItem name="a.pdf" status="error" />);
+    expect(screen.getByText('Error')).toBeInTheDocument();
+  });
+
+  it('removes a file', async () => {
+    const user = userEvent.setup();
+    const onRemove = vi.fn();
+    render(<FileUploadItem name="a.pdf" status="complete" onRemove={onRemove} />);
+    await user.click(screen.getByRole('button', { name: 'Remove a.pdf' }));
+    expect(onRemove).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Media', () => {
+  it('image preview shows name, details and a remove button', async () => {
+    const user = userEvent.setup();
+    const onRemove = vi.fn();
+    render(<ImagePreview name="photo.png" details={['443KB', '1/5']} onRemove={onRemove} />);
+    expect(screen.getByText('photo.png')).toBeInTheDocument();
+    expect(screen.getByText(/443KB/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Remove photo.png' }));
+    expect(onRemove).toHaveBeenCalledTimes(1);
+  });
+
+  it('thumbnails select one image and leave empty slots inert', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <ImageThumbnails
+        aria-label="Images"
+        max={5}
+        images={[
+          { id: '1', alt: 'Image 1' },
+          { id: '2', alt: 'Image 2' },
+        ]}
+        value="1"
+        onValueChange={onValueChange}
+      />,
+    );
+    expect(screen.getAllByRole('radio')).toHaveLength(2);
+    await user.click(screen.getByRole('radio', { name: 'Image 2' }));
+    expect(onValueChange).toHaveBeenCalledWith('2');
+  });
+
+  it('video player shows the time, toggles play and mutes', async () => {
+    const user = userEvent.setup();
+    render(<VideoPlayer name="clip.mp4" details={['443KB']} initialTime={84} initialDuration={225} />);
+    expect(screen.getByText('1:24 / 3:45')).toBeInTheDocument();
+    expect(screen.getByRole('slider', { name: 'Seek' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Play' }));
+    expect(screen.getByRole('button', { name: 'Pause' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Mute' }));
+    expect(screen.getByRole('button', { name: 'Unmute' })).toBeInTheDocument();
+  });
+});
+
+describe('QuestionCard / QuestionTypeIcon', () => {
+  it('renders a card with a header and answers, with no accessibility violations', async () => {
+    const { container } = render(
+      <QuestionCard>
+        <QuestionHeader number={1} title="Pick one" />
+        <RadioGroup aria-label="Pick one">
+          <QuestionOption value="a" label="A" />
+        </RadioGroup>
+        <QuestionTypeIcon type="ranking" />
+      </QuestionCard>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});

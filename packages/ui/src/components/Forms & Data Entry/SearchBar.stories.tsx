@@ -10,12 +10,13 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Input with magnifying glass icon and placeholder text. Source: Custom.',
+        component:
+          'Search field with a magnifying glass and a clear (×) button once there is text. Source: Custom. Figma: Search Bar (18).',
       },
     },
   },
   tags: ['autodocs', 'status:review', 'source-custom'],
-  args: { placeholder: 'Search sessions...', 'aria-label': 'Search' },
+  args: { placeholder: 'Search...', 'aria-label': 'Search' },
 } satisfies Meta<typeof SearchBar>;
 
 export default meta;
@@ -27,5 +28,15 @@ export const Default: Story = {
     const input = canvas.getByRole('searchbox', { name: 'Search' });
     await userEvent.type(input, 'onboarding');
     await expect(input).toHaveValue('onboarding');
+  },
+};
+
+export const Filled: Story = {
+  args: { defaultValue: 'Design systems' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole('searchbox', { name: 'Search' });
+    await userEvent.click(canvas.getByRole('button', { name: 'Clear search' }));
+    await expect(input).toHaveValue('');
   },
 };

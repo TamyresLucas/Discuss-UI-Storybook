@@ -23,7 +23,7 @@ const withTheme: Decorator = (Story, context) => {
     <div
       data-theme={theme}
       style={{
-        background: 'var(--sys-color-background)',
+        background: 'var(--sys-color-surface-background)',
         color: 'var(--sys-color-foreground)',
         padding: 'var(--sys-space-4)',
         minHeight: '100%',

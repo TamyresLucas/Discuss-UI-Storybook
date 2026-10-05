@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
-import { Checkbox } from './Checkbox';
+import { Checkbox, CheckboxField } from './Checkbox';
 
 describe('Checkbox', () => {
   it('renders unchecked by default', () => {
@@ -31,6 +31,21 @@ describe('Checkbox', () => {
     await user.click(screen.getByRole('checkbox', { name: 'Accept terms' }));
 
     expect(onCheckedChange).not.toHaveBeenCalled();
+  });
+
+  it('exposes the indeterminate state', () => {
+    render(<Checkbox aria-label="Select all" checked="indeterminate" />);
+    expect(screen.getByRole('checkbox', { name: 'Select all' })).toBePartiallyChecked();
+  });
+
+  it('labels the checkbox and describes it with CheckboxField', async () => {
+    const user = userEvent.setup();
+    render(<CheckboxField label="Accept terms" description="You agree to our Terms." />);
+
+    const checkbox = screen.getByRole('checkbox', { name: 'Accept terms' });
+    expect(checkbox).toHaveAccessibleDescription('You agree to our Terms.');
+    await user.click(screen.getByText('Accept terms'));
+    expect(checkbox).toBeChecked();
   });
 
   it('has no accessibility violations', async () => {

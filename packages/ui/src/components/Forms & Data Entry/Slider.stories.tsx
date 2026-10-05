@@ -10,12 +10,20 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Range slider for video seek bar / progress. Source: shadcn.',
+        component:
+          'Range slider. Optionally shows a label or min/max above the track and a value bubble over the thumb. Source: shadcn. Figma: Slider (26).',
       },
     },
   },
   tags: ['autodocs', 'status:review', 'source-shadcn'],
   args: { 'aria-label': 'Volume', max: 100, step: 10, onValueChange: fn() },
+  decorators: [
+    (Story) => (
+      <div className="w-75 pt-8">
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof Slider>;
 
 export default meta;
@@ -32,3 +40,6 @@ export const Default: Story = {
   },
 };
 export const Range: Story = { args: { defaultValue: [20, 80] } };
+
+export const WithLabel: Story = { args: { defaultValue: [16], max: 40, step: 1, label: 'Label' } };
+export const WithRangeAndValue: Story = { args: { defaultValue: [18], max: 40, step: 1, showRange: true, showValue: 'always' } };

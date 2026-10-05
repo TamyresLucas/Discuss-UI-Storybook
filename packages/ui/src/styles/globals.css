@@ -414,14 +414,19 @@
 }
 
 body {
-  background-color: var(--color-background);
+  background-color: var(--color-surface);
   color: var(--color-foreground);
   font-family: var(--font-family-sans);
 }
 
 /* Visible focus ring on every interactive element — never suppressed. See
    ../../../../.context/ACCESSIBILITY_GUIDELINES.md. */
-:focus-visible {
-  outline: var(--sys-focus-ring-width) solid var(--sys-focus-ring-color);
-  outline-offset: var(--sys-focus-ring-offset);
+/* Kept in the base layer so a component can still deliberately replace the
+   ring with its own (e.g. a wrapper that shows it via :focus-within) — an
+   unlayered rule would beat every Tailwind `outline-*` utility. */
+@layer base {
+  :focus-visible {
+    outline: var(--sys-focus-ring-width) solid var(--sys-focus-ring-color);
+    outline-offset: var(--sys-focus-ring-offset);
+  }
 }
