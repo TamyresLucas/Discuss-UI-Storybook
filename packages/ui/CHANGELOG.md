@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.3.3
+
+### Patch Changes
+
+- [#15](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/15) [`c5e67f1`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/c5e67f1f792232783903f2b6b0ba2a79fba1b4a1) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionNavItem`: the question-type icon is now the muted foreground colour by default and takes the accent foreground colour only when the row is `selected`. The warning icon on `error` is unchanged.
+
 ## 0.3.2
 
 ### Patch Changes
