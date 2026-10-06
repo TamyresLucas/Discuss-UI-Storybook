@@ -35,7 +35,7 @@ export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructure
   ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', ...props }, ref) => (
     <section
       ref={ref}
-      className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-2xl border border-border bg-surface p-4', className)}
+      className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-2xl bg-surface p-4', className)}
       {...props}
     >
       <h3 className="text-heading-h3 text-surface-foreground">{title}</h3>

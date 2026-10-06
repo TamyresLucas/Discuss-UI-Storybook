@@ -105,6 +105,14 @@ describe('ActivityStructure', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
+  it('the summary card has no border', () => {
+    const { container } = render(<ActivityStructure stats={[{ id: 'q', label: 'Total questions', value: '3' }]} />);
+    const card = container.querySelector('section')!;
+    expect(card).toHaveClass('rounded-2xl', 'bg-surface');
+    expect(card.className).not.toMatch(/(^|\s)border(\s|$)/);
+    expect(card.className).not.toMatch(/border-border/);
+  });
+
   it('section body can hold block elements without invalid nesting', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     render(
