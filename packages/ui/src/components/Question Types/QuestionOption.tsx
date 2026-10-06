@@ -105,10 +105,10 @@ export interface QuestionOptionEditorProps {
   onAdd?: () => void;
   className?: string;
   /**
-   * Answer type. When set the row is quiet at rest: no border, the radio or checkbox indicator in front of the label,
-   * and the remove/add buttons hidden but still taking their space, so the row is the same width in every state.
-   * On hover or keyboard focus it becomes the editor: border and shadow, the drag handle replaces the indicator and
-   * the buttons appear. Omit it for an always-on editor row.
+   * Answer type. When set the row is quiet at rest: its normal border, the radio or checkbox indicator in front of the
+   * label, and the remove/add buttons hidden but still taking their space, so the row is the same width in every state.
+   * On hover or keyboard focus it becomes the editor: the shadow lifts, the drag handle replaces the indicator and the
+   * buttons appear. The border colour does not change. Omit it for an always-on editor row.
    */
   kind?: 'radio' | 'checkbox';
 }
@@ -122,11 +122,8 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
         className={cn(
           'flex h-11.5 min-w-0 flex-1 items-center gap-2 rounded-md border bg-surface px-4 py-2 focus-within:border-input-accent',
           reveal
-            ? [
-                // Hover or focus anywhere in the row shows the border; the field being edited keeps the accent.
-                'border-transparent group-hover/option:not-focus-within:border-border group-focus-within/option:not-focus-within:border-border',
-                'group-hover/option:shadow-md group-focus-within/option:shadow-md',
-              ]
+            ? // The border is always visible and does not change on hover; only the shadow lifts the row. The field being edited keeps the accent.
+              'border-border group-hover/option:shadow-md group-focus-within/option:shadow-md'
             : 'border-border hover:border-input hover:shadow-md',
         )}
       >

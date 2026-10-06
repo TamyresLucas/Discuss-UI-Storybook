@@ -113,11 +113,14 @@ describe('QuestionOption', () => {
   });
 
   describe('editor row with a kind (reveals on hover)', () => {
-    it('is quiet at rest: no border, an indicator instead of a visible drag handle, buttons present but transparent', () => {
+    it('is quiet at rest: its normal border, an indicator instead of a visible drag handle, buttons present but transparent', () => {
       const { container } = render(<QuestionOptionEditor kind="radio" label="Recipes" />);
       const field = container.querySelector('input')!.parentElement!;
-      expect(field).toHaveClass('border-transparent');
-      expect(field).not.toHaveClass('border-border');
+      // The row border stays visible in every state and does not change on hover.
+      expect(field).toHaveClass('border-border');
+      expect(field).not.toHaveClass('border-transparent');
+      expect(field.className).not.toMatch(/hover\/option:[^ ]*border-/);
+      expect(field).toHaveClass('group-hover/option:shadow-md');
       const indicator = field.querySelector('span[aria-hidden] > span')!;
       expect(indicator).toHaveClass('rounded-full', 'size-4', 'group-hover/option:hidden');
       expect(field.querySelector('svg')).toHaveClass('hidden', 'group-hover/option:block');
@@ -158,7 +161,7 @@ describe('QuestionOption', () => {
     it('without a kind the row is the unchanged always-on editor', () => {
       const { container } = render(<QuestionOptionEditor label="A" />);
       const field = container.querySelector('input')!.parentElement!;
-      expect(field).toHaveClass('border-border');
+      expect(field).toHaveClass('border-border', 'hover:border-input');
       expect(field).not.toHaveClass('border-transparent');
       expect(screen.getByRole('button', { name: 'Remove option' }).parentElement).not.toHaveClass('opacity-0');
     });
