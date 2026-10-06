@@ -20,6 +20,17 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   disabled?: boolean;
   /** Called when editing starts or ends. */
   onEditingChange?: (editing: boolean) => void;
+  /** Called on every keystroke while editing (and with the saved value when editing ends), e.g. for a live character counter. */
+  onDraftChange?: (value: string) => void;
+  /**
+   * `default` is a rounded field. A short single-line label shows the pencil and hugs its text; `multiline` (longer
+   * text) hides the pencil and fills the width. `question` is for question text: it fills the width with no pencil,
+   * has square corners and shows a bottom border on hover, focus and while `selected`. Enter saves; Shift+Enter adds a
+   * line break when `multiline`.
+   */
+  variant?: 'default' | 'question';
+  /** `question` variant: keeps the bottom border while the owning question is selected. */
+  selected?: boolean;
   /** Classes for the displayed/edited text, e.g. a heading text style. The field itself keeps the same box. */
   textClassName?: string;
 }
@@ -40,6 +51,9 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       maxLength,
       disabled,
       onEditingChange,
+      onDraftChange,
+      variant = 'default',
+      selected,
       'aria-label': ariaLabel,
       ...props
     },
@@ -80,12 +94,16 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       }
       setEditing(false);
       onEditingChange?.(false);
+      onDraftChange?.(commit ? draft : value);
     };
 
     const textClasses = cn('text-ui-input-value text-surface-foreground', textClassName);
+    const question = variant === 'question';
+    // Longer text and question text fill the box and drop the pencil; a short label hugs its text.
+    const fill = multiline || question;
 
     return (
-      <div ref={ref} className={cn('inline-flex min-w-0 max-w-full', className)} {...props}>
+      <div ref={ref} className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', className)} {...props}>
         {editing ? (
           React.createElement(multiline ? 'textarea' : 'input', {
             ref: fieldRef,
@@ -94,17 +112,25 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             'aria-label': ariaLabel,
             ...(multiline ? { rows: 1 } : { type: 'text' }),
             className: cn(
-              'w-full rounded-md px-3 py-1 outline-none focus-visible:border-input-accent',
+              'w-full px-3 py-1 outline-none',
               multiline && 'field-sizing-content resize-none',
-              fieldSurfaceClasses('default'),
+              question
+                ? 'rounded-none border-0 border-b-2 border-input-accent bg-transparent'
+                : cn('rounded-md focus-visible:border-input-accent', fieldSurfaceClasses('default')),
               textClasses,
             ),
-            onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDraft(event.target.value),
+            onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+              setDraft(event.target.value);
+              onDraftChange?.(event.target.value);
+            },
             onKeyDown: (event: React.KeyboardEvent) => {
               if (event.key === 'Escape') {
                 cancelled.current = true;
                 finish(false, true);
-              } else if (event.key === 'Enter' && (!multiline || event.metaKey || event.ctrlKey)) {
+              } else if (
+                event.key === 'Enter' &&
+                (!multiline || event.metaKey || event.ctrlKey || (question && !event.shiftKey))
+              ) {
                 event.preventDefault();
                 finish(true, true);
               }
@@ -121,19 +147,26 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             aria-label={`${ariaLabel}: ${value || placeholder}. Edit`}
             onClick={start}
             className={cn(
-              'group inline-flex min-w-0 max-w-full items-center gap-2 rounded-md border border-transparent px-3 py-1 text-left outline-none',
+              'group inline-flex min-w-0 max-w-full items-center gap-2 px-3 py-1 text-left outline-none',
+              fill && 'w-full',
+              question
+                ? cn('rounded-none border-b-2', selected ? 'border-input-accent' : 'border-transparent')
+                : 'rounded-md border border-transparent',
               'enabled:hover:bg-secondary enabled:focus-visible:border-input-accent disabled:cursor-not-allowed disabled:opacity-50',
+              question && 'enabled:hover:border-input-accent',
               textClasses,
             )}
           >
-            <span className={cn('min-w-0 truncate', multiline && 'whitespace-pre-wrap', !value && 'text-muted-foreground')}>
+            <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && 'text-muted-foreground')}>
               {value || placeholder}
             </span>
-            <PencilSimple
-              size={16}
-              aria-hidden
-              className="shrink-0 text-secondary-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-            />
+            {!fill && (
+              <PencilSimple
+                size={16}
+                aria-hidden
+                className="shrink-0 text-secondary-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+              />
+            )}
           </button>
         )}
       </div>

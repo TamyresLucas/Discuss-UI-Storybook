@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Text that turns into a field on click. Enter or blur saves, Escape cancels. `multiline` swaps in a textarea (Cmd/Ctrl+Enter saves). There is no shadcn or Figma original, so this is built from the Input tokens. Source: Custom.',
+          'Text that turns into a field on click. Enter or blur saves, Escape cancels. A short single-line label hugs its text and shows a pencil on hover. `multiline` (longer text) swaps in a textarea (Cmd/Ctrl+Enter saves), hides the pencil and fills the width. `variant="question"` is for question text: full width, no pencil, square corners, and a bottom border on hover and while `selected`; Enter saves and Shift+Enter adds a line break. There is no shadcn or Figma original, so this is built from the Input tokens. Source: Custom.',
       },
     },
   },
@@ -35,6 +35,7 @@ export const Default: Story = {
   },
 };
 export const Empty: Story = { args: { defaultValue: '', placeholder: 'Add a title' } };
+/** Longer text: no pencil, and the text fills the full width of the box. */
 export const Multiline: Story = {
   args: {
     multiline: true,
@@ -42,6 +43,16 @@ export const Multiline: Story = {
     defaultValue: 'Understand why subscribers stay subscribed rather than switching to a competitor.',
     className: 'w-96',
   },
+};
+const questionText = 'Which of the following best describes your primary role?';
+/** Question text: square corners and a bottom border on hover. */
+export const Question: Story = {
+  args: { variant: 'question', multiline: true, 'aria-label': 'Question title', defaultValue: questionText, textClassName: 'text-heading-h4', className: 'w-120' },
+};
+/** The bottom border stays while the question is selected. */
+export const QuestionSelected: Story = { args: { ...Question.args, selected: true } };
+export const QuestionEmpty: Story = {
+  args: { ...Question.args, defaultValue: '', placeholder: 'Click to write the question text' },
 };
 export const Heading: Story = { args: { textClassName: 'text-heading-h4', 'aria-label': 'Section title', defaultValue: 'Target Audience' } };
 export const Disabled: Story = { args: { disabled: true } };

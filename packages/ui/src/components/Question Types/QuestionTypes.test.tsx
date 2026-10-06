@@ -37,16 +37,29 @@ describe('QuestionHeader', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('This question is mandatory.');
   });
 
-  it('editor mode edits the title and counts characters', async () => {
+  it('editor mode edits the title with inline edit, counting characters live', async () => {
     const user = userEvent.setup();
     const Controlled = () => {
       const [text, setText] = React.useState('Hi');
       return <QuestionHeader number={2} editor title={text} onTitleChange={setText} maxLength={20} actions={<button type="button">Delete</button>} />;
     };
     render(<Controlled />);
+    // Read mode: the title is a button; click it to edit.
+    await user.click(screen.getByRole('button', { name: /Question title/ }));
     await user.type(screen.getByRole('textbox', { name: 'Question title' }), '!!');
     expect(screen.getByText('4/20 characters')).toBeInTheDocument();
+    // Enter saves the title and returns to read mode.
+    await user.keyboard('{Enter}');
+    expect(screen.getByRole('button', { name: /Question title: Hi!!/ })).toBeInTheDocument();
+    expect(screen.getByText('4/20 characters')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+  });
+
+  it('editor mode keeps the title underline while active', () => {
+    const { rerender } = render(<QuestionHeader number={1} editor title="Hi" />);
+    expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-transparent');
+    rerender(<QuestionHeader number={1} editor active title="Hi" />);
+    expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-input-accent');
   });
 });
 
