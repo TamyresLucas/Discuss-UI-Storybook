@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'One row of the activity builder\'s question list. Leading icon is the question type; hover swaps it for a drag handle; `error` shows a warning icon; `selected` marks the open question. Source: Custom. Figma: Question navigation.',
+          'One row of the activity builder\'s question list. Leading icon is the question type, muted by default and accent when `selected`; hover swaps it for a drag handle; `error` shows a warning icon; `selected` marks the open question. Source: Custom. Figma: Question navigation.',
       },
     },
   },

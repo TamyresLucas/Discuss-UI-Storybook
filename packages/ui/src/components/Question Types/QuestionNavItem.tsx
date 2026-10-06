@@ -16,7 +16,7 @@ export interface QuestionNavItemProps extends React.ButtonHTMLAttributes<HTMLBut
   asChild?: boolean;
 }
 
-// Figma: Question navigation (357:4645) — one row per question. Question-type icon, warning on error (destructive border when selected, soft red fill on hover), drag handle on hover. Label is 14px.
+// Figma: Question navigation (357:4645) — one row per question. Question-type icon (muted; accent when selected), warning on error (destructive border when selected, soft red fill on hover), drag handle on hover. Label is 14px.
 export const QuestionNavItem = React.forwardRef<HTMLButtonElement, QuestionNavItemProps>(
   ({ className, questionType = 'select-one', selected, error, asChild, children, ...props }, ref) => {
     const Comp = asChild ? Slot.Root : 'button';
@@ -43,7 +43,11 @@ export const QuestionNavItem = React.forwardRef<HTMLButtonElement, QuestionNavIt
             {error ? (
               <Warning size={16} className="text-destructive" />
             ) : (
-              <QuestionTypeIcon type={questionType} size={16} />
+              <QuestionTypeIcon
+                type={questionType}
+                size={16}
+                className={selected ? 'text-accent-foreground' : 'text-muted-foreground'}
+              />
             )}
           </span>
         </span>
