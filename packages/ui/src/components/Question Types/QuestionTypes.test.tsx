@@ -112,6 +112,58 @@ describe('QuestionOption', () => {
     expect(onSubmit).toHaveBeenCalledTimes(2);
   });
 
+  describe('editor row with a kind (reveals on hover)', () => {
+    it('is quiet at rest: no border, an indicator instead of a visible drag handle, buttons present but transparent', () => {
+      const { container } = render(<QuestionOptionEditor kind="radio" label="Recipes" />);
+      const field = container.querySelector('input')!.parentElement!;
+      expect(field).toHaveClass('border-transparent');
+      expect(field).not.toHaveClass('border-border');
+      const indicator = field.querySelector('span[aria-hidden] > span')!;
+      expect(indicator).toHaveClass('rounded-full', 'size-4', 'group-hover/option:hidden');
+      expect(field.querySelector('svg')).toHaveClass('hidden', 'group-hover/option:block');
+      const buttons = screen.getByRole('button', { name: 'Remove option' }).parentElement!;
+      expect(buttons).toHaveClass('opacity-0', 'group-hover/option:opacity-100', 'group-focus-within/option:opacity-100');
+    });
+
+    it('uses a square indicator for checkbox and a round one for radio', () => {
+      const { container, rerender } = render(<QuestionOptionEditor kind="checkbox" label="A" />);
+      expect(container.querySelector('span[aria-hidden] > span')).toHaveClass('rounded-xxs');
+      rerender(<QuestionOptionEditor kind="radio" label="A" />);
+      expect(container.querySelector('span[aria-hidden] > span')).toHaveClass('rounded-full');
+    });
+
+    it('keeps the same width at rest and on hover: the buttons keep their space', () => {
+      const { container } = render(<QuestionOptionEditor kind="radio" label="A" />);
+      const buttons = screen.getByRole('button', { name: 'Remove option' }).parentElement!;
+      // Hidden with opacity, never display:none or hidden, so they still occupy their column.
+      expect(buttons).not.toHaveClass('hidden');
+      expect(container.firstElementChild).toHaveClass('flex', 'w-full');
+    });
+
+    it('buttons stay keyboard-reachable and work', async () => {
+      const user = userEvent.setup();
+      const onRemove = vi.fn();
+      const onAdd = vi.fn();
+      render(<QuestionOptionEditor kind="checkbox" label="A" onRemove={onRemove} onAdd={onAdd} />);
+      await user.tab(); // the label field
+      await user.tab(); // remove
+      expect(screen.getByRole('button', { name: 'Remove option' })).toHaveFocus();
+      await user.keyboard('{Enter}');
+      await user.tab();
+      await user.keyboard('{Enter}');
+      expect(onRemove).toHaveBeenCalledTimes(1);
+      expect(onAdd).toHaveBeenCalledTimes(1);
+    });
+
+    it('without a kind the row is the unchanged always-on editor', () => {
+      const { container } = render(<QuestionOptionEditor label="A" />);
+      const field = container.querySelector('input')!.parentElement!;
+      expect(field).toHaveClass('border-border');
+      expect(field).not.toHaveClass('border-transparent');
+      expect(screen.getByRole('button', { name: 'Remove option' }).parentElement).not.toHaveClass('opacity-0');
+    });
+  });
+
   it('editor row edits, removes and adds', async () => {
     const user = userEvent.setup();
     const onRemove = vi.fn();

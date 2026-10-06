@@ -104,14 +104,48 @@ export interface QuestionOptionEditorProps {
   /** Called by the add (+) button. */
   onAdd?: () => void;
   className?: string;
+  /**
+   * Answer type. When set the row is quiet at rest: no border, the radio or checkbox indicator in front of the label,
+   * and the remove/add buttons hidden but still taking their space, so the row is the same width in every state.
+   * On hover or keyboard focus it becomes the editor: border and shadow, the drag handle replaces the indicator and
+   * the buttons appear. Omit it for an always-on editor row.
+   */
+  kind?: 'radio' | 'checkbox';
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind }: QuestionOptionEditorProps) {
+  const reveal = kind !== undefined;
   return (
-    <div className={cn('flex w-full items-center gap-2', className)}>
-      <div className="flex h-11.5 min-w-0 flex-1 items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 focus-within:border-input-accent hover:border-input hover:shadow-md">
-        <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
+    <div className={cn('group/option flex w-full items-center gap-2', className)}>
+      <div
+        className={cn(
+          'flex h-11.5 min-w-0 flex-1 items-center gap-2 rounded-md border bg-surface px-4 py-2 focus-within:border-input-accent',
+          reveal
+            ? [
+                // Hover or focus anywhere in the row shows the border; the field being edited keeps the accent.
+                'border-transparent group-hover/option:not-focus-within:border-border group-focus-within/option:not-focus-within:border-border',
+                'group-hover/option:shadow-md group-focus-within/option:shadow-md',
+              ]
+            : 'border-border hover:border-input hover:shadow-md',
+        )}
+      >
+        {reveal ? (
+          <span aria-hidden="true" className="relative flex size-5 shrink-0 items-center justify-center">
+            <span
+              className={cn(
+                'inline-flex size-4 border-2 border-input bg-surface group-hover/option:hidden group-focus-within/option:hidden',
+                kind === 'radio' ? 'rounded-full' : 'rounded-xxs',
+              )}
+            />
+            <DotsSixVertical
+              size={20}
+              className="hidden shrink-0 text-surface-foreground group-hover/option:block group-focus-within/option:block"
+            />
+          </span>
+        ) : (
+          <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
+        )}
         <input
           aria-label="Option label"
           value={label}
@@ -119,12 +153,19 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
           className="min-w-0 flex-1 bg-transparent text-body-base text-surface-foreground outline-none"
         />
       </div>
-      <Button type="button" variant="destructive" size="icon-sm" aria-label="Remove option" onClick={onRemove}>
-        <Trash size={16} aria-hidden />
-      </Button>
-      <Button type="button" variant="ghost" size="icon-sm" aria-label="Add option" onClick={onAdd}>
-        <Plus size={16} aria-hidden />
-      </Button>
+      <div
+        className={cn(
+          'flex items-center gap-2',
+          reveal && 'opacity-0 transition-opacity group-hover/option:opacity-100 group-focus-within/option:opacity-100',
+        )}
+      >
+        <Button type="button" variant="destructive" size="icon-sm" aria-label="Remove option" onClick={onRemove}>
+          <Trash size={16} aria-hidden />
+        </Button>
+        <Button type="button" variant="ghost" size="icon-sm" aria-label="Add option" onClick={onAdd}>
+          <Plus size={16} aria-hidden />
+        </Button>
+      </div>
     </div>
   );
 }
