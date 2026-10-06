@@ -78,6 +78,22 @@ describe('QuestionOption', () => {
     expect(screen.getByRole('radio', { name: 'Engineer' })).toBeChecked();
   });
 
+  it('hover changes the fill only; the border changes only when selected', () => {
+    render(
+      <RadioGroup aria-label="Role" defaultValue="b">
+        <QuestionOption value="a" label="Designer" />
+        <QuestionOption value="b" label="Engineer" />
+      </RadioGroup>,
+    );
+    for (const name of ['Designer', 'Engineer']) {
+      const row = screen.getByText(name).closest('label');
+      expect(row).toHaveClass('border-border', 'hover:bg-accent-soft');
+      expect(row).not.toHaveClass('hover:border-input');
+      expect(row).toHaveClass('has-[[data-state=checked]]:border-accent-foreground');
+      expect(row).not.toHaveClass('has-[[data-state=checked]]:hover:border-accent-foreground');
+    }
+  });
+
   it('toggles checkbox options independently', async () => {
     const user = userEvent.setup();
     const onCheckedChange = vi.fn();

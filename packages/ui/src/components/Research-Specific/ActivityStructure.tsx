@@ -11,6 +11,7 @@ export interface ActivityStat extends Pick<StatCardProps, 'label' | 'value' | 'i
 export interface ActivitySection {
   id: string;
   heading: React.ReactNode;
+  /** Section text. May contain block elements (e.g. an `InlineEdit`), so it is rendered in a `div`. */
   body: React.ReactNode;
   /** Removable tags shown under the body. */
   tags?: string[];
@@ -46,7 +47,7 @@ export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructure
       {sections?.map(({ id, heading, body, tags }) => (
         <div key={id} className="flex flex-col gap-2">
           <h4 className="text-heading-h4 text-surface-foreground">{heading}</h4>
-          <p className="text-body-base text-surface-foreground">{body}</p>
+          <div className="text-body-base text-surface-foreground">{body}</div>
           {(tags?.length || onAddTag) && (
             <div className="flex flex-wrap items-center gap-2">
               {tags?.map((tag) => (
