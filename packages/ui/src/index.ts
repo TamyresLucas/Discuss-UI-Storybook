@@ -11,5 +11,6 @@ export * from './components/Navigation';
 export * from './components/Overlays & Feedback';
 export * from './components/Question Types';
 export * from './components/Data Display';
+export * from './components/Research-Specific';
 export * from './components/Tags & Badges';
 export * from './components/Utility';

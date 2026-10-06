@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { QuestionTypeIcon, type QuestionType } from './QuestionTypeIcon';
 
-const types: QuestionType[] = ['select-one', 'select-multiple', 'ranking', 'upload', 'rating'];
+const types: QuestionType[] = ['select-one', 'select-multiple', 'ranking', 'upload', 'rating', 'open-end'];
 
 const meta = {
   title: 'Question Types/Question Type Icons',

@@ -15,15 +15,15 @@ export interface FileUploadZoneProps extends Omit<React.InputHTMLAttributes<HTML
   onFiles?: (files: File[]) => void;
 }
 
-// Figma: Question types › PDF, PPTX, or DOCX › Upload_Zone — a dashed drop target with an icon, title and hint.
+// Figma: Question types › PDF, PPTX, or DOCX › Upload_Zone (568:6389) — a 143px dashed drop target with an icon, title and hint; hover fills with the page background.
 export const FileUploadZone = React.forwardRef<HTMLInputElement, FileUploadZoneProps>(
   ({ className, title = 'Upload document', hint, icon, onFiles, ...props }, ref) => {
     const [over, setOver] = React.useState(false);
     return (
       <label
         className={cn(
-          'flex w-full cursor-pointer flex-col items-center gap-4 rounded-md border-2 border-dashed border-border px-6 py-8 text-center transition-colors',
-          'hover:border-input has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring',
+          'flex min-h-35.75 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-border px-4 text-center transition-colors',
+          'hover:bg-background has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring',
           over && 'border-input-accent bg-accent-soft',
           className,
         )}
@@ -41,7 +41,7 @@ export const FileUploadZone = React.forwardRef<HTMLInputElement, FileUploadZoneP
         <span className="flex size-10 items-center justify-center rounded-full bg-background bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground">
           {icon ?? <FileText size={24} aria-hidden />}
         </span>
-        <span className="flex flex-col gap-2">
+        <span className="flex flex-col gap-1">
           <span className="text-body-small text-surface-foreground">{title}</span>
           {hint && <span className="text-ui-caption text-secondary-muted-foreground">{hint}</span>}
         </span>

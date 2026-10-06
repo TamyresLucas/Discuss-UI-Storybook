@@ -21,6 +21,10 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   actions?: React.ReactNode;
   /** Editor mode: title length limit. */
   maxLength?: number;
+  /** Editor mode: the question is being edited — the number tag turns accent. */
+  active?: boolean;
+  /** Editor mode: show the "n/2000 characters" counter. Defaults to `true`. */
+  showCounter?: boolean;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -28,7 +32,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, maxLength = 2000, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, maxLength = 2000, active, showCounter = true, ...props },
     ref,
   ) => {
     const label = String(number).padStart(2, '0');
@@ -39,7 +43,14 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
       return (
         <div ref={ref} className={cn('group/header flex w-full flex-col gap-2', className)} {...props}>
           <div className="flex items-center justify-between">
-            <span className="group/handle inline-flex h-6 items-center gap-1 rounded-sm bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 px-2.5 text-ui-caption text-surface-foreground hover:pl-1">
+            <span
+              className={cn(
+                'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption hover:pl-1',
+                active
+                  ? 'bg-accent-soft text-accent-soft-foreground'
+                  : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
+              )}
+            >
               <DotsSixVertical size={16} aria-hidden className="hidden shrink-0 group-hover/handle:block" />
               Question {number}
             </span>
@@ -57,9 +68,11 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             onChange={(event) => onTitleChange?.(event.target.value)}
             className="field-sizing-content w-full resize-none bg-transparent text-heading-h4 text-surface-foreground outline-none"
           />
-          <p className="text-ui-caption text-secondary-muted-foreground">
-            {text.length}/{maxLength} characters
-          </p>
+          {showCounter && (
+            <p className="text-ui-caption text-secondary-muted-foreground">
+              {text.length}/{maxLength} characters
+            </p>
+          )}
         </div>
       );
     }

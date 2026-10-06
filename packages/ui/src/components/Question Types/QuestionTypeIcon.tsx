@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { CheckSquare, FileArrowUp, ListNumbers, RadioButton, StarHalf, type IconProps } from '@phosphor-icons/react';
+import { ChatsCircle, CheckSquare, FileArrowUp, ListNumbers, RadioButton, StarHalf, type IconProps } from '@phosphor-icons/react';
 
-export type QuestionType = 'select-one' | 'select-multiple' | 'ranking' | 'upload' | 'rating';
+export type QuestionType = 'select-one' | 'select-multiple' | 'ranking' | 'upload' | 'rating' | 'open-end';
 
 const icons: Record<QuestionType, React.ComponentType<IconProps>> = {
   'select-one': RadioButton,
@@ -9,6 +9,7 @@ const icons: Record<QuestionType, React.ComponentType<IconProps>> = {
   ranking: ListNumbers,
   upload: FileArrowUp,
   rating: StarHalf,
+  'open-end': ChatsCircle,
 };
 
 export interface QuestionTypeIconProps extends Omit<IconProps, 'weight'> {
