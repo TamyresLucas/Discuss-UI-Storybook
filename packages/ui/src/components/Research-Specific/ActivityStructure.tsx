@@ -1,29 +1,40 @@
 import * as React from 'react';
-import { Sliders } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
-import { Button } from '../Buttons & Actions/Button';
 import { StatCard, type StatCardProps } from '../Data Display/StatCard';
+import { EditableTag } from '../Tags & Badges/EditableTag';
 
 export interface ActivityStat extends Pick<StatCardProps, 'label' | 'value' | 'icon' | 'variant'> {
   id: string;
+}
+
+export interface ActivitySection {
+  id: string;
+  heading: React.ReactNode;
+  body: React.ReactNode;
+  /** Removable tags shown under the body. */
+  tags?: string[];
 }
 
 export interface ActivityStructureProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
   title?: React.ReactNode;
   /** Stat tiles, laid out in a two-column grid. */
   stats: ActivityStat[];
-  /** Called by the settings button. Omit to hide it. */
-  onOpenSettings?: () => void;
-  settingsLabel?: string;
+  /** Text sections (e.g. Research Goal, Target Audience), optionally with tags. */
+  sections?: ActivitySection[];
+  /** Called with `(sectionId, tag)` when a tag's remove button is pressed. Omit for read-only tags. */
+  onRemoveTag?: (sectionId: string, tag: string) => void;
+  /** Called with the section id by the dashed "Add tag" chip. Omit to hide it. */
+  onAddTag?: (sectionId: string) => void;
+  addTagLabel?: string;
 }
 
-// Figma: Activity control (361:5214) › Activity structure — summary card with stat tiles and a settings button.
+// Figma: Activity control (361:5214) › Activity structure — summary card with stat tiles and text sections with tags.
 export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructureProps>(
-  ({ className, title = 'Activity Structure', stats, onOpenSettings, settingsLabel = 'Activity Settings', ...props }, ref) => (
+  ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', ...props }, ref) => (
     <section
       ref={ref}
-      className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-2xl border border-border bg-surface px-6 py-4', className)}
+      className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-2xl border border-border bg-surface p-4', className)}
       {...props}
     >
       <h3 className="text-heading-h3 text-surface-foreground">{title}</h3>
@@ -32,12 +43,26 @@ export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructure
           <StatCard key={id} {...stat} />
         ))}
       </div>
-      {onOpenSettings && (
-        <Button type="button" variant="outline" size="sm" className="h-9 self-start rounded-md px-4" onClick={onOpenSettings}>
-          <Sliders size={16} aria-hidden />
-          {settingsLabel}
-        </Button>
-      )}
+      {sections?.map(({ id, heading, body, tags }) => (
+        <div key={id} className="flex flex-col gap-2">
+          <h4 className="text-heading-h4 text-surface-foreground">{heading}</h4>
+          <p className="text-body-base text-surface-foreground">{body}</p>
+          {(tags?.length || onAddTag) && (
+            <div className="flex flex-wrap items-center gap-2">
+              {tags?.map((tag) => (
+                <EditableTag key={tag} type="editable" onRemove={onRemoveTag && (() => onRemoveTag(id, tag))}>
+                  {tag}
+                </EditableTag>
+              ))}
+              {onAddTag && (
+                <EditableTag type="add" onClick={() => onAddTag(id)}>
+                  {addTagLabel}
+                </EditableTag>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
     </section>
   ),
 );

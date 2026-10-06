@@ -2,13 +2,18 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": [
     "@changesets/changelog-github",
-    { "repo": "TamyresLucas/Discuss-UI-Storybook" }
+    {
+      "repo": "TamyresLucas/Discuss-UI-Storybook"
+    }
   ],
   "commit": false,
   "fixed": [],
   "linked": [],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@discuss-ds/storybook", "@discuss-ds/playground"]
+  "ignore": [
+    "@discuss-ds/storybook",
+    "@discuss-ds/playground"
+  ]
 }
