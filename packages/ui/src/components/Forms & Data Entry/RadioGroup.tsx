@@ -15,7 +15,7 @@ RadioGroup.displayName = 'RadioGroup';
 
 export type RadioGroupItemProps = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>;
 
-// Figma: Radio Group (24) — 20px ring in muted, accent when selected with a solid centre dot.
+// Figma: Radio Group (24) — 16px ring in muted (same size as the checkbox), accent when selected with a solid centre dot.
 export const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   RadioGroupItemProps
@@ -23,7 +23,7 @@ export const RadioGroupItem = React.forwardRef<
   <RadioGroupPrimitive.Item
     ref={ref}
     className={cn(
-      'peer inline-flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-input bg-surface transition-colors',
+      'peer inline-flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-input bg-surface transition-colors',
       'disabled:cursor-not-allowed disabled:opacity-50',
       // Brand override: selected controls use `ring`, not `primary`/`accent`.
       'data-[state=checked]:border-ring',
@@ -31,7 +31,7 @@ export const RadioGroupItem = React.forwardRef<
     )}
     {...props}
   >
-    <RadioGroupPrimitive.Indicator className="size-2.5 rounded-full bg-ring" />
+    <RadioGroupPrimitive.Indicator className="size-2 rounded-full bg-ring" />
   </RadioGroupPrimitive.Item>
 ));
 RadioGroupItem.displayName = 'RadioGroupItem';

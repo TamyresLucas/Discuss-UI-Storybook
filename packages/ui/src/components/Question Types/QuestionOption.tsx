@@ -8,8 +8,9 @@ import { RadioGroupItem } from '../Forms & Data Entry/RadioGroup';
 
 const optionClasses =
   'flex w-full max-w-150 cursor-pointer items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-body-base text-surface-foreground transition-colors ' +
-  'hover:border-input hover:bg-accent-soft hover:shadow-md ' +
-  'has-[[data-state=checked]]:border-accent-foreground has-[[data-state=checked]]:hover:border-accent-foreground ' +
+  // Hover changes the fill and shadow only; the border changes only when the option is selected.
+  'hover:bg-accent-soft hover:shadow-md ' +
+  'has-[[data-state=checked]]:border-accent-foreground ' +
   'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50';
 
 interface OptionBase {
@@ -33,7 +34,7 @@ export interface QuestionCheckboxOptionProps extends OptionBase {
 
 export type QuestionOptionProps = QuestionRadioOptionProps | QuestionCheckboxOptionProps;
 
-// Figma: Question input (282:1490) › Radio / Checkbox — a full-width answer card; selected gets the accent border.
+// Figma: Question input (282:1490) › Radio / Checkbox — a full-width answer card; hover changes the fill only, and only a selected option gets the accent border.
 export function QuestionOption(props: QuestionOptionProps) {
   const id = React.useId();
   return (

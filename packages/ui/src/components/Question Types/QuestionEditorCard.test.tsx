@@ -105,6 +105,19 @@ describe('ActivityStructure', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
+  it('section body can hold block elements without invalid nesting', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(
+      <ActivityStructure
+        stats={[]}
+        sections={[{ id: 'g', heading: 'Research Goal', body: <div data-testid="block">Editable text</div> }]}
+      />,
+    );
+    expect(screen.getByTestId('block').parentElement?.tagName).toBe('DIV');
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
   it('StatCard shows label and value', () => {
     render(<StatCard label="Completion time" value="10 minutes" variant="warning" />);
     expect(screen.getByText('10 minutes')).toBeInTheDocument();

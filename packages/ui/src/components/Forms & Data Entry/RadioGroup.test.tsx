@@ -18,6 +18,18 @@ describe('RadioGroup', () => {
     expect(screen.getByRole('radio', { name: 'Portuguese' })).not.toBeChecked();
   });
 
+  it('is 16px (same as the checkbox) with a half-size centre dot', () => {
+    render(
+      <RadioGroup aria-label="Language" defaultValue="en">
+        <RadioGroupItem value="en" aria-label="English" />
+      </RadioGroup>,
+    );
+    const radio = screen.getByRole('radio', { name: 'English' });
+    expect(radio).toHaveClass('size-4');
+    expect(radio).not.toHaveClass('size-5');
+    expect(radio.querySelector('span')).toHaveClass('size-2');
+  });
+
   it('selects one option at a time', async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
