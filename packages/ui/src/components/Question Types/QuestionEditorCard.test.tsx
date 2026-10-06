@@ -47,6 +47,17 @@ describe('QuestionNavItem', () => {
     expect(screen.getByRole('button', { name: 'Two, has errors' })).not.toHaveAttribute('aria-current');
   });
 
+  it('hover changes only the fill: the border stays default unless selected', () => {
+    const { rerender } = render(<QuestionNavItem>One</QuestionNavItem>);
+    const idle = screen.getByRole('button');
+    expect(idle).toHaveClass('border-border', 'hover:bg-accent-soft');
+    expect(idle).not.toHaveClass('hover:border-input-accent');
+    rerender(<QuestionNavItem selected>One</QuestionNavItem>);
+    const selected = screen.getByRole('button');
+    expect(selected).toHaveClass('border-input-accent');
+    expect(selected).not.toHaveClass('border-border');
+  });
+
   it('shows the type icon muted, and in the accent colour when selected', () => {
     const { container, rerender } = render(<QuestionNavItem questionType="open-end">One</QuestionNavItem>);
     expect(container.querySelector('svg.text-muted-foreground')).toBeInTheDocument();
