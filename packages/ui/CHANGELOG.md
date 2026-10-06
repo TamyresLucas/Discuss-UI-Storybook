@@ -1,5 +1,13 @@
 # @discuss-ds/ui
 
+## 0.3.5
+
+### Patch Changes
+
+- [#19](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/19) [`1c64708`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1c647085c1f97bce822f81975a7e5a100b6250e1) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionOption` (radio and checkbox answer cards): hovering now changes only the fill and shadow. The border changes only when the option is selected (accent). `RadioGroupItem` is now 16px (was 20px, matching the checkbox) with a proportionally smaller centre dot.
+  
+  `ActivityStructure`: section text is rendered in a `div` instead of a `p`, so it can hold block-level content such as an `InlineEdit` without invalid HTML nesting.
+
 ## 0.3.4
 
 ### Patch Changes
