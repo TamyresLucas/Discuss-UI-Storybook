@@ -26,6 +26,13 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   active?: boolean;
   /** Editor mode: show the "n/2000 characters" counter. Defaults to `true`. */
   showCounter?: boolean;
+  /**
+   * Editor mode: turns the "Question N" tag into a drag handle. Spread onto the tag, so it takes anything a drag-and-drop
+   * library hands out (`ref`, `role`, `tabIndex`, pointer and keyboard listeners, aria attributes). The tag then shows a
+   * grab cursor, is focusable and reveals the grip icon on keyboard focus; it is labelled "Reorder question N" unless you
+   * pass your own `aria-label`. Omit it for the plain tag.
+   */
+  dragHandleProps?: React.ComponentPropsWithRef<'span'>;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -33,7 +40,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, maxLength = 2000, active, showCounter = true, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, maxLength = 2000, active, showCounter = true, dragHandleProps, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -48,14 +55,22 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
         <div ref={ref} className={cn('group/header flex w-full flex-col gap-2', className)} {...props}>
           <div className="flex items-center justify-between">
             <span
+              aria-label={dragHandleProps ? `Reorder question ${number}` : undefined}
+              {...dragHandleProps}
               className={cn(
                 'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption hover:pl-1',
                 active
                   ? 'bg-accent-soft text-accent-soft-foreground'
                   : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
+                dragHandleProps && 'cursor-grab touch-none select-none focus-visible:pl-1',
+                dragHandleProps?.className,
               )}
             >
-              <DotsSixVertical size={16} aria-hidden className="hidden shrink-0 group-hover/handle:block" />
+              <DotsSixVertical
+                size={16}
+                aria-hidden
+                className="hidden shrink-0 group-hover/handle:block group-focus-visible/handle:block"
+              />
               Question {number}
             </span>
             {actions && (
