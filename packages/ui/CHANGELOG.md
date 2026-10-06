@@ -1,5 +1,13 @@
 # @discuss-ds/ui
 
+## 0.2.0
+
+### Minor Changes
+
+- [#7](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/7) [`d108153`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/d1081532e7a1342d5282bb6c6e0ecc0572a34000) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - Rename `RoleTag` to `Badge` (types: `primary`, `secondary`, `question`, `interactable`, plus new `id` and `count` types covering ID Badge and Count Badge). `RoleTag` and `RoleTagProps` are no longer exported — import `Badge` and `BadgeProps` instead.
+
+- [#7](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/7) [`d108153`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/d1081532e7a1342d5282bb6c6e0ecc0572a34000) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - Add `InlineEdit`: text that becomes a field on click (Enter/blur saves, Escape cancels), with `multiline`, controlled and uncontrolled modes.
+
 ## 0.1.0
 
 ### Minor Changes
