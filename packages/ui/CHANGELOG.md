@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.3.2
+
+### Patch Changes
+
+- [#13](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/13) [`ca22046`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/ca22046f7e2616ef952f1252183bfe25f734ce03) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit` question variant: the bottom border is now 1px on hover and focus. Only a `selected` question gets the bolder 2px accent border. Bottom padding compensates so the text and the card height do not move between states.
+
 ## 0.3.1
 
 ### Patch Changes
