@@ -1,5 +1,13 @@
 # @discuss-ds/ui
 
+## 0.5.0
+
+### Minor Changes
+
+- [#27](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/27) [`1a4ff8c`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1a4ff8c0c8b485a7edaf27bd0d327a9005f902e7) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionHeader` and `QuestionEditorCard` get an optional `dragHandleProps` that turns the "Question N" tag into a drag handle. It is spread onto the tag, so it accepts what a drag-and-drop library provides (`ref`, `role`, `tabIndex`, pointer and keyboard listeners, aria attributes). With it the tag shows a grab cursor, is keyboard focusable, shows the grip icon on focus and is labelled "Reorder question N". Without it nothing changes.
+  
+  `ActivityStructure`: the card corner radius is now 16px (was 24px) to match the question cards, and the title uses the primary foreground colour.
+
 ## 0.4.2
 
 ### Patch Changes
