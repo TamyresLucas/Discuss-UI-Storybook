@@ -67,6 +67,56 @@ describe('InlineEdit', () => {
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith('a\nb');
   });
 
+  it('shows the pencil for a short label but not for longer (multiline) text', () => {
+    const { container, rerender } = render(<InlineEdit aria-label="Name" defaultValue="Alpha" />);
+    expect(container.querySelector('svg')).toBeInTheDocument();
+    expect(container.firstElementChild).toHaveClass('inline-flex');
+    rerender(<InlineEdit aria-label="Goal" multiline defaultValue="A longer description" />);
+    expect(container.querySelector('svg')).not.toBeInTheDocument();
+    expect(container.firstElementChild).toHaveClass('w-full');
+    expect(screen.getByRole('button')).toHaveClass('w-full');
+  });
+
+  describe('question variant', () => {
+    it('fills the width, has no pencil and square corners', () => {
+      const { container } = render(<InlineEdit variant="question" aria-label="Question" defaultValue="Hi" />);
+      expect(container.querySelector('svg')).not.toBeInTheDocument();
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('w-full', 'rounded-none', 'border-b-2');
+      expect(button).toHaveClass('border-transparent');
+    });
+
+    it('keeps the bottom border while selected', () => {
+      const { rerender } = render(<InlineEdit variant="question" aria-label="Question" defaultValue="Hi" />);
+      expect(screen.getByRole('button')).toHaveClass('border-transparent');
+      rerender(<InlineEdit variant="question" selected aria-label="Question" defaultValue="Hi" />);
+      expect(screen.getByRole('button')).toHaveClass('border-input-accent');
+      expect(screen.getByRole('button')).not.toHaveClass('border-transparent');
+    });
+
+    it('multiline: Enter saves and Shift+Enter adds a line break', async () => {
+      const user = userEvent.setup();
+      const onValueChange = vi.fn();
+      render(<InlineEdit variant="question" multiline aria-label="Question" defaultValue="a" onValueChange={onValueChange} />);
+      await user.click(screen.getByRole('button'));
+      await user.type(screen.getByRole('textbox'), '{Shift>}{Enter}{/Shift}b');
+      expect(onValueChange).not.toHaveBeenCalled();
+      await user.keyboard('{Enter}');
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith('a\nb');
+    });
+  });
+
+  it('reports the draft on every keystroke and the saved value when editing ends', async () => {
+    const user = userEvent.setup();
+    const onDraftChange = vi.fn();
+    render(<InlineEdit aria-label="Name" defaultValue="Al" onDraftChange={onDraftChange} />);
+    await user.click(screen.getByRole('button'));
+    await user.type(screen.getByRole('textbox'), 'p');
+    expect(onDraftChange).toHaveBeenLastCalledWith('Alp');
+    await user.keyboard('{Escape}');
+    expect(onDraftChange).toHaveBeenLastCalledWith('Al');
+  });
+
   it('is not editable when disabled', async () => {
     const user = userEvent.setup();
     render(<InlineEdit aria-label="Name" defaultValue="Alpha" disabled />);
@@ -77,6 +127,14 @@ describe('InlineEdit', () => {
   it('has no accessibility violations in read or edit mode', async () => {
     const user = userEvent.setup();
     const { container } = render(<InlineEdit aria-label="Name" defaultValue="Alpha" />);
+    expect(await axe(container)).toHaveNoViolations();
+    await user.click(screen.getByRole('button'));
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('question variant has no accessibility violations in read or edit mode', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<InlineEdit variant="question" multiline selected aria-label="Question" defaultValue="Hi" />);
     expect(await axe(container)).toHaveNoViolations();
     await user.click(screen.getByRole('button'));
     expect(await axe(container)).toHaveNoViolations();
