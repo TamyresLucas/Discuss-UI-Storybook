@@ -7,7 +7,7 @@ export interface TopicCardProps extends Omit<React.HTMLAttributes<HTMLDivElement
   /** Leading 24px icon (a Phosphor icon, e.g. `<FolderOpen weight="fill" />`). */
   icon?: React.ReactNode;
   title: React.ReactNode;
-  /** Small tag beside the title (e.g. a language `RoleTag`). */
+  /** Small tag beside the title (e.g. a language `Badge`). */
   badge?: React.ReactNode;
   description: React.ReactNode;
   /** Chips under the description (e.g. topic tags). */

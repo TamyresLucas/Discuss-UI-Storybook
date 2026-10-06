@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
-import { RoleTag } from './RoleTag';
+import { Badge } from './Badge';
 
-describe('RoleTag', () => {
+describe('Badge', () => {
   it('renders static types as plain text', () => {
-    render(<RoleTag type="secondary">Category</RoleTag>);
+    render(<Badge type="secondary">Category</Badge>);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.getByText('Category')).toBeInTheDocument();
   });
@@ -16,9 +16,9 @@ describe('RoleTag', () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
     render(
-      <RoleTag type="interactable" selected onClick={onClick}>
+      <Badge type="interactable" selected onClick={onClick}>
         Category
-      </RoleTag>,
+      </Badge>,
     );
     const tag = screen.getByRole('button', { name: 'Category' });
     expect(tag).toHaveAttribute('aria-pressed', 'true');
@@ -26,12 +26,27 @@ describe('RoleTag', () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it('renders the id and count types as plain text', () => {
+    render(
+      <>
+        <Badge type="id">721347</Badge>
+        <Badge type="count">3</Badge>
+      </>,
+    );
+    expect(screen.getByText('ID')).toBeInTheDocument();
+    expect(screen.getByText('721347')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(
       <>
-        <RoleTag>Primary</RoleTag>
-        <RoleTag type="question">Select One</RoleTag>
-        <RoleTag type="interactable">Category</RoleTag>
+        <Badge>Primary</Badge>
+        <Badge type="question">Select One</Badge>
+        <Badge type="interactable">Category</Badge>
+        <Badge type="id">721347</Badge>
+        <Badge type="count">3</Badge>
       </>,
     );
     expect(await axe(container)).toHaveNoViolations();
