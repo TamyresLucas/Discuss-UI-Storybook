@@ -131,6 +131,23 @@ describe('ActivityStructure', () => {
     expect(screen.getByText('Question 3')).not.toHaveAttribute('tabindex');
   });
 
+  it('can be a single-purpose widget: children render under the title, with no empty stats grid', () => {
+    const { container } = render(
+      <ActivityStructure title="Research Goal" stats={[]}>
+        <p>Understand why people stay.</p>
+      </ActivityStructure>,
+    );
+    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-heading-h3', 'text-primary');
+    expect(screen.getByText('Understand why people stay.')).toBeInTheDocument();
+    expect(container.querySelector('.grid')).not.toBeInTheDocument();
+    expect(container.querySelector('section')).toHaveClass('rounded-xl', 'bg-surface');
+  });
+
+  it('still renders the stats grid when there are stats', () => {
+    const { container } = render(<ActivityStructure stats={[{ id: 'q', label: 'Total questions', value: '3' }]} />);
+    expect(container.querySelector('.grid')).toBeInTheDocument();
+  });
+
   it('the summary card has no border', () => {
     const { container } = render(<ActivityStructure stats={[{ id: 'q', label: 'Total questions', value: '3' }]} />);
     const card = container.querySelector('section')!;

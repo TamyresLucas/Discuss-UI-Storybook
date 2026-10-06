@@ -28,22 +28,29 @@ export interface ActivityStructureProps extends Omit<React.HTMLAttributes<HTMLEl
   /** Called with the section id by the dashed "Add tag" chip. Omit to hide it. */
   onAddTag?: (sectionId: string) => void;
   addTagLabel?: string;
+  /**
+   * Content shown under the stats and sections. With `stats={[]}` and `children` the card is a single-purpose widget
+   * (e.g. "Research Goal") with the same card, title style and colour as the full summary.
+   */
+  children?: React.ReactNode;
 }
 
-// Figma: Activity control (361:5214) › Activity structure — summary card with stat tiles and text sections with tags.
+// Figma: Activity control (361:5214) › Activity structure — summary card with stat tiles and text sections with tags; also usable as a single-purpose widget via children.
 export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructureProps>(
-  ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', ...props }, ref) => (
+  ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', children, ...props }, ref) => (
     <section
       ref={ref}
       className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-xl bg-surface p-4', className)}
       {...props}
     >
       <h3 className="text-heading-h3 text-primary">{title}</h3>
-      <div className="grid grid-cols-2 gap-3">
-        {stats.map(({ id, ...stat }) => (
-          <StatCard key={id} {...stat} />
-        ))}
-      </div>
+      {stats.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          {stats.map(({ id, ...stat }) => (
+            <StatCard key={id} {...stat} />
+          ))}
+        </div>
+      )}
       {sections?.map(({ id, heading, body, tags }) => (
         <div key={id} className="flex flex-col gap-2">
           <h4 className="text-heading-h4 text-surface-foreground">{heading}</h4>
@@ -64,6 +71,7 @@ export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructure
           )}
         </div>
       ))}
+      {children}
     </section>
   ),
 );
