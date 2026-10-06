@@ -58,16 +58,24 @@ describe('QuestionNavItem', () => {
 });
 
 describe('ActivityStructure', () => {
-  it('renders stats and the settings button', async () => {
+  it('renders stats, sections and removable tags', async () => {
     const user = userEvent.setup();
-    const onOpenSettings = vi.fn();
+    const onRemoveTag = vi.fn();
+    const onAddTag = vi.fn();
     const { container } = render(
-      <ActivityStructure stats={[{ id: 'q', label: 'Total questions', value: '3' }]} onOpenSettings={onOpenSettings} />,
+      <ActivityStructure
+        stats={[{ id: 'q', label: 'Total questions', value: '3' }]}
+        sections={[{ id: 'a', heading: 'Target Audience', body: 'Adults', tags: ['Canada'] }]}
+        onRemoveTag={onRemoveTag}
+        onAddTag={onAddTag}
+      />,
     );
     expect(screen.getByRole('heading', { name: 'Activity Structure' })).toBeInTheDocument();
     expect(screen.getByText('Total questions')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Activity Settings' }));
-    expect(onOpenSettings).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('button', { name: 'Remove Canada' }));
+    expect(onRemoveTag).toHaveBeenCalledWith('a', 'Canada');
+    await user.click(screen.getByRole('button', { name: 'Add tag' }));
+    expect(onAddTag).toHaveBeenCalledWith('a');
     expect(await axe(container)).toHaveNoViolations();
   });
 

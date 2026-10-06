@@ -1,11 +1,21 @@
-import * as React from 'react';
-import { Clipboard, Copy, Eye, Plus, Sparkle, Trash } from '@phosphor-icons/react';
+import * as React from "react";
+import {
+  Clipboard,
+  Copy,
+  Eye,
+  Plus,
+  Sparkle,
+  Trash,
+} from "@phosphor-icons/react";
 
-import { cn } from '../../lib/utils';
-import { Button } from '../Buttons & Actions/Button';
-import { QuestionHeader } from './QuestionHeader';
+import { cn } from "../../lib/utils";
+import { Button } from "../Buttons & Actions/Button";
+import { QuestionHeader } from "./QuestionHeader";
 
-export interface QuestionEditorCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'onChange'> {
+export interface QuestionEditorCardProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "onChange"
+> {
   /** Question number shown in the drag-handle tag. */
   number: number;
   title: string;
@@ -15,11 +25,12 @@ export interface QuestionEditorCardProps extends Omit<React.HTMLAttributes<HTMLD
   maxLength?: number;
   /** Footer label, e.g. "4/20 choices". Shown while `active`. */
   countLabel?: React.ReactNode;
-  /** Header actions. Defaults to copy, delete, preview and AI buttons wired to the `on*` callbacks. */
+  /** Header actions. Defaults to copy, delete and preview buttons wired to the `on*` callbacks. */
   actions?: React.ReactNode;
   onDuplicate?: () => void;
   onDelete?: () => void;
   onPreview?: () => void;
+  /** Sparkle button beside the card, revealed on hover, focus or while `active`. Omit to hide it. */
   onAskAi?: () => void;
   /** Footer: adds an answer choice. Omit (with `onPaste`) to hide the footer buttons. */
   onAdd?: () => void;
@@ -31,7 +42,10 @@ export interface QuestionEditorCardProps extends Omit<React.HTMLAttributes<HTMLD
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
 // lifts it and reveals the header actions, active takes the accent border and adds the counter and footer.
-export const QuestionEditorCard = React.forwardRef<HTMLDivElement, QuestionEditorCardProps>(
+export const QuestionEditorCard = React.forwardRef<
+  HTMLDivElement,
+  QuestionEditorCardProps
+>(
   (
     {
       className,
@@ -58,65 +72,113 @@ export const QuestionEditorCard = React.forwardRef<HTMLDivElement, QuestionEdito
     return (
       <div
         ref={ref}
-        className={cn(
-          'flex w-full max-w-200 flex-col overflow-hidden rounded-xl border bg-surface transition-shadow hover:shadow-lg focus-within:shadow-lg',
-          active ? 'border-accent' : 'border-border',
-          className,
-        )}
+        className={cn("group/editor flex w-full items-start gap-2", className)}
         {...props}
       >
-        <div className={cn('flex flex-col p-6', footer ? 'gap-5' : 'gap-4')}>
-          <div className="flex flex-col gap-4">
-            <QuestionHeader
-              editor
-              number={number}
-              title={title}
-              onTitleChange={onTitleChange}
-              active={active}
-              showCounter={!!active}
-              maxLength={maxLength}
-              actions={
-                actions ?? (
-                  <>
-                    <Button type="button" variant="ghost" size="icon-sm" aria-label="Duplicate question" onClick={onDuplicate}>
-                      <Copy size={16} aria-hidden />
+        <div
+          className={cn(
+            "flex w-full max-w-200 flex-col overflow-hidden rounded-xl border bg-surface transition-shadow group-hover/editor:shadow-lg group-focus-within/editor:shadow-lg",
+            active ? "border-accent" : "border-border",
+          )}
+        >
+          <div className={cn("flex flex-col p-6", footer ? "gap-5" : "gap-4")}>
+            <div className="flex flex-col gap-4">
+              <QuestionHeader
+                editor
+                number={number}
+                title={title}
+                onTitleChange={onTitleChange}
+                active={active}
+                showCounter={!!active}
+                maxLength={maxLength}
+                actions={
+                  actions ?? (
+                    <>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label="Duplicate question"
+                        onClick={onDuplicate}
+                      >
+                        <Copy size={16} aria-hidden />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon-sm"
+                        aria-label="Delete question"
+                        onClick={onDelete}
+                      >
+                        <Trash size={16} aria-hidden />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label="Preview question"
+                        onClick={onPreview}
+                      >
+                        <Eye size={16} aria-hidden />
+                      </Button>
+                    </>
+                  )
+                }
+              />
+              {children}
+            </div>
+            {footer && (
+              <div className="flex items-center justify-between">
+                <p className="text-ui-caption text-secondary-muted-foreground">
+                  {countLabel}
+                </p>
+                <div className="flex items-center gap-2">
+                  {onAdd && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Add choice"
+                      onClick={onAdd}
+                    >
+                      <Plus size={16} aria-hidden />
                     </Button>
-                    <Button type="button" variant="destructive" size="icon-sm" aria-label="Delete question" onClick={onDelete}>
-                      <Trash size={16} aria-hidden />
+                  )}
+                  {onPaste && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Paste choices"
+                      onClick={onPaste}
+                    >
+                      <Clipboard size={16} aria-hidden />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon-sm" aria-label="Preview question" onClick={onPreview}>
-                      <Eye size={16} aria-hidden />
-                    </Button>
-                    <Button type="button" variant="ghost" size="icon-sm" aria-label="Ask AI" onClick={onAskAi}>
-                      <Sparkle size={16} aria-hidden />
-                    </Button>
-                  </>
-                )
-              }
-            />
-            {children}
-          </div>
-          {footer && (
-            <div className="flex items-center justify-between">
-              <p className="text-ui-caption text-secondary-muted-foreground">{countLabel}</p>
-              <div className="flex items-center gap-2">
-                {onAdd && (
-                  <Button type="button" variant="ghost" size="icon" aria-label="Add choice" onClick={onAdd}>
-                    <Plus size={16} aria-hidden />
-                  </Button>
-                )}
-                {onPaste && (
-                  <Button type="button" variant="ghost" size="icon" aria-label="Paste choices" onClick={onPaste}>
-                    <Clipboard size={16} aria-hidden />
-                  </Button>
-                )}
+                  )}
+                </div>
               </div>
+            )}
+          </div>
+          {note && (
+            <div className="border-t border-border px-2 py-2 text-body-small text-surface-foreground">
+              {note}
             </div>
           )}
         </div>
-        {note && <div className="border-t border-border px-2 py-2 text-body-small text-surface-foreground">{note}</div>}
+        {onAskAi && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Ask AI"
+            onClick={onAskAi}
+            className="shrink-0 opacity-0 transition-opacity group-hover/editor:opacity-100 group-focus-within/editor:opacity-100 focus-visible:opacity-100"
+          >
+            <Sparkle size={16} aria-hidden />
+          </Button>
+        )}
       </div>
     );
   },
 );
-QuestionEditorCard.displayName = 'QuestionEditorCard';
+QuestionEditorCard.displayName = "QuestionEditorCard";

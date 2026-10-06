@@ -9,6 +9,8 @@
  * packages/ui/src/components/** silently fails to generate any CSS.
  */
 @source '../components';
+/* Published package: the compiled components live in dist (src/components is not shipped). */
+@source '../../dist';
 
 /*
  * Tailwind v4 theme layer — every entry here MUST alias an existing sys- or
