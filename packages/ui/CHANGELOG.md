@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.4.2
+
+### Patch Changes
+
+- [#25](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/25) [`457bb65`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/457bb65f54ca262e0338b0b271b5535926bb7b66) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ActivityStructure`: the summary card no longer has a border (it keeps its white surface and rounded corners).
+
 ## 0.4.1
 
 ### Patch Changes
