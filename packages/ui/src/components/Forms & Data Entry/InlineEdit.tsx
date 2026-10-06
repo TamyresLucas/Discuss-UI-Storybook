@@ -25,7 +25,7 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /**
    * `default` is a rounded field. A short single-line label shows the pencil and hugs its text; `multiline` (longer
    * text) hides the pencil and fills the width. `question` is for question text: it fills the width with no pencil,
-   * has square corners and shows a bottom border on hover and focus (in the input border colour) that turns accent while `selected`. Enter saves; Shift+Enter adds a
+   * has square corners and shows a 1px bottom border on hover and focus (in the input border colour) that becomes a bolder 2px accent border while `selected`. Enter saves; Shift+Enter adds a
    * line break when `multiline`.
    */
   variant?: 'default' | 'question';
@@ -147,12 +147,15 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             aria-label={`${ariaLabel}: ${value || placeholder}. Edit`}
             onClick={start}
             className={cn(
-              'group inline-flex min-w-0 max-w-full items-center gap-2 px-3 py-1 text-left outline-none',
+              'group inline-flex min-w-0 max-w-full items-center gap-2 px-3 text-left outline-none',
               fill && 'w-full',
               question
-                ? // Hover and focus use the input border colour; only a selected question takes the accent.
-                  cn('rounded-none border-b-2', selected ? 'border-accent-foreground' : 'border-transparent enabled:hover:border-input enabled:focus-visible:border-input')
-                : 'rounded-md border border-transparent enabled:focus-visible:border-input-accent',
+                ? // Hover and focus show a 1px bottom border in the input colour; only a selected question gets the 2px accent
+                  // one. The extra 1px of bottom padding keeps the height identical so the text never jumps.
+                  selected
+                  ? 'rounded-none border-b-2 border-accent-foreground py-1'
+                  : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input enabled:focus-visible:border-input'
+                : 'rounded-md border border-transparent py-1 enabled:focus-visible:border-input-accent',
               'enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
               textClasses,
             )}

@@ -82,7 +82,7 @@ describe('InlineEdit', () => {
       const { container } = render(<InlineEdit variant="question" aria-label="Question" defaultValue="Hi" />);
       expect(container.querySelector('svg')).not.toBeInTheDocument();
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('w-full', 'rounded-none', 'border-b-2');
+      expect(button).toHaveClass('w-full', 'rounded-none', 'border-b');
       expect(button).toHaveClass('border-transparent');
     });
 
@@ -97,6 +97,18 @@ describe('InlineEdit', () => {
       expect(selected).not.toHaveClass('border-transparent');
       // Hovering a selected question must not drop back to the input colour.
       expect(selected).not.toHaveClass('enabled:hover:border-input');
+    });
+
+    it('hover border is 1px and the selected border is the bolder 2px, at the same height', () => {
+      const { rerender } = render(<InlineEdit variant="question" aria-label="Question" defaultValue="Hi" />);
+      const idle = screen.getByRole('button');
+      // 1px border + 5px bottom padding = 2px border + 4px bottom padding.
+      expect(idle).toHaveClass('border-b', 'pb-1.25', 'pt-1');
+      expect(idle).not.toHaveClass('border-b-2');
+      rerender(<InlineEdit variant="question" selected aria-label="Question" defaultValue="Hi" />);
+      const selected = screen.getByRole('button');
+      expect(selected).toHaveClass('border-b-2', 'py-1');
+      expect(selected).not.toHaveClass('pb-1.25');
     });
 
     it('multiline: Enter saves and Shift+Enter adds a line break', async () => {
