@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.3.1
+
+### Patch Changes
+
+- [#11](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/11) [`515842c`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/515842c8cb05412776f3fe76bc60623230aaec22) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit` question variant: on hover or focus the bottom border now uses the input border colour. Only a `selected` question (and the field while editing) takes the accent foreground colour.
+
 ## 0.3.0
 
 ### Minor Changes
