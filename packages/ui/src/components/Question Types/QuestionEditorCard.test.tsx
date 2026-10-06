@@ -105,10 +105,36 @@ describe('ActivityStructure', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
+  it('the summary title uses the primary colour and the card has the same 16px radius as the question cards', () => {
+    const { container } = render(<ActivityStructure title="Activity Summary" stats={[]} />);
+    expect(screen.getByRole('heading', { name: 'Activity Summary' })).toHaveClass('text-primary');
+    expect(container.querySelector('section')).toHaveClass('rounded-xl');
+    expect(container.querySelector('section')).not.toHaveClass('rounded-2xl');
+  });
+
+  it('the editor card passes dragHandleProps to the question tag', async () => {
+    const user = userEvent.setup();
+    const onPointerDown = vi.fn();
+    const ref = vi.fn();
+    render(<QuestionEditorCard active number={3} title="Hi" dragHandleProps={{ ref, role: 'button', tabIndex: 0, onPointerDown }} />);
+    const handle = screen.getByRole('button', { name: 'Reorder question 3' });
+    expect(handle).toHaveTextContent('Question 3');
+    expect(handle).toHaveClass('cursor-grab', 'touch-none');
+    await user.click(handle);
+    expect(onPointerDown).toHaveBeenCalled();
+    expect(ref).toHaveBeenCalledWith(handle);
+  });
+
+  it('the question tag is a plain, non-focusable label without dragHandleProps', () => {
+    render(<QuestionEditorCard number={3} title="Hi" />);
+    expect(screen.queryByRole('button', { name: /Reorder question/ })).not.toBeInTheDocument();
+    expect(screen.getByText('Question 3')).not.toHaveAttribute('tabindex');
+  });
+
   it('the summary card has no border', () => {
     const { container } = render(<ActivityStructure stats={[{ id: 'q', label: 'Total questions', value: '3' }]} />);
     const card = container.querySelector('section')!;
-    expect(card).toHaveClass('rounded-2xl', 'bg-surface');
+    expect(card).toHaveClass('rounded-xl', 'bg-surface');
     expect(card.className).not.toMatch(/(^|\s)border(\s|$)/);
     expect(card.className).not.toMatch(/border-border/);
   });

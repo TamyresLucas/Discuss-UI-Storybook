@@ -38,6 +38,8 @@ export interface QuestionEditorCardProps extends Omit<
   onPaste?: () => void;
   /** Optional strip under the card body, e.g. an "Inferred" assumption note. */
   note?: React.ReactNode;
+  /** Makes the "Question N" tag a drag handle for reordering. See `QuestionHeader`'s `dragHandleProps`. */
+  dragHandleProps?: React.ComponentPropsWithRef<'span'>;
 }
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
@@ -63,6 +65,7 @@ export const QuestionEditorCard = React.forwardRef<
       onAdd,
       onPaste,
       note,
+      dragHandleProps,
       children,
       ...props
     },
@@ -90,6 +93,7 @@ export const QuestionEditorCard = React.forwardRef<
                 onTitleChange={onTitleChange}
                 active={active}
                 showCounter={!!active}
+                dragHandleProps={dragHandleProps}
                 maxLength={maxLength}
                 actions={
                   actions ?? (

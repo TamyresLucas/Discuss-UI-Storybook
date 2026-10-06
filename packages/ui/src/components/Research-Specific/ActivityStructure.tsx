@@ -35,10 +35,10 @@ export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructure
   ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', ...props }, ref) => (
     <section
       ref={ref}
-      className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-2xl bg-surface p-4', className)}
+      className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-xl bg-surface p-4', className)}
       {...props}
     >
-      <h3 className="text-heading-h3 text-surface-foreground">{title}</h3>
+      <h3 className="text-heading-h3 text-primary">{title}</h3>
       <div className="grid grid-cols-2 gap-3">
         {stats.map(({ id, ...stat }) => (
           <StatCard key={id} {...stat} />

@@ -53,3 +53,16 @@ function EditorHeader() {
 }
 
 export const Editor: Story = { render: () => <EditorHeader /> };
+
+/** With `dragHandleProps` the "Question N" tag is a focusable drag handle (here wired to a logger). */
+export const EditorDragHandle: Story = {
+  render: () => (
+    <QuestionHeader
+      number={2}
+      editor
+      active
+      title={title}
+      dragHandleProps={{ role: 'button', tabIndex: 0, onKeyDown: (event) => console.log('handle key', event.key) }}
+    />
+  ),
+};
