@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.4.0
+
+### Minor Changes
+
+- [#21](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/21) [`a7ebe02`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/a7ebe02f16a57fd1e40115e9a949484f23e1103a) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionOptionEditor` gets an optional `kind` (`radio` | `checkbox`). With it the row is quiet at rest (no border, the radio or checkbox indicator in front of the label) and turns into the editor on hover or keyboard focus: border and shadow, the drag handle replaces the indicator, and the remove and add buttons appear. The buttons keep their space while hidden, so the row is the same width in every state. Without `kind` the row is the same always-on editor as before.
+
 ## 0.3.5
 
 ### Patch Changes
