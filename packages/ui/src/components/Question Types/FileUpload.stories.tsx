@@ -46,3 +46,14 @@ function Zone() {
 }
 
 export const UploadZone: StoryObj<typeof FileUploadZone> = { render: () => <Zone /> };
+
+export const VideoUploadZone: StoryObj<typeof FileUploadZone> = {
+  render: () => (
+    <FileUploadZone
+      accept=".mp4,.mov"
+      title="Record or upload a single video"
+      hint="mp4 and mov supported"
+      icon={<VideoCamera size={24} aria-hidden />}
+    />
+  ),
+};
