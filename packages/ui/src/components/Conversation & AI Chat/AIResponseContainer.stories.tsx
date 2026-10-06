@@ -2,7 +2,7 @@ import { ArrowClockwise, Clipboard, Clock, Copy, FolderOpen, Question, ThumbsDow
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../Buttons & Actions/Button';
-import { RoleTag } from '../Tags & Badges/RoleTag';
+import { Badge } from '../Tags & Badges/Badge';
 import { AIMiniAvatar } from './AIMiniAvatar';
 import { AIResponseContainer } from './AIResponseContainer';
 import { Timestamp } from './Timestamp';
@@ -21,7 +21,7 @@ const researchGoal = (
   <TopicCard
     icon={<FolderOpen weight="fill" />}
     title="Meal kit retention"
-    badge={<RoleTag>English (United States)</RoleTag>}
+    badge={<Badge>English (United States)</Badge>}
     description="Understand why subscribers choose to remain subscribed to your meal kit service rather than switching to a competitor — and which factors (price, recipe variety, ingredient quality, convenience, brand reputation, etc.) most influence that decision."
     tags={
       <>

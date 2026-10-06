@@ -8,7 +8,7 @@ import { SearchBar } from '../Forms & Data Entry/SearchBar';
 import { Checkbox } from '../Forms & Data Entry/Checkbox';
 import { TabItem } from '../Navigation/TabItem';
 import { TabNavigation, Tabs } from '../Navigation/TabNavigation';
-import { RoleTag } from '../Tags & Badges/RoleTag';
+import { Badge } from '../Tags & Badges/Badge';
 import { Tag } from '../Tags & Badges/Tag';
 import { Pagination } from '../Utility/Pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './Table';
@@ -92,7 +92,7 @@ function ProjectsTable() {
               </TableCell>
               <TableCell className="max-w-50 truncate">{row.name}</TableCell>
               <TableCell>
-                <RoleTag>{row.role}</RoleTag>
+                <Badge>{row.role}</Badge>
               </TableCell>
               <TableCell>
                 <Tag variant={statusVariant[row.status as keyof typeof statusVariant]}>{row.status}</Tag>

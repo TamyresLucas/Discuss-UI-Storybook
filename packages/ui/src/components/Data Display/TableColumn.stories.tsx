@@ -5,7 +5,7 @@ import { Button } from '../Buttons & Actions/Button';
 import { Checkbox } from '../Forms & Data Entry/Checkbox';
 import { RadioGroup, RadioGroupItem } from '../Forms & Data Entry/RadioGroup';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../Forms & Data Entry/Select';
-import { RoleTag } from '../Tags & Badges/RoleTag';
+import { Badge } from '../Tags & Badges/Badge';
 import { Tag } from '../Tags & Badges/Tag';
 import { Table, TableBody, TableCell, TableCellTwoLines, TableHead, TableHeader, TableRow } from './Table';
 
@@ -35,7 +35,7 @@ const columns: Column[] = [
     headProps: { checkbox: true },
     cellProps: { checkbox: true },
   },
-  { name: 'Role Tag', head: 'Role', cell: <RoleTag>Role</RoleTag> },
+  { name: 'Badge', head: 'Role', cell: <Badge>Role</Badge> },
   { name: 'Status Tag', head: 'Status', cell: <Tag variant="success">Active</Tag> },
   {
     name: 'Two Lines',

@@ -4,6 +4,7 @@ export * from './DateTimePicker';
 export * from './Field';
 export * from './Form';
 export * from './formatDateTime';
+export * from './InlineEdit';
 export * from './Input';
 export * from './InputWithAction';
 export * from './Label';

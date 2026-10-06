@@ -11,9 +11,9 @@ screen-reader testing requirement in
 [ACCESSIBILITY_GUIDELINES.md](./ACCESSIBILITY_GUIDELINES.md), not just
 automated a11y checks.
 
-**Current summary:** 43 / 76 components at `Planned` (story scaffolded with
-the shared `Placeholder`, no implementation yet). 0 `In Progress`, 33
-`Review` (the Button family, Toggle (Switch), Label, Text Input, Checkbox,
+**Current summary:** 40 / 76 components at `Planned` (story scaffolded with
+the shared `Placeholder`, no implementation yet). 0 `In Progress`, 36
+`Review` (the Button family, Badge, ID Badge, Count Badge, Toggle (Switch), Label, Text Input, Checkbox,
 Radio Group, Search Bar, Textarea, Select (Dropdown), Slider, Form, Tab
 Navigation, Tab Item, Progress, Tag (Status Badge), Removable Tag (Chip), Table, Table Header Row, Table Row, Pagination, Dialog (Modal), Dropdown Menu, Tooltip, Toast (Sonner), User Message Bubble, AI Response Container, Chat Input, AI Mini Avatar, Timestamp —
 implemented, passes automated a11y checks, not yet screen-reader tested), 0
@@ -23,7 +23,7 @@ never part of it.
 
 **New dependency:** `@phosphor-icons/react` (Figma's icon set) and `react-day-picker` (Calendar — there is no Radix calendar primitive) were added to `packages/ui`.
 
-**Also added** (Figma components outside the original 76-row queue, all at `Review`): `Role Tag` (in `Tags & Badges`); `Toggle (Menu)` (Buttons & Actions); `Numerical Input`, `Input with Action`, `Calendar`, `Date & Time Picker` and the shared `Field` wrapper (Forms & Data Entry); `Table Column` (cell-type story for Table, Data Display); `Toast Inline` (in Overlays & Feedback); `Question Types` — `Question Card`, `Question Header`, `Question Option` (+ Other / editor row), `Open End Answer`, `Rating Scale`, `Rank List`, `File Upload`, `Media` (video player, image preview, thumbnails), `Question Type Icons`, `Question Editor Card`, `Question Nav Item`; `Stat Card` (Data Display); `Activity Structure` (Research-Specific); `File Attachment`, `Ask AI Toggle`, `Topic Card`, `Project Selector`, `Chat Choices` and `Ask AI Input` (Conversation & AI Chat). Toast is built on Radix Toast, not the `sonner` package the name suggests.
+**Also added** (Figma components outside the original 76-row queue, all at `Review`): `Toggle (Menu)` (Buttons & Actions); `Inline Edit` (click-to-edit text; no shadcn or Figma original), `Numerical Input`, `Input with Action`, `Calendar`, `Date & Time Picker` and the shared `Field` wrapper (Forms & Data Entry); `Table Column` (cell-type story for Table, Data Display); `Toast Inline` (in Overlays & Feedback); `Question Types` — `Question Card`, `Question Header`, `Question Option` (+ Other / editor row), `Open End Answer`, `Rating Scale`, `Rank List`, `File Upload`, `Media` (video player, image preview, thumbnails), `Question Type Icons`, `Question Editor Card`, `Question Nav Item`; `Stat Card` (Data Display); `Activity Structure` (Research-Specific); `File Attachment`, `Ask AI Toggle`, `Topic Card`, `Project Selector`, `Chat Choices` and `Ask AI Input` (Conversation & AI Chat). Toast is built on Radix Toast, not the `sonner` package the name suggests.
 
 **Earlier dependency:** `react-hook-form` (^7.88.0) was added to `packages/ui`
 to build `Form` — the first component whose upstream shadcn source isn't a
@@ -95,10 +95,10 @@ recorded rationale.
 
 | # | Component | Source | Stage |
 |---|---|---|---|
-| 40 | Badge | shadcn | Planned |
+| 40 | Badge (formerly Role Tag) | Custom | Review |
 | 41 | Tag (Status Badge) | Custom | Review |
-| 42 | ID Badge | Custom | Planned |
-| 43 | Count Badge | Custom | Planned |
+| 42 | ID Badge (Badge `id` type) | Custom | Review |
+| 43 | Count Badge (Badge `count` type) | Custom | Review |
 | 44 | Removable Tag (Chip) | Custom | Review |
 
 ## Identity & People (3)
