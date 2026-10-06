@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.3.4
+
+### Patch Changes
+
+- [#17](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/17) [`3b68a03`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/3b68a0345b7b6b8289d62c2a59f2a35a873f46ec) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionNavItem`: hovering a row that is not selected now only changes its fill; the border keeps the default colour. A selected row keeps its accent border.
+
 ## 0.3.3
 
 ### Patch Changes
