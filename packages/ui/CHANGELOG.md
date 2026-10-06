@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.6.0
+
+### Minor Changes
+
+- [#29](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/29) [`1dd39c5`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1dd39c577a5fa4b96effedd38f1eb5003529c544) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ActivityStructure` can now be a single-purpose widget: it renders `children` under its title, stats and sections, and no longer renders an empty stats grid when `stats` is empty. `<ActivityStructure title="Research Goal" stats={[]}>…</ActivityStructure>` has the same card, title style and colour as the full Activity Summary. Existing usage is unchanged.
+
 ## 0.5.0
 
 ### Minor Changes
