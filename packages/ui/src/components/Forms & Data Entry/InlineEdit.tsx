@@ -25,7 +25,7 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /**
    * `default` is a rounded field. A short single-line label shows the pencil and hugs its text; `multiline` (longer
    * text) hides the pencil and fills the width. `question` is for question text: it fills the width with no pencil,
-   * has square corners and shows a bottom border on hover, focus and while `selected`. Enter saves; Shift+Enter adds a
+   * has square corners and shows a bottom border on hover and focus (in the input border colour) that turns accent while `selected`. Enter saves; Shift+Enter adds a
    * line break when `multiline`.
    */
   variant?: 'default' | 'question';
@@ -115,7 +115,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               'w-full px-3 py-1 outline-none',
               multiline && 'field-sizing-content resize-none',
               question
-                ? 'rounded-none border-0 border-b-2 border-input-accent bg-transparent'
+                ? 'rounded-none border-0 border-b-2 border-accent-foreground bg-transparent'
                 : cn('rounded-md focus-visible:border-input-accent', fieldSurfaceClasses('default')),
               textClasses,
             ),
@@ -150,10 +150,10 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               'group inline-flex min-w-0 max-w-full items-center gap-2 px-3 py-1 text-left outline-none',
               fill && 'w-full',
               question
-                ? cn('rounded-none border-b-2', selected ? 'border-input-accent' : 'border-transparent')
-                : 'rounded-md border border-transparent',
-              'enabled:hover:bg-secondary enabled:focus-visible:border-input-accent disabled:cursor-not-allowed disabled:opacity-50',
-              question && 'enabled:hover:border-input-accent',
+                ? // Hover and focus use the input border colour; only a selected question takes the accent.
+                  cn('rounded-none border-b-2', selected ? 'border-accent-foreground' : 'border-transparent enabled:hover:border-input enabled:focus-visible:border-input')
+                : 'rounded-md border border-transparent enabled:focus-visible:border-input-accent',
+              'enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
               textClasses,
             )}
           >

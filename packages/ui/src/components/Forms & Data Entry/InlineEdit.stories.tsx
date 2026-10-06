@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Text that turns into a field on click. Enter or blur saves, Escape cancels. A short single-line label hugs its text and shows a pencil on hover. `multiline` (longer text) swaps in a textarea (Cmd/Ctrl+Enter saves), hides the pencil and fills the width. `variant="question"` is for question text: full width, no pencil, square corners, and a bottom border on hover and while `selected`; Enter saves and Shift+Enter adds a line break. There is no shadcn or Figma original, so this is built from the Input tokens. Source: Custom.',
+          'Text that turns into a field on click. Enter or blur saves, Escape cancels. A short single-line label hugs its text and shows a pencil on hover. `multiline` (longer text) swaps in a textarea (Cmd/Ctrl+Enter saves), hides the pencil and fills the width. `variant="question"` is for question text: full width, no pencil, square corners, and a bottom border that uses the input border colour on hover and turns accent while `selected`; Enter saves and Shift+Enter adds a line break. There is no shadcn or Figma original, so this is built from the Input tokens. Source: Custom.',
       },
     },
   },
