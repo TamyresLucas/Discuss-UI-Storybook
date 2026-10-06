@@ -47,6 +47,21 @@ describe('QuestionNavItem', () => {
     expect(screen.getByRole('button', { name: 'Two, has errors' })).not.toHaveAttribute('aria-current');
   });
 
+  it('shows the type icon muted, and in the accent colour when selected', () => {
+    const { container, rerender } = render(<QuestionNavItem questionType="open-end">One</QuestionNavItem>);
+    expect(container.querySelector('svg.text-muted-foreground')).toBeInTheDocument();
+    expect(container.querySelector('svg.text-accent-foreground')).not.toBeInTheDocument();
+    rerender(<QuestionNavItem questionType="open-end" selected>One</QuestionNavItem>);
+    expect(container.querySelector('svg.text-accent-foreground')).toBeInTheDocument();
+    expect(container.querySelector('svg.text-muted-foreground')).not.toBeInTheDocument();
+  });
+
+  it('keeps the warning icon destructive whether or not it is selected', () => {
+    const { container } = render(<QuestionNavItem error>One</QuestionNavItem>);
+    expect(container.querySelector('svg.text-destructive')).toBeInTheDocument();
+    expect(container.querySelector('svg.text-muted-foreground')).not.toBeInTheDocument();
+  });
+
   it('fires onClick and has no a11y violations', async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
