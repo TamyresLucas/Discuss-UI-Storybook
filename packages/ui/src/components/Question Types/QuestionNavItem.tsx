@@ -30,7 +30,8 @@ export const QuestionNavItem = React.forwardRef<HTMLButtonElement, QuestionNavIt
           error
             ? ['hover:bg-destructive-soft focus-visible:border-destructive', selected ? 'border-destructive' : 'border-border']
             : [
-                'hover:border-input-accent hover:bg-accent-soft focus-visible:border-input-accent',
+                // Hover only changes the fill; the border stays as it is (default grey, or accent when selected).
+                'hover:bg-accent-soft focus-visible:border-input-accent',
                 selected ? 'border-input-accent' : 'border-border',
               ],
           className,
