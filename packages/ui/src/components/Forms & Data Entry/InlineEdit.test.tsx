@@ -86,12 +86,17 @@ describe('InlineEdit', () => {
       expect(button).toHaveClass('border-transparent');
     });
 
-    it('keeps the bottom border while selected', () => {
+    it('hover uses the input border colour; only selected takes the accent', () => {
       const { rerender } = render(<InlineEdit variant="question" aria-label="Question" defaultValue="Hi" />);
-      expect(screen.getByRole('button')).toHaveClass('border-transparent');
+      const idle = screen.getByRole('button');
+      expect(idle).toHaveClass('border-transparent', 'enabled:hover:border-input');
+      expect(idle).not.toHaveClass('border-accent-foreground');
       rerender(<InlineEdit variant="question" selected aria-label="Question" defaultValue="Hi" />);
-      expect(screen.getByRole('button')).toHaveClass('border-input-accent');
-      expect(screen.getByRole('button')).not.toHaveClass('border-transparent');
+      const selected = screen.getByRole('button');
+      expect(selected).toHaveClass('border-accent-foreground');
+      expect(selected).not.toHaveClass('border-transparent');
+      // Hovering a selected question must not drop back to the input colour.
+      expect(selected).not.toHaveClass('enabled:hover:border-input');
     });
 
     it('multiline: Enter saves and Shift+Enter adds a line break', async () => {
