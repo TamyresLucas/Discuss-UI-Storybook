@@ -50,10 +50,10 @@ export const ErrorState: Story = { args: { status: 'error' } };
 
 function Editable() {
   const [caption, setCaption] = React.useState('Look at this image');
-  return <StimulusCard caption={caption} onCaptionChange={setCaption} onRemove={() => {}} />;
+  return <StimulusCard caption={caption} onCaptionChange={setCaption} maxLength={2000} onRemove={() => {}} />;
 }
 
-/** `onCaptionChange` turns the caption into an inline editor: click it, type, Enter saves. */
+/** `onCaptionChange` turns the caption into an inline editor: click it, type, Enter saves. `maxLength` adds the limit and the live "n/2000 characters" counter (hide it with `showCounter={false}`, e.g. while the card is not selected). */
 export const EditableCaption: Story = { render: () => <Editable /> };
 
 export const ReadOnly: Story = { args: { onRemove: undefined } };

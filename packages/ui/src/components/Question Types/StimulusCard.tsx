@@ -25,11 +25,18 @@ export interface StimulusCardProps extends Omit<React.HTMLAttributes<HTMLDivElem
   onCaptionChange?: (caption: string) => void;
   /** Editor mode: placeholder for an empty caption. */
   captionPlaceholder?: string;
+  /** Editor mode: caption length limit. Also what the counter counts against. */
+  maxLength?: number;
+  /** Editor mode: shows the "n/2000 characters" counter under the caption (it counts live while typing). Defaults to `true`; needs `maxLength`. */
+  showCounter?: boolean;
   /** Shows the trash button. */
   onRemove?: () => void;
   /** Accessible name of the trash button. Defaults to "Remove stimulus". */
   removeLabel?: string;
 }
+
+const MIN_THUMBNAIL = 80;
+const MAX_THUMBNAIL = 240;
 
 // Figma: Stimulus card (605:3462) — a stimulus (image or video) with what the AI moderator says about it, and a remove button.
 export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
@@ -44,6 +51,8 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
       caption,
       onCaptionChange,
       captionPlaceholder = 'Click to write what the AI moderator says',
+      maxLength,
+      showCounter = true,
       onRemove,
       removeLabel = 'Remove stimulus',
       ...props
@@ -54,17 +63,35 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
     const [failedSrc, setFailedSrc] = React.useState<string | undefined>();
     const error = status === 'error' || (thumbnail !== undefined && failedSrc === thumbnail);
     const showImage = thumbnail !== undefined && !error;
+    // Live character count while the caption is being edited (the saved value otherwise).
+    const [draft, setDraft] = React.useState<string | null>(null);
+    const count = (draft ?? caption ?? '').length;
+
+    // The thumbnail is square and as tall as the text column (80-240px), so it grows when the caption wraps. That is circular in
+    // plain CSS (its width narrows the text, which changes its height), so measure the text and size the thumbnail from it.
+    const textRef = React.useRef<HTMLDivElement>(null);
+    const [thumbnailSize, setThumbnailSize] = React.useState(MIN_THUMBNAIL);
+    React.useEffect(() => {
+      const el = textRef.current;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(() => {
+        setThumbnailSize(Math.min(MAX_THUMBNAIL, Math.max(MIN_THUMBNAIL, Math.ceil(el.getBoundingClientRect().height))));
+      });
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, []);
     return (
       <div
         ref={ref}
         data-status={error ? 'error' : 'default'}
-        className={cn('flex w-full items-center gap-4 rounded-md border border-border p-0.5 pr-4', className)}
+        className={cn('flex min-h-21.5 w-full items-center gap-4 rounded-md border border-border p-0.5 pr-4', className)}
         {...props}
       >
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <span
+            style={{ width: thumbnailSize, height: thumbnailSize }}
             className={cn(
-              'flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-sm border',
+              'relative flex shrink-0 items-center justify-center overflow-hidden rounded-sm border',
               error
                 ? 'border-destructive-soft-border bg-destructive-soft bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-destructive'
                 : 'border-border bg-background bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
@@ -72,14 +99,15 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
             )}
           >
             {showImage ? (
-              <img src={thumbnail} alt={thumbnailAlt} className="size-full object-cover" onError={() => setFailedSrc(thumbnail)} />
+              // Out of flow, so the image's own size never sets the thumbnail's size.
+              <img src={thumbnail} alt={thumbnailAlt} className="absolute inset-0 size-full object-cover" onError={() => setFailedSrc(thumbnail)} />
             ) : error ? (
               <ImageBroken size={24} aria-hidden />
             ) : (
               (icon ?? <ImageIcon size={24} aria-hidden />)
             )}
           </span>
-          <div className="flex min-w-0 flex-1 flex-col gap-2 text-surface-foreground">
+          <div ref={textRef} className="flex min-w-0 flex-1 flex-col justify-center gap-2 py-2 text-surface-foreground">
             <p className="w-full text-ui-label">{label}</p>
             {onCaptionChange ? (
               <InlineEdit
@@ -90,11 +118,21 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
                 aria-label="Stimulus caption"
                 value={caption ?? ''}
                 placeholder={captionPlaceholder}
+                maxLength={maxLength}
                 onValueChange={onCaptionChange}
+                onDraftChange={setDraft}
+                onEditingChange={(editing) => {
+                  if (!editing) setDraft(null);
+                }}
                 textClassName="text-body-base"
               />
             ) : (
               <p className="w-full text-body-base [word-break:break-word]">{caption}</p>
+            )}
+            {onCaptionChange && showCounter && maxLength !== undefined && (
+              <p className="text-ui-caption text-secondary-muted-foreground">
+                {count}/{maxLength} characters
+              </p>
             )}
           </div>
         </div>
