@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.8.1
+
+### Patch Changes
+
+- [#43](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/43) [`1f674dd`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1f674ddc5f1d5d9cbcadb7bca561cb480cea74bf) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `StimulusCard`: the editable caption now fills the width of the card, so its hover and focus underline spans the full line instead of only the text.
+
 ## 0.8.0
 
 ### Minor Changes
