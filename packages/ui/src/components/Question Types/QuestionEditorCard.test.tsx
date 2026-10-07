@@ -37,6 +37,12 @@ describe('QuestionEditorCard', () => {
     expect(screen.getByRole('button', { name: 'Paste choices' })).not.toHaveTextContent('Paste');
   });
 
+  it('reveals the header actions when the whole card is hovered or focused, not only the header', () => {
+    render(<QuestionEditorCard number={1} title="Hi" onDelete={() => {}} />);
+    const actions = screen.getByRole('button', { name: 'Delete question' }).parentElement!;
+    expect(actions).toHaveClass('group-hover/editor:opacity-100', 'group-focus-within/editor:opacity-100');
+  });
+
   it('has no a11y violations', async () => {
     const { container } = render(<QuestionEditorCard active number={1} title="Hi" countLabel="1/20" onAdd={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();

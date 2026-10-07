@@ -74,7 +74,11 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               Question {number}
             </span>
             {actions && (
-              <div className="flex items-center gap-2 opacity-0 transition-opacity group-focus-within/header:opacity-100 group-hover/header:opacity-100">
+              <div className={cn(
+                  'flex items-center gap-2 opacity-0 transition-opacity group-focus-within/header:opacity-100 group-hover/header:opacity-100',
+                  // Inside a QuestionEditorCard, hovering or focusing anywhere on the card reveals them too.
+                  'group-focus-within/editor:opacity-100 group-hover/editor:opacity-100',
+                )}>
                 {actions}
               </div>
             )}
