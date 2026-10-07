@@ -135,6 +135,18 @@ describe('QuestionOption', () => {
       expect(container.querySelector('span[aria-hidden] > span')).toHaveClass('rounded-full');
     });
 
+    it('rank kind keeps the drag handle and shows the position number at rest, and still reveals the editor on hover', () => {
+      render(<QuestionOptionEditor kind="rank" rank={2} label="Price" />);
+      const field = screen.getByRole('textbox', { name: 'Option label' }).parentElement!;
+      expect(field).toHaveClass('group-hover/option:shadow-md', 'group-focus-within/option:shadow-md');
+      const handle = field.querySelector('svg')!;
+      expect(handle).not.toHaveClass('hidden');
+      expect(field.querySelector('span[aria-hidden]')).toHaveTextContent('2');
+      expect(field.querySelector('span[aria-hidden]')).toHaveClass('rounded-full');
+      const buttons = screen.getByRole('button', { name: 'Remove option' }).parentElement!;
+      expect(buttons).toHaveClass('opacity-0', 'group-hover/option:opacity-100');
+    });
+
     it('keeps the same width at rest and on hover: the buttons keep their space', () => {
       const { container } = render(<QuestionOptionEditor kind="radio" label="A" />);
       const buttons = screen.getByRole('button', { name: 'Remove option' }).parentElement!;
