@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.6.1
+
+### Patch Changes
+
+- [#31](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/31) [`4dc82b8`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/4dc82b890fb61f151efbb191793b733f45554913) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard`: the footer "Add choice" action is now an outline button with a plus icon and the visible label "Add choice" (it was an icon-only ghost button). Its accessible name and `onAdd` behaviour are unchanged; the paste button is untouched.
+
 ## 0.6.0
 
 ### Minor Changes
