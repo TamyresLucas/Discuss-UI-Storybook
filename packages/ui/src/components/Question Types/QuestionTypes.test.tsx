@@ -14,6 +14,7 @@ import { QuestionOption, QuestionOptionEditor, QuestionOtherOption } from './Que
 import { QuestionTypeIcon } from './QuestionTypeIcon';
 import { RankList } from './RankList';
 import { RatingScale } from './RatingScale';
+import { StimulusCard } from './StimulusCard';
 
 describe('QuestionHeader', () => {
   it('shows the eyebrow, title and required marker', () => {
@@ -354,6 +355,63 @@ describe('QuestionCard / QuestionTypeIcon', () => {
         <QuestionTypeIcon type="ranking" />
       </QuestionCard>,
     );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe('StimulusCard', () => {
+  it('shows the label, the caption and the thumbnail', () => {
+    const { container } = render(<StimulusCard thumbnail="data:image/png;base64,AAAA" thumbnailAlt="Meal kit" caption="Look at this image" />);
+    expect(screen.getByText('AI Moderator')).toBeInTheDocument();
+    expect(screen.getByText('Look at this image')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Meal kit' })).toHaveClass('object-cover');
+    expect(container.firstElementChild).toHaveAttribute('data-status', 'default');
+  });
+
+  it('falls back to a placeholder icon without a thumbnail, and takes a custom icon', () => {
+    const { container, rerender } = render(<StimulusCard caption="x" />);
+    expect(container.querySelector('img')).toBeNull();
+    expect(container.querySelector('svg')).toBeInTheDocument();
+    rerender(<StimulusCard caption="x" icon={<span data-testid="custom">v</span>} />);
+    expect(screen.getByTestId('custom')).toBeInTheDocument();
+  });
+
+  it('shows the error state when asked, and when the thumbnail fails to load', () => {
+    const { container, rerender } = render(<StimulusCard caption="x" status="error" thumbnail="a.png" />);
+    expect(container.firstElementChild).toHaveAttribute('data-status', 'error');
+    expect(container.querySelector('img')).toBeNull();
+    rerender(<StimulusCard caption="x" thumbnail="b.png" />);
+    expect(container.firstElementChild).toHaveAttribute('data-status', 'default');
+    fireEvent.error(container.querySelector('img')!);
+    expect(container.firstElementChild).toHaveAttribute('data-status', 'error');
+    expect(container.querySelector('img')).toBeNull();
+    rerender(<StimulusCard caption="x" thumbnail="c.png" />);
+    expect(container.firstElementChild).toHaveAttribute('data-status', 'default');
+  });
+
+  it('edits the caption in place when onCaptionChange is given', async () => {
+    const user = userEvent.setup();
+    const onCaptionChange = vi.fn();
+    render(<StimulusCard caption="Look" onCaptionChange={onCaptionChange} />);
+    await user.click(screen.getByRole('button', { name: /Stimulus caption/ }));
+    const field = screen.getByRole('textbox', { name: /Stimulus caption/ });
+    await user.clear(field);
+    await user.type(field, 'Watch this{Enter}');
+    expect(onCaptionChange).toHaveBeenCalledWith('Watch this');
+  });
+
+  it('removes with a labelled button, and hides it without onRemove', async () => {
+    const user = userEvent.setup();
+    const onRemove = vi.fn();
+    const { rerender } = render(<StimulusCard caption="x" onRemove={onRemove} />);
+    await user.click(screen.getByRole('button', { name: 'Remove stimulus' }));
+    expect(onRemove).toHaveBeenCalledTimes(1);
+    rerender(<StimulusCard caption="x" />);
+    expect(screen.queryByRole('button', { name: 'Remove stimulus' })).not.toBeInTheDocument();
+  });
+
+  it('has no a11y violations', async () => {
+    const { container } = render(<StimulusCard thumbnail="data:image/png;base64,AAAA" thumbnailAlt="Meal kit" caption="Look at this image" onRemove={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();
   });
 });
