@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.7.0
+
+### Minor Changes
+
+- [#37](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/37) [`2eae2f2`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/2eae2f2ec0cfe3d2a3ea9a8e6256158b69a0b9dd) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionOptionEditor`: new `kind="rank"` (with a `rank` position prop) for ranking questions. The row keeps its drag handle and round position number at rest and, like the radio and checkbox kinds, becomes the editor on hover or keyboard focus (shadow lifts, remove and add buttons appear). Existing kinds and the always-on editor row are unchanged.
+
 ## 0.6.3
 
 ### Patch Changes
