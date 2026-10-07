@@ -9,3 +9,4 @@ export * from './QuestionOption';
 export * from './QuestionTypeIcon';
 export * from './RankList';
 export * from './RatingScale';
+export * from './StimulusCard';
