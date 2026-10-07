@@ -407,6 +407,12 @@ describe('StimulusCard', () => {
     expect(editor.parentElement).not.toHaveClass('items-start');
   });
 
+  it('cancels the caption editor padding so the card height hugs its content', () => {
+    render(<StimulusCard caption="Look" onCaptionChange={() => {}} />);
+    const editor = screen.getByRole('button', { name: /Stimulus caption/ }).parentElement!;
+    expect(editor).toHaveClass('-mt-1', '-mb-1.5');
+  });
+
   it('removes with a labelled button, and hides it without onRemove', async () => {
     const user = userEvent.setup();
     const onRemove = vi.fn();
