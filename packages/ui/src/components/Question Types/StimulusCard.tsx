@@ -85,7 +85,8 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
               <InlineEdit
                 variant="question"
                 multiline
-                className="-mx-3 w-auto"
+                // The editor pads its text (top 4px, bottom 5px plus a 1px border); pull that back so the card is as tall as its content.
+                className="-mx-3 -mt-1 -mb-1.5 w-auto"
                 aria-label="Stimulus caption"
                 value={caption ?? ''}
                 placeholder={captionPlaceholder}
