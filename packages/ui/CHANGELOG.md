@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.6.3
+
+### Patch Changes
+
+- [#35](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/35) [`323ace1`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/323ace193c8a545fb6b659ed7cd524bc953f2215) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard`: hovering anywhere on the card now gives the "Question N" tag its hover look (grip icon shown, tighter left padding), not only when the tag itself is hovered. `QuestionHeader` used on its own is unchanged.
+
 ## 0.6.2
 
 ### Patch Changes
