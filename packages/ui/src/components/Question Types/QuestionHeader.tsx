@@ -59,6 +59,8 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               {...dragHandleProps}
               className={cn(
                 'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption hover:pl-1',
+                // Inside a QuestionEditorCard the tag takes its hover look whenever the card is hovered.
+                'group-hover/editor:pl-1',
                 active
                   ? 'bg-accent-soft text-accent-soft-foreground'
                   : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
@@ -69,7 +71,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               <DotsSixVertical
                 size={16}
                 aria-hidden
-                className="hidden shrink-0 group-hover/handle:block group-focus-visible/handle:block"
+                className="hidden shrink-0 group-hover/editor:block group-hover/handle:block group-focus-visible/handle:block"
               />
               Question {number}
             </span>
