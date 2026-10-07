@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The image or video attached to a question, as it appears in the question card: an 80px thumbnail, the "AI Moderator" label over what the moderator says about it (the caption), and a trash button. Pass `onCaptionChange` to make the caption editable in place; `status="error"` (or a thumbnail that fails to load) shows the broken-image state. Source: Custom. Figma: Stimulus card.',
+          'The image or video attached to a question, as it appears in the question card: a square thumbnail that grows with the caption (92-240px), the "AI Moderator" label over what the moderator says about it (the caption), and a trash button. Pass `onCaptionChange` to make the caption editable in place; `status="error"` (or a thumbnail that fails to load) shows the broken-image state. Source: Custom. Figma: Stimulus card.',
       },
     },
   },
