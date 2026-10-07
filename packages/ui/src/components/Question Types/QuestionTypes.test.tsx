@@ -400,6 +400,13 @@ describe('StimulusCard', () => {
     expect(onCaptionChange).toHaveBeenCalledWith('Watch this');
   });
 
+  it('lets the editable caption fill the width of the card (its column does not align items to the start)', () => {
+    render(<StimulusCard caption="Look" onCaptionChange={() => {}} />);
+    const editor = screen.getByRole('button', { name: /Stimulus caption/ }).parentElement!;
+    expect(editor).toHaveClass('w-auto');
+    expect(editor.parentElement).not.toHaveClass('items-start');
+  });
+
   it('removes with a labelled button, and hides it without onRemove', async () => {
     const user = userEvent.setup();
     const onRemove = vi.fn();

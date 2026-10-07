@@ -79,7 +79,7 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
               (icon ?? <ImageIcon size={24} aria-hidden />)
             )}
           </span>
-          <div className="flex min-w-0 flex-1 flex-col items-start gap-2 text-surface-foreground">
+          <div className="flex min-w-0 flex-1 flex-col gap-2 text-surface-foreground">
             <p className="w-full text-ui-label">{label}</p>
             {onCaptionChange ? (
               <InlineEdit
