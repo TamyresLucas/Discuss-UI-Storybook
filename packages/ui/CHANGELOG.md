@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.8.2
+
+### Patch Changes
+
+- [#45](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/45) [`9813016`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/98130163e4f7c0ea7ebd54a253a2bff60f975126) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `StimulusCard`: with an editable caption the card is no longer about 10px taller than its content. The caption editor's own top and bottom padding is cancelled, so the card is as tall as the label plus the caption lines (never shorter than the 80px thumbnail).
+
 ## 0.8.1
 
 ### Patch Changes
