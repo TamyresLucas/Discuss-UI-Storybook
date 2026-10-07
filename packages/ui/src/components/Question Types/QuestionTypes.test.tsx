@@ -359,6 +359,21 @@ describe('QuestionCard / QuestionTypeIcon', () => {
   });
 });
 
+describe('ImagePreview height', () => {
+  it('hugs an image (no fixed height, capped at 336px) and keeps the fixed height for the empty placeholder', () => {
+    const { container, rerender } = render(<ImagePreview name="photo.png" />);
+    expect(container.querySelector('.bg-accent-soft')).toHaveClass('h-84');
+    rerender(
+      <ImagePreview name="photo.png">
+        <img alt="" src="data:image/png;base64,AAAA" />
+      </ImagePreview>,
+    );
+    const area = container.querySelector('.bg-accent-soft')!;
+    expect(area).not.toHaveClass('h-84');
+    expect(area).toHaveClass('[&>img]:h-auto', '[&>img]:max-h-84', '[&>img]:w-full');
+  });
+});
+
 describe('StimulusCard', () => {
   it('shows the label, the caption and the thumbnail', () => {
     const { container } = render(<StimulusCard thumbnail="data:image/png;base64,AAAA" thumbnailAlt="Meal kit" caption="Look at this image" />);
