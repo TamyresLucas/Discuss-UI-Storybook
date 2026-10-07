@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.6.2
+
+### Patch Changes
+
+- [#33](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/33) [`3c155e2`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/3c155e273ff0f7b46e99a682b0ea70a0cd03a3d8) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard`: the header actions (duplicate, delete, preview) now appear when you hover or focus anywhere on the card, not only when the header row is hovered. `QuestionHeader` used on its own is unchanged.
+
 ## 0.6.1
 
 ### Patch Changes
