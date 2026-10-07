@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.9.1
+
+### Patch Changes
+
+- [#49](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/49) [`1931730`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/19317303f60cfe751925bdb7e84747f8a68b78b3) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ImagePreview`: with an image, the preview area now hugs it (full width, the image's own height, at most 336px) instead of a fixed 336px area with bars above and below. The empty placeholder keeps the fixed height.
+
 ## 0.9.0
 
 ### Minor Changes
