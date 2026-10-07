@@ -43,6 +43,13 @@ describe('QuestionEditorCard', () => {
     expect(actions).toHaveClass('group-hover/editor:opacity-100', 'group-focus-within/editor:opacity-100');
   });
 
+  it('gives the number tag its hover look (grip icon, tighter left padding) when the whole card is hovered', () => {
+    render(<QuestionEditorCard number={1} title="Hi" dragHandleProps={{ role: 'button', tabIndex: 0 }} />);
+    const tag = screen.getByRole('button', { name: 'Reorder question 1' });
+    expect(tag).toHaveClass('group-hover/editor:pl-1');
+    expect(tag.querySelector('svg')).toHaveClass('group-hover/editor:block');
+  });
+
   it('has no a11y violations', async () => {
     const { container } = render(<QuestionEditorCard active number={1} title="Hi" countLabel="1/20" onAdd={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();
