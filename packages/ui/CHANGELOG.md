@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.9.2
+
+### Patch Changes
+
+- [#51](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/51) [`6f9df5b`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/6f9df5bcb1f8e84d1b76efcc416744889928d86b) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `StimulusCard`: the minimum height is now 98px (was 86px) and the thumbnail is at least 92px, per the updated Figma. A one-line caption with the character counter showing is exactly that tall, so the card no longer changes height between its default and selected states.
+
 ## 0.9.1
 
 ### Patch Changes
