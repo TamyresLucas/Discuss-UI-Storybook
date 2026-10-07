@@ -282,6 +282,13 @@ describe('FileUpload', () => {
     expect(screen.getByText('Error')).toBeInTheDocument();
   });
 
+  it('shows the status tag beside the file size, not beside the name', () => {
+    render(<FileUploadItem name="photo.jpeg" size="3.0MB" status="complete" />);
+    const tag = screen.getByText('Complete');
+    expect(tag.parentElement).toHaveTextContent('3.0MB');
+    expect(tag.parentElement).not.toContainElement(screen.getByText('photo.jpeg'));
+  });
+
   it('removes a file', async () => {
     const user = userEvent.setup();
     const onRemove = vi.fn();

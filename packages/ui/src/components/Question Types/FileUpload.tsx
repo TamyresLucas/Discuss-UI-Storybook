@@ -88,11 +88,7 @@ export const FileUploadItem = React.forwardRef<HTMLDivElement, FileUploadItemPro
           </span>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex min-w-0 items-center gap-2">
-                <p className="truncate text-ui-label text-surface-foreground">{name}</p>
-                {status === 'complete' && <Tag variant="success">Complete</Tag>}
-                {status === 'error' && <Tag variant="destructive">Error</Tag>}
-              </div>
+              <p className="min-w-0 truncate text-ui-label text-surface-foreground">{name}</p>
               {onRemove && (
                 <Button type="button" variant="ghost" size="icon-sm" aria-label={removeLabel ?? `Remove ${name}`} onClick={onRemove}>
                   <X size={16} aria-hidden />
@@ -102,6 +98,8 @@ export const FileUploadItem = React.forwardRef<HTMLDivElement, FileUploadItemPro
             <div className="flex items-center justify-between text-ui-caption text-secondary-muted-foreground">
               <span className="flex items-center gap-2">
                 {size}
+                {status === 'complete' && <Tag variant="success">Complete</Tag>}
+                {status === 'error' && <Tag variant="destructive">Error</Tag>}
                 {uploading && timeLeft && (
                   <>
                     <span aria-hidden="true" className="size-0.5 rounded-full bg-secondary-muted-foreground" />
