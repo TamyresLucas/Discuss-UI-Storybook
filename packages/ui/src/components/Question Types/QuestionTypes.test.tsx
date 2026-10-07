@@ -428,10 +428,10 @@ describe('StimulusCard', () => {
     expect(editor).toHaveClass('-mt-1', '-mb-1.5');
   });
 
-  it('is responsive: a minimum height, and a square thumbnail sized from the text (80-240px)', () => {
+  it('is responsive: a minimum height, and a square thumbnail sized from the text (92-240px)', () => {
     const { container } = render(<StimulusCard caption="x" />);
-    expect(container.firstElementChild).toHaveClass('min-h-21.5');
-    expect(container.querySelector('span')).toHaveStyle({ width: '80px', height: '80px' });
+    expect(container.firstElementChild).toHaveClass('min-h-24.5');
+    expect(container.querySelector('span')).toHaveStyle({ width: '92px', height: '92px' });
   });
 
   it('grows the thumbnail with the measured text height and caps it at 240px', async () => {
@@ -452,10 +452,10 @@ describe('StimulusCard', () => {
       const fire = () => act(() => callbacks.forEach((callback) => callback()));
       heightOf(68);
       fire();
-      expect(thumb).toHaveStyle({ width: '80px', height: '80px' });
-      heightOf(96);
+      expect(thumb).toHaveStyle({ width: '92px', height: '92px' });
+      heightOf(120);
       fire();
-      expect(thumb).toHaveStyle({ width: '96px', height: '96px' });
+      expect(thumb).toHaveStyle({ width: '120px', height: '120px' });
       heightOf(500);
       fire();
       expect(thumb).toHaveStyle({ width: '240px', height: '240px' });

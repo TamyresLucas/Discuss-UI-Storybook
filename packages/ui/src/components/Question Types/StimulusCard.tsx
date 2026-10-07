@@ -6,7 +6,7 @@ import { Button } from '../Buttons & Actions/Button';
 import { InlineEdit } from '../Forms & Data Entry/InlineEdit';
 
 export interface StimulusCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  /** Image shown in the 80px thumbnail. Without one the thumbnail shows `icon` on a neutral fill. */
+  /** Image shown in the square thumbnail (92-240px, as tall as the text). Without one the thumbnail shows `icon` on a neutral fill. */
   thumbnail?: string;
   /** Alt text for `thumbnail`. Leave empty when the caption already describes the image. */
   thumbnailAlt?: string;
@@ -35,7 +35,9 @@ export interface StimulusCardProps extends Omit<React.HTMLAttributes<HTMLDivElem
   removeLabel?: string;
 }
 
-const MIN_THUMBNAIL = 80;
+// 92px = the card's 98px minimum height minus its padding and border. A one-line caption with the counter showing is exactly that tall,
+// so the card is the same height whether or not the counter is shown.
+const MIN_THUMBNAIL = 92;
 const MAX_THUMBNAIL = 240;
 
 // Figma: Stimulus card (605:3462) — a stimulus (image or video) with what the AI moderator says about it, and a remove button.
@@ -67,7 +69,7 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
     const [draft, setDraft] = React.useState<string | null>(null);
     const count = (draft ?? caption ?? '').length;
 
-    // The thumbnail is square and as tall as the text column (80-240px), so it grows when the caption wraps. That is circular in
+    // The thumbnail is square and as tall as the text column (92-240px), so it grows when the caption wraps. That is circular in
     // plain CSS (its width narrows the text, which changes its height), so measure the text and size the thumbnail from it.
     const textRef = React.useRef<HTMLDivElement>(null);
     const [thumbnailSize, setThumbnailSize] = React.useState(MIN_THUMBNAIL);
@@ -84,7 +86,7 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
       <div
         ref={ref}
         data-status={error ? 'error' : 'default'}
-        className={cn('flex min-h-21.5 w-full items-center gap-4 rounded-md border border-border p-0.5 pr-4', className)}
+        className={cn('flex min-h-24.5 w-full items-center gap-4 rounded-md border border-border p-0.5 pr-4', className)}
         {...props}
       >
         <div className="flex min-w-0 flex-1 items-center gap-4">
