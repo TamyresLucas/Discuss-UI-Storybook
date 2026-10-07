@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.7.1
+
+### Patch Changes
+
+- [#39](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/39) [`2bc5789`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/2bc5789c1a0b9d55686664ac93cc9a313fc5f6fb) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `FileUploadItem`: the "Complete" / "Error" status tag now sits to the right of the file size on the second line instead of beside the file name, so a long name can use the full first line. No API change.
+
 ## 0.7.0
 
 ### Minor Changes
