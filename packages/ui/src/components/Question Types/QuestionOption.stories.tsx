@@ -76,7 +76,7 @@ function Editor() {
 
 export const EditorRow: StoryObj<typeof QuestionOptionEditor> = { render: () => <Editor /> };
 
-function RevealRows({ kind }: { kind: 'radio' | 'checkbox' }) {
+function RevealRows({ kind }: { kind: 'radio' | 'checkbox' | 'rank' }) {
   const [labels, setLabels] = React.useState(['Recipes', 'Delivery', 'Packaging']);
   return (
     <div className="flex w-150 flex-col gap-2">
@@ -84,6 +84,7 @@ function RevealRows({ kind }: { kind: 'radio' | 'checkbox' }) {
         <QuestionOptionEditor
           key={index}
           kind={kind}
+          rank={index + 1}
           label={label}
           onLabelChange={(next) => setLabels((l) => l.map((x, i) => (i === index ? next : x)))}
           onRemove={() => setLabels((l) => l.filter((_, i) => i !== index))}
@@ -97,3 +98,6 @@ function RevealRows({ kind }: { kind: 'radio' | 'checkbox' }) {
 /** Quiet at rest (radio indicator, no border); hover or focus turns a row into the editor. Same width in every state. */
 export const EditorRadioOnHover: StoryObj<typeof QuestionOptionEditor> = { render: () => <RevealRows kind="radio" /> };
 export const EditorCheckboxOnHover: StoryObj<typeof QuestionOptionEditor> = { render: () => <RevealRows kind="checkbox" /> };
+
+/** Ranking question: handle and position number at rest; hover or focus turns the row into the editor. */
+export const EditorRankOnHover: StoryObj<typeof QuestionOptionEditor> = { render: () => <RevealRows kind="rank" /> };

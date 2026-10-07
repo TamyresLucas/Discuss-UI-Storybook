@@ -110,11 +110,16 @@ export interface QuestionOptionEditorProps {
    * On hover or keyboard focus it becomes the editor: the shadow lifts, the drag handle replaces the indicator and the
    * buttons appear. The border colour does not change. Omit it for an always-on editor row.
    */
-  kind?: 'radio' | 'checkbox';
+  kind?: 'radio' | 'checkbox' | 'rank';
+  /**
+   * `kind="rank"` only: the position shown in the round number tag, as in `RankList`. For a ranking question the row keeps
+   * its drag handle and number at rest and, like the other kinds, becomes the editor on hover or keyboard focus.
+   */
+  rank?: number;
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind, rank }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
   return (
     <div className={cn('group/option flex w-full items-center gap-2', className)}>
@@ -127,7 +132,17 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
             : 'border-border hover:border-input hover:shadow-md',
         )}
       >
-        {reveal ? (
+        {kind === 'rank' ? (
+          <>
+            <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
+            <span
+              aria-hidden="true"
+              className="flex size-6 shrink-0 items-center justify-center rounded-full border border-border bg-background bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-ui-caption text-surface-foreground"
+            >
+              {rank}
+            </span>
+          </>
+        ) : reveal ? (
           <span aria-hidden="true" className="relative flex size-5 shrink-0 items-center justify-center">
             <span
               className={cn(
