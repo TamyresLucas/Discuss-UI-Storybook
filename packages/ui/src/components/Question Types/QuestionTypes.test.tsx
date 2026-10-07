@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import * as React from 'react';
@@ -364,7 +364,7 @@ describe('StimulusCard', () => {
     const { container } = render(<StimulusCard thumbnail="data:image/png;base64,AAAA" thumbnailAlt="Meal kit" caption="Look at this image" />);
     expect(screen.getByText('AI Moderator')).toBeInTheDocument();
     expect(screen.getByText('Look at this image')).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Meal kit' })).toHaveClass('object-cover');
+    expect(screen.getByRole('img', { name: 'Meal kit' })).toHaveClass('object-cover', 'absolute', 'inset-0');
     expect(container.firstElementChild).toHaveAttribute('data-status', 'default');
   });
 
@@ -411,6 +411,55 @@ describe('StimulusCard', () => {
     render(<StimulusCard caption="Look" onCaptionChange={() => {}} />);
     const editor = screen.getByRole('button', { name: /Stimulus caption/ }).parentElement!;
     expect(editor).toHaveClass('-mt-1', '-mb-1.5');
+  });
+
+  it('is responsive: a minimum height, and a square thumbnail sized from the text (80-240px)', () => {
+    const { container } = render(<StimulusCard caption="x" />);
+    expect(container.firstElementChild).toHaveClass('min-h-21.5');
+    expect(container.querySelector('span')).toHaveStyle({ width: '80px', height: '80px' });
+  });
+
+  it('grows the thumbnail with the measured text height and caps it at 240px', async () => {
+    const callbacks: Array<() => void> = [];
+    class FakeResizeObserver {
+      constructor(callback: () => void) {
+        callbacks.push(callback);
+      }
+      observe() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    try {
+      const { container } = render(<StimulusCard caption="x" onCaptionChange={() => {}} />);
+      const column = screen.getByRole('button', { name: /Stimulus caption/ }).parentElement!.parentElement!;
+      const thumb = container.querySelector('span')!;
+      const heightOf = (height: number) => vi.spyOn(column, 'getBoundingClientRect').mockReturnValue({ height } as DOMRect);
+      const fire = () => act(() => callbacks.forEach((callback) => callback()));
+      heightOf(68);
+      fire();
+      expect(thumb).toHaveStyle({ width: '80px', height: '80px' });
+      heightOf(96);
+      fire();
+      expect(thumb).toHaveStyle({ width: '96px', height: '96px' });
+      heightOf(500);
+      fire();
+      expect(thumb).toHaveStyle({ width: '240px', height: '240px' });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('shows a live "n/max characters" counter for an editable caption, and can hide it', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<StimulusCard caption="Look" onCaptionChange={() => {}} maxLength={2000} />);
+    expect(screen.getByText('4/2000 characters')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Stimulus caption/ }));
+    await user.type(screen.getByRole('textbox', { name: /Stimulus caption/ }), '!!');
+    expect(screen.getByText('6/2000 characters')).toBeInTheDocument();
+    rerender(<StimulusCard caption="Look" onCaptionChange={() => {}} maxLength={2000} showCounter={false} />);
+    expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
+    rerender(<StimulusCard caption="Look" maxLength={2000} />);
+    expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
   });
 
   it('removes with a labelled button, and hides it without onRemove', async () => {
