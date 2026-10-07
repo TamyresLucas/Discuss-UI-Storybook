@@ -42,7 +42,7 @@ export function MediaInfo({ name, details, onRemove, removeLabel, large, classNa
 }
 
 export interface ImagePreviewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
-  /** The image (an `<img>` filling the area). Leave empty for the placeholder fill. */
+  /** The image (an `<img>`). The preview area is as tall as the image at full width, up to 336px. Leave empty for the fixed-height placeholder fill. */
   children?: React.ReactNode;
   name: string;
   details?: string[];
@@ -53,7 +53,15 @@ export interface ImagePreviewProps extends Omit<React.HTMLAttributes<HTMLDivElem
 export const ImagePreview = React.forwardRef<HTMLDivElement, ImagePreviewProps>(
   ({ className, children, name, details, onRemove, ...props }, ref) => (
     <div ref={ref} className={cn('flex w-full flex-col overflow-hidden rounded-lg border border-border', className)} {...props}>
-      <div className="flex h-84 w-full items-center justify-center bg-accent-soft [&>img]:size-full [&>img]:object-contain">{children}</div>
+      <div
+        className={cn(
+          'flex w-full items-center justify-center bg-accent-soft',
+          // With an image the area hugs it (full width, its own height, at most 336px tall); the empty placeholder keeps the fixed height.
+          children ? '[&>img]:block [&>img]:h-auto [&>img]:max-h-84 [&>img]:w-full [&>img]:object-contain' : 'h-84',
+        )}
+      >
+        {children}
+      </div>
       <MediaInfo name={name} details={details} onRemove={onRemove} large />
     </div>
   ),

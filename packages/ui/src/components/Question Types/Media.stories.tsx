@@ -46,3 +46,17 @@ function Photos() {
 }
 
 export const Photo: StoryObj<typeof ImagePreview> = { render: () => <Photos /> };
+
+// A 16x10 PNG, so the story works offline: the preview area takes the image's own proportions.
+const wideImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAKCAIAAAAy3EnLAAAAFElEQVR4nGPodblJEmIY1TA0NQAAsIwKUAgH120AAAAASUVORK5CYII=';
+
+/** With an image, the preview area hugs it: full width, its own height (up to 336px). The empty one above keeps the fixed height. */
+export const PhotoHugsImage: StoryObj<typeof ImagePreview> = {
+  render: () => (
+    <div className="w-107.5">
+      <ImagePreview name="wide_photo.png" details={['10KB']} onRemove={() => {}}>
+        <img alt="A wide sample" src={wideImage} />
+      </ImagePreview>
+    </div>
+  ),
+};
