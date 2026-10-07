@@ -138,14 +138,9 @@ export const QuestionEditorCard = React.forwardRef<
                 </p>
                 <div className="flex items-center gap-2">
                   {onAdd && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Add choice"
-                      onClick={onAdd}
-                    >
+                    <Button type="button" variant="outline" onClick={onAdd}>
                       <Plus size={16} aria-hidden />
+                      Add choice
                     </Button>
                   )}
                   {onPaste && (

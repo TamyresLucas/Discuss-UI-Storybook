@@ -29,6 +29,14 @@ describe('QuestionEditorCard', () => {
     expect(onAdd).toHaveBeenCalledTimes(1);
   });
 
+  it('shows the add-choice action as an outline button with a visible label', () => {
+    render(<QuestionEditorCard active number={1} title="Hi" onAdd={() => {}} onPaste={() => {}} />);
+    const add = screen.getByRole('button', { name: 'Add choice' });
+    expect(add).toHaveTextContent('Add choice');
+    expect(add).toHaveClass('border');
+    expect(screen.getByRole('button', { name: 'Paste choices' })).not.toHaveTextContent('Paste');
+  });
+
   it('has no a11y violations', async () => {
     const { container } = render(<QuestionEditorCard active number={1} title="Hi" countLabel="1/20" onAdd={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();
