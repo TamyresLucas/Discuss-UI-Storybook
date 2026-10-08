@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.10.0
+
+### Minor Changes
+
+- [#53](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/53) [`45ffca4`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/45ffca41d4dc75a71b27c37548f7207ba8543774) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - Add the `screen-recording` question type: `QuestionType` now includes `'screen-recording'`, and `QuestionTypeIcon` / `QuestionNavItem` render a monitor-play glyph for it. Additive; existing types are unchanged.
+
 ## 0.9.2
 
 ### Patch Changes
