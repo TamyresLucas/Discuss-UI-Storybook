@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { Button } from '../Buttons & Actions/Button';
 import { ActivityStructure } from './ActivityStructure';
 
 const meta = {
@@ -37,3 +38,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const WithAction: Story = {
+  args: { action: <Button variant="outline">Settings</Button> },
+};

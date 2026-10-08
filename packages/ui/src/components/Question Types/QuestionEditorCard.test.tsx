@@ -126,9 +126,9 @@ describe('ActivityStructure', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it('the summary title uses the primary colour and the card has the same 16px radius as the question cards', () => {
+  it('the summary title uses the default foreground colour and the card has the same 16px radius as the question cards', () => {
     const { container } = render(<ActivityStructure title="Activity Summary" stats={[]} />);
-    expect(screen.getByRole('heading', { name: 'Activity Summary' })).toHaveClass('text-primary');
+    expect(screen.getByRole('heading', { name: 'Activity Summary' })).toHaveClass('text-surface-foreground');
     expect(container.querySelector('section')).toHaveClass('rounded-xl');
     expect(container.querySelector('section')).not.toHaveClass('rounded-2xl');
   });
@@ -158,7 +158,7 @@ describe('ActivityStructure', () => {
         <p>Understand why people stay.</p>
       </ActivityStructure>,
     );
-    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-heading-h3', 'text-primary');
+    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-body-section', 'text-surface-foreground');
     expect(screen.getByText('Understand why people stay.')).toBeInTheDocument();
     expect(container.querySelector('.grid')).not.toBeInTheDocument();
     expect(container.querySelector('section')).toHaveClass('rounded-xl', 'bg-surface');
