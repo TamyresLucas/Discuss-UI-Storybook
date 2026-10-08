@@ -20,6 +20,8 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   onTitleChange?: (title: string) => void;
   /** Editor mode: action buttons (copy, delete, preview, AI) revealed on hover or focus. */
   actions?: React.ReactNode;
+  /** Editor mode: content shown right beside the "Question N" tag, e.g. the time allowed for the question. */
+  meta?: React.ReactNode;
   /** Editor mode: title length limit. */
   maxLength?: number;
   /** Editor mode: the question is being edited — the number tag turns accent. */
@@ -40,7 +42,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, maxLength = 2000, active, showCounter = true, dragHandleProps, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -54,6 +56,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
       return (
         <div ref={ref} className={cn('group/header flex w-full flex-col gap-2', className)} {...props}>
           <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
             <span
               aria-label={dragHandleProps ? `Reorder question ${number}` : undefined}
               {...dragHandleProps}
@@ -75,6 +78,8 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               />
               Question {number}
             </span>
+            {meta}
+            </div>
             {actions && (
               <div className={cn(
                   'flex items-center gap-2 opacity-0 transition-opacity group-focus-within/header:opacity-100 group-hover/header:opacity-100',

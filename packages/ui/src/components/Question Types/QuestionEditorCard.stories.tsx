@@ -108,3 +108,7 @@ export const OpenEnd: Story = {
 export const WithError: Story = {
   render: () => <Editable error="Not available in Self-Paced" />,
 };
+
+export const WithMeta: Story = {
+  render: () => <Editable meta={<span className="text-ui-caption text-secondary-muted-foreground">5 min</span>} />,
+};

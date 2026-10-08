@@ -39,6 +39,8 @@ export interface QuestionEditorCardProps extends Omit<
   onPaste?: () => void;
   /** Inline error shown at the bottom of the card, e.g. "Not available in Self-Paced". Keep it as short as possible. */
   error?: React.ReactNode;
+  /** Content right beside the "Question N" tag, e.g. the time allowed for the question. */
+  meta?: React.ReactNode;
   /** Optional strip under the card body, e.g. an "Inferred" assumption note. */
   note?: React.ReactNode;
   /** Makes the "Question N" tag a drag handle for reordering. See `QuestionHeader`'s `dragHandleProps`. */
@@ -69,6 +71,7 @@ export const QuestionEditorCard = React.forwardRef<
       onPaste,
       note,
       error,
+      meta,
       dragHandleProps,
       children,
       ...props
@@ -98,6 +101,7 @@ export const QuestionEditorCard = React.forwardRef<
                 active={active}
                 showCounter={!!active}
                 dragHandleProps={dragHandleProps}
+                meta={meta}
                 maxLength={maxLength}
                 actions={
                   actions ?? (
