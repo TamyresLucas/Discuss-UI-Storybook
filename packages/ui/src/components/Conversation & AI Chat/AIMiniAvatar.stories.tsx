@@ -10,7 +10,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The AI mark with an optional status line (Thinking, Executing, Working on it + elapsed time). Pulses while busy, unless the user prefers reduced motion. Announced politely to screen readers. Source: Custom. Figma: AI Mini Avatar (57).',
+          'The AI mark with an optional status line (Thinking, Executing, Working on it + elapsed time). Draws itself on, left to right, in a loop while busy, unless the user prefers reduced motion. Announced politely to screen readers. Source: Custom. Figma: AI Mini Avatar (57).',
       },
     },
   },

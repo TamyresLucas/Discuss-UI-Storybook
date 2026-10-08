@@ -26,6 +26,16 @@ describe('AIMiniAvatar', () => {
     expect(screen.queryByText('45 s')).not.toBeInTheDocument();
   });
 
+  it('draws the mark on while busy, and keeps it still when idle or when motion is reduced', () => {
+    const { container, rerender } = render(<AIMiniAvatar status="thinking" />);
+    const mark = () => container.querySelector('svg')!;
+    // `motion-safe:` keeps the animation out of the way for users who prefer reduced motion.
+    expect(mark()).toHaveClass('motion-safe:animate-ai-draw-on');
+    expect(mark()).not.toHaveClass('motion-safe:animate-pulse');
+    rerender(<AIMiniAvatar status="idle" />);
+    expect(mark()).not.toHaveClass('motion-safe:animate-ai-draw-on');
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<AIMiniAvatar status="working" elapsed="45 s" />);
     expect(await axe(container)).toHaveNoViolations();

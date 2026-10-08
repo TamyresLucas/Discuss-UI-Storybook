@@ -21,6 +21,7 @@ export interface AIMiniAvatarProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 // Figma: AI Mini Avatar (57) › AI feedback — the accent squiggle mark with an optional status line.
+// While busy the mark draws itself on, left to right, and repeats (still under prefers-reduced-motion).
 export const AIMiniAvatar = React.forwardRef<HTMLDivElement, AIMiniAvatarProps>(
   ({ className, status = 'idle', label, elapsed, ...props }, ref) => {
     const glyph = status === 'working' ? AI_GLYPH_WORKING : AI_GLYPH_THINKING;
@@ -40,7 +41,7 @@ export const AIMiniAvatar = React.forwardRef<HTMLDivElement, AIMiniAvatarProps>(
           className={cn(
             'h-5.75 shrink-0 fill-accent',
             status === 'working' ? 'w-5' : 'w-5.25',
-            busy && 'motion-safe:animate-pulse',
+            busy && 'motion-safe:animate-ai-draw-on',
           )}
         >
           <path d={glyph.d} />

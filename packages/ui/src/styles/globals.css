@@ -432,3 +432,25 @@ body {
     outline-offset: var(--sys-focus-ring-offset);
   }
 }
+
+/*
+ * AI mark "draw-on": the glyph traces itself in from left to right, holds, then
+ * clears the same way and repeats. Used by AIMiniAvatar while the AI is busy;
+ * always apply it behind `motion-safe:` so reduced-motion users get the still mark.
+ */
+@keyframes ai-draw-on {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  50%,
+  72% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@utility animate-ai-draw-on {
+  animation: ai-draw-on 2.4s ease-in-out infinite;
+}
