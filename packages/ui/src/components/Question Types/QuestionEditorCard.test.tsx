@@ -158,7 +158,7 @@ describe('ActivityStructure', () => {
         <p>Understand why people stay.</p>
       </ActivityStructure>,
     );
-    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-heading-h3', 'text-primary');
+    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-body-section', 'text-primary');
     expect(screen.getByText('Understand why people stay.')).toBeInTheDocument();
     expect(container.querySelector('.grid')).not.toBeInTheDocument();
     expect(container.querySelector('section')).toHaveClass('rounded-xl', 'bg-surface');

@@ -23,6 +23,8 @@ export interface ActivityStructureProps extends Omit<React.HTMLAttributes<HTMLEl
   stats: ActivityStat[];
   /** Text sections (e.g. Research Goal, Target Audience), optionally with tags. */
   sections?: ActivitySection[];
+  /** Optional control (e.g. a button) shown at the right of the title. */
+  action?: React.ReactNode;
   /** Called with `(sectionId, tag)` when a tag's remove button is pressed. Omit for read-only tags. */
   onRemoveTag?: (sectionId: string, tag: string) => void;
   /** Called with the section id by the dashed "Add tag" chip. Omit to hide it. */
@@ -37,13 +39,16 @@ export interface ActivityStructureProps extends Omit<React.HTMLAttributes<HTMLEl
 
 // Figma: Activity control (361:5214) › Activity structure — summary card with stat tiles and text sections with tags; also usable as a single-purpose widget via children.
 export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructureProps>(
-  ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', children, ...props }, ref) => (
+  ({ className, title = 'Activity Structure', stats, sections, onRemoveTag, onAddTag, addTagLabel = 'Add tag', action, children, ...props }, ref) => (
     <section
       ref={ref}
       className={cn('flex w-full max-w-96.5 flex-col gap-4 rounded-xl bg-surface p-4', className)}
       {...props}
     >
-      <h3 className="text-heading-h3 text-primary">{title}</h3>
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-body-section text-primary">{title}</h3>
+        {action}
+      </div>
       {stats.length > 0 && (
         <div className="grid grid-cols-2 gap-3">
           {stats.map(({ id, ...stat }) => (
