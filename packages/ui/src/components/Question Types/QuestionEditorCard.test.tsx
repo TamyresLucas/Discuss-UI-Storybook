@@ -26,6 +26,12 @@ describe('QuestionEditorCard', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
+  it('shows meta content right beside the question tag, before the actions', () => {
+    render(<QuestionEditorCard number={1} title="Hi" meta={<span>5 min</span>} />);
+    const tag = screen.getByText('Question 1');
+    expect(tag.nextElementSibling).toBe(screen.getByText('5 min'));
+  });
+
   it('shows no error by default', () => {
     render(<QuestionEditorCard number={1} title="Hi" />);
     expect(screen.queryByText(/Not available/)).not.toBeInTheDocument();
