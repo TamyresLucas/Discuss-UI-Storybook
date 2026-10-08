@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.14.0
+
+### Minor Changes
+
+- [#64](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/64) [`9232bf1`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/9232bf131ac2792412d943307d75a52a892d67b1) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - AIMiniAvatar: while the AI is busy (thinking, executing, working) the orchid mark now draws itself on from left to right, holds, clears and repeats, instead of pulsing. Nothing changes for callers; users who prefer reduced motion still see the static mark. Adds the `animate-ai-draw-on` utility.
+
 ## 0.13.0
 
 ### Minor Changes
