@@ -6,7 +6,7 @@ import { ActivityStructure } from './ActivityStructure';
 describe('ActivityStructure', () => {
   it('styles the title with the section text token', () => {
     render(<ActivityStructure title="Research Goal" stats={[]} />);
-    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-body-section', 'text-primary');
+    expect(screen.getByRole('heading', { name: 'Research Goal' })).toHaveClass('text-body-section', 'text-surface-foreground');
   });
 
   it('shows the action at the right of the title, in the same row', () => {

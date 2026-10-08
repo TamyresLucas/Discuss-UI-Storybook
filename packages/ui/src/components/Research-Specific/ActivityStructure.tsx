@@ -46,7 +46,7 @@ export const ActivityStructure = React.forwardRef<HTMLElement, ActivityStructure
       {...props}
     >
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-body-section text-primary">{title}</h3>
+        <h3 className="text-body-section text-surface-foreground">{title}</h3>
         {action}
       </div>
       {stats.length > 0 && (
