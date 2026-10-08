@@ -1,5 +1,13 @@
 # @discuss-ds/ui
 
+## 0.10.1
+
+### Patch Changes
+
+- [#55](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/55) [`0e11633`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/0e116337894118c90dfe7924e72c7feee31fca69) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - The `screen-recording` question type now uses a duotone camera icon instead of the monitor-play glyph.
+
+- [#57](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/57) [`610bc88`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/610bc888388654b2a5337d50072a08782b0680c2) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - The `screen-recording` question type now uses a duotone video camera icon.
+
 ## 0.10.0
 
 ### Minor Changes
