@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.13.0
+
+### Minor Changes
+
+- [#62](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/62) [`19d61b8`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/19d61b844cb1e3d8fb7c8e4c9ffebad3ad6fb823) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard` and `QuestionHeader` (editor mode): new optional `meta` prop shows content right beside the "Question N" tag, for example the time allowed for the question. No change unless `meta` is passed.
+
 ## 0.12.0
 
 ### Minor Changes
