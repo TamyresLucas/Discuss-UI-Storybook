@@ -18,6 +18,19 @@ describe('QuestionEditorCard', () => {
     expect(screen.getByText('2/2000 characters')).toBeInTheDocument();
   });
 
+  it('shows an inline error at the bottom of the card, in the destructive foreground, with no accessibility violations', async () => {
+    const { container } = render(<QuestionEditorCard number={1} title="Hi" error="Not available in Self-Paced" />);
+    const message = screen.getByText('Not available in Self-Paced');
+    expect(message.closest('p')).toHaveClass('text-destructive-foreground');
+    expect(message.closest('p')?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('shows no error by default', () => {
+    render(<QuestionEditorCard number={1} title="Hi" />);
+    expect(screen.queryByText(/Not available/)).not.toBeInTheDocument();
+  });
+
   it('wires header and footer actions', async () => {
     const user = userEvent.setup();
     const onDelete = vi.fn();
@@ -90,7 +103,7 @@ describe('QuestionNavItem', () => {
 
   it('keeps the warning icon destructive whether or not it is selected', () => {
     const { container } = render(<QuestionNavItem error>One</QuestionNavItem>);
-    expect(container.querySelector('svg.text-destructive')).toBeInTheDocument();
+    expect(container.querySelector('svg.text-destructive-foreground')).toBeInTheDocument();
     expect(container.querySelector('svg.text-muted-foreground')).not.toBeInTheDocument();
   });
 

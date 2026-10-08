@@ -6,6 +6,7 @@ import {
   Plus,
   Sparkle,
   Trash,
+  Warning,
 } from "@phosphor-icons/react";
 
 import { cn } from "../../lib/utils";
@@ -36,6 +37,8 @@ export interface QuestionEditorCardProps extends Omit<
   onAdd?: () => void;
   /** Footer: opens paste-many-choices. */
   onPaste?: () => void;
+  /** Inline error shown at the bottom of the card, e.g. "Not available in Self-Paced". Keep it as short as possible. */
+  error?: React.ReactNode;
   /** Optional strip under the card body, e.g. an "Inferred" assumption note. */
   note?: React.ReactNode;
   /** Makes the "Question N" tag a drag handle for reordering. See `QuestionHeader`'s `dragHandleProps`. */
@@ -65,6 +68,7 @@ export const QuestionEditorCard = React.forwardRef<
       onAdd,
       onPaste,
       note,
+      error,
       dragHandleProps,
       children,
       ...props
@@ -131,6 +135,12 @@ export const QuestionEditorCard = React.forwardRef<
               />
               {children}
             </div>
+            {error && (
+              <p className="flex items-center gap-1 text-ui-caption text-destructive-foreground">
+                <Warning size={16} aria-hidden className="shrink-0" />
+                {error}
+              </p>
+            )}
             {footer && (
               <div className="flex items-center justify-between">
                 <p className="text-ui-caption text-secondary-muted-foreground">
