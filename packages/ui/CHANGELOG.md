@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.11.0
+
+### Minor Changes
+
+- [#58](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/58) [`d73d2ac`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/d73d2ac0ef56d834871562c243edcf420ceef57a) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ActivityStructure`: the title now uses the section text style (`text-body-section`, semibold 16px) in the default foreground colour (`text-surface-foreground`) instead of the purple h3 heading style, and a new optional `action` prop shows a control (e.g. a Settings button) at the right of the title. Without `action` the layout is unchanged apart from the title text style.
+
 ## 0.10.1
 
 ### Patch Changes
