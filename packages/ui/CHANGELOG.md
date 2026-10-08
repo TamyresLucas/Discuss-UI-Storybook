@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.12.0
+
+### Minor Changes
+
+- [#60](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/60) [`503586f`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/503586f5c36ed1379939234e45a83ea4c4b5409a) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard`: new optional `error` prop shows a short inline message at the bottom of the card (warning icon, destructive foreground). `QuestionNavItem`'s error warning icon now uses the destructive foreground token (same colour, correct token).
+
 ## 0.11.0
 
 ### Minor Changes
