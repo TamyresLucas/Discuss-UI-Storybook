@@ -25,6 +25,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const OpenEnd: Story = { args: { questionType: 'open-end', children: 'What do you enjoy most about our coffee?' } };
+export const ScreenRecording: Story = { args: { questionType: 'screen-recording', children: 'Show us how you usually plan your week' } };
 export const Selected: Story = { args: { selected: true } };
 export const Error: Story = { args: { error: true } };
 export const SelectedWithError: Story = { args: { selected: true, error: true } };

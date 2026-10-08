@@ -359,6 +359,17 @@ describe('QuestionCard / QuestionTypeIcon', () => {
   });
 });
 
+describe('QuestionTypeIcon', () => {
+  it.each(['select-one', 'select-multiple', 'ranking', 'upload', 'rating', 'open-end', 'screen-recording'] as const)(
+    'renders a decorative icon for %s',
+    (type) => {
+      const { container } = render(<QuestionTypeIcon type={type} />);
+      const svg = container.querySelector('svg');
+      expect(svg).toHaveAttribute('aria-hidden', 'true');
+    },
+  );
+});
+
 describe('ImagePreview height', () => {
   it('hugs an image (no fixed height, capped at 336px) and keeps the fixed height for the empty placeholder', () => {
     const { container, rerender } = render(<ImagePreview name="photo.png" />);
