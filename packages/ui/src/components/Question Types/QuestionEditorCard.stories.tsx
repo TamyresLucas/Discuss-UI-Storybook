@@ -104,3 +104,7 @@ export const OpenEnd: Story = {
     </Editable>
   ),
 };
+
+export const WithError: Story = {
+  render: () => <Editable error="Not available in Self-Paced" />,
+};

@@ -42,7 +42,7 @@ export const QuestionNavItem = React.forwardRef<HTMLButtonElement, QuestionNavIt
           <DotsSixVertical size={16} className="hidden group-hover/nav:block" />
           <span className="group-hover/nav:hidden">
             {error ? (
-              <Warning size={16} className="text-destructive" />
+              <Warning size={16} className="text-destructive-foreground" />
             ) : (
               <QuestionTypeIcon
                 type={questionType}
