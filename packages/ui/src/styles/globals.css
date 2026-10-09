@@ -68,6 +68,7 @@
   /* Structural */
   --color-border: var(--sys-color-border);
   --color-input: var(--sys-color-input);
+  --color-input-muted: var(--sys-color-input-muted);
   /* Brand override: selected controls + focus rings use `ring`, not `primary`. */
   --color-ring: var(--sys-color-ring);
 

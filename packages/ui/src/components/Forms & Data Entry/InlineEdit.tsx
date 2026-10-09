@@ -154,7 +154,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
                   // one. The extra 1px of bottom padding keeps the height identical so the text never jumps.
                   selected
                   ? 'rounded-none border-b-2 border-accent-foreground py-1'
-                  : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input enabled:focus-visible:border-input'
+                  : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input-muted enabled:focus-visible:border-input-muted'
                 : 'rounded-md border border-transparent py-1 enabled:focus-visible:border-input-accent',
               'enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
               textClasses,

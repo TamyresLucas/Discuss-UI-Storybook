@@ -40,7 +40,7 @@ export const ProjectSelector = React.forwardRef<HTMLButtonElement, ProjectSelect
       'inline-flex h-10 items-center gap-2 rounded-full border bg-surface px-3 py-2 text-ui-label whitespace-nowrap text-surface-foreground transition-colors',
       selected
         ? 'border-border'
-        : 'border-input hover:border-input hover:bg-accent-soft hover:text-accent-soft-foreground data-[state=open]:bg-accent-soft data-[state=open]:text-accent-soft-foreground',
+        : 'border-input-muted hover:border-input-muted hover:bg-accent-soft hover:text-accent-soft-foreground data-[state=open]:bg-accent-soft data-[state=open]:text-accent-soft-foreground',
       className,
     );
     const content = (

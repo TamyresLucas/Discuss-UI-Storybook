@@ -114,7 +114,7 @@ The `[data-theme='dark']` block in `tokens.css` is sourced from the Figma
 Re-synced against the Figma file's local variables and effect styles on
 2026-10-05. Primitives, spacing, typography and z-index were unchanged; radius
 (`xs`, `xxs`), opacity (30–95), shadows (`xs`…`2xl`, `none`), dark mode and the
-Figma-only semantic tokens (`surface`, `accent-muted`, `input-accent`,
+Figma-only semantic tokens (`surface`, `accent-muted`, `input-accent`, `input-muted`,
 `secondary-muted-foreground`, `info-border`) were added; card/popover,
 `muted-foreground`, `info`, and the `accent-soft`/`primary-soft` triplets were
 re-pointed to match Figma.
@@ -147,7 +147,7 @@ mirrored as `sys-text-*` tokens + `text-<name>` utilities (the auto-line-height
   `muted-foreground` is for placeholders and disabled states.
 - Button outline borders (`border`) and disabled-state text are exempt from
   WCAG contrast (a labelled button is identified by its label; disabled
-  controls are exempt). Form-field borders (`input`) are not.
+  controls are exempt). Form-field borders are not: checkbox and radio borders use `input` (`plum-muted-500`, about 3.3:1 on white); every other input field (input, textarea, select, date and time pickers, search) uses `input-muted` (`plum-muted-300`, about 1.9:1 on white, below the 3:1 WCAG asks for control borders). The lighter border is the Figma design; keep the field's focus ring (`input-accent`) visible to compensate.
 
 ### Dark overlays
 

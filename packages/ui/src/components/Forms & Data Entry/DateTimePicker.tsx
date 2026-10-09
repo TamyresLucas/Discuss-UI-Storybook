@@ -114,7 +114,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
                 ref={ref}
                 type="button"
                 {...control}
-                className="flex h-10 w-full items-center gap-3 rounded-md border border-input bg-surface px-3 py-2.5 text-left shadow-xs transition-colors hover:border-input-accent data-[state=open]:border-input-accent"
+                className="flex h-10 w-full items-center gap-3 rounded-md border border-input-muted bg-surface px-3 py-2.5 text-left shadow-xs transition-colors hover:border-input-accent data-[state=open]:border-input-accent"
               >
                 <CalendarBlank size={24} aria-hidden className="shrink-0 text-surface-foreground" />
                 <span className={cn('truncate', current ? 'text-ui-label-large text-surface-foreground' : 'text-body-base text-muted-foreground')}>

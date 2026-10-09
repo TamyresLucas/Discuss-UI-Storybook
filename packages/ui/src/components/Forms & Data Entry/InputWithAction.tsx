@@ -31,7 +31,7 @@ export const InputWithAction = React.forwardRef<HTMLInputElement, InputWithActio
           className={cn(
             'flex min-h-10 w-full items-center gap-2 rounded-md border bg-surface py-2 pr-1 pl-3 transition-colors',
             'focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring',
-            status === 'error' ? 'border-destructive' : 'border-input hover:border-input-accent focus-within:border-input',
+            status === 'error' ? 'border-destructive' : 'border-input-muted hover:border-input-accent focus-within:border-input-muted',
             tags ? 'pl-1' : null,
             disabled && 'opacity-50',
             className,

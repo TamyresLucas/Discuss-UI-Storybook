@@ -89,14 +89,14 @@ describe('InlineEdit', () => {
     it('hover uses the input border colour; only selected takes the accent', () => {
       const { rerender } = render(<InlineEdit variant="question" aria-label="Question" defaultValue="Hi" />);
       const idle = screen.getByRole('button');
-      expect(idle).toHaveClass('border-transparent', 'enabled:hover:border-input');
+      expect(idle).toHaveClass('border-transparent', 'enabled:hover:border-input-muted');
       expect(idle).not.toHaveClass('border-accent-foreground');
       rerender(<InlineEdit variant="question" selected aria-label="Question" defaultValue="Hi" />);
       const selected = screen.getByRole('button');
       expect(selected).toHaveClass('border-accent-foreground');
       expect(selected).not.toHaveClass('border-transparent');
       // Hovering a selected question must not drop back to the input colour.
-      expect(selected).not.toHaveClass('enabled:hover:border-input');
+      expect(selected).not.toHaveClass('enabled:hover:border-input-muted');
     });
 
     it('hover border is 1px and the selected border is the bolder 2px, at the same height', () => {
