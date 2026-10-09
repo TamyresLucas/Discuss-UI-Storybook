@@ -14,13 +14,17 @@ const filter =
 const toggle =
   'rounded-sm text-secondary-muted-foreground hover:text-surface-foreground data-[state=active]:bg-surface data-[state=active]:text-surface-foreground';
 
+// Page-level tab bar: the tab fills the bar's height; the active one is semibold with a 2px accent underline.
+const underline =
+  'relative h-full rounded-none px-4 py-3 font-medium text-secondary-muted-foreground hover:text-surface-foreground data-[state=active]:font-semibold data-[state=active]:text-surface-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:after:bg-accent';
+
 export const TabItem = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Trigger>, TabItemProps>(
   ({ className, ...props }, ref) => {
     const variant = React.useContext(TabNavigationContext);
     return (
       <TabsPrimitive.Trigger
         ref={ref}
-        className={cn(base, variant === 'toggle' ? toggle : filter, className)}
+        className={cn(base, variant === 'toggle' ? toggle : variant === 'underline' ? underline : filter, className)}
         {...props}
       />
     );
