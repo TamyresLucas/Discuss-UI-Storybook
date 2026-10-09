@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.16.0
+
+### Minor Changes
+
+- [#70](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/70) [`d0d0a23`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/d0d0a23de66894ce7d569f13c5129faad72e83d9) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - QuestionOptionEditor: new optional `locked` prop keeps the label editable but removes the drag grip and the remove and add buttons, for editing a translation of options that are shared with the original. Nothing changes for existing callers.
+
 ## 0.15.0
 
 ### Minor Changes
