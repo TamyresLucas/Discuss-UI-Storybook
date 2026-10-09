@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.18.0
+
+### Minor Changes
+
+- [#74](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/74) [`ec31a44`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/ec31a44c4d73c781817c9481837ebed319f07de3) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - TabNavigation and TabItem: new `underline` variant for a page-level tab bar (the active tab is semibold with a 2px accent underline). StatCard: new `subtle` variant, a tinted card with no border for stats on a white panel. Nothing changes for existing callers.
+
 ## 0.17.0
 
 ### Minor Changes
