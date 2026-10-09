@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.17.0
+
+### Minor Changes
+
+- [#72](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/72) [`8956850`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/89568503fd76b323d9af660ed59ad1b41f9b3fd1) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - QuestionHeader, QuestionEditorCard and QuestionNavItem: new optional `showDragHandle` prop (default true). Set it to false when the question or row can't be moved, so the grip icon is not shown on hover and the tag or row doesn't shift to make room for it. Nothing changes for existing callers.
+
 ## 0.16.0
 
 ### Minor Changes
