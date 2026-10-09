@@ -14,11 +14,16 @@ export interface QuestionNavItemProps extends React.ButtonHTMLAttributes<HTMLBut
   error?: boolean;
   /** Render the child element instead of a `<button>` (e.g. a router link). */
   asChild?: boolean;
+  /**
+   * Whether hovering swaps the type icon for the drag grip. Defaults to true. Set it to false when the row can't be moved (for
+   * example while a translation is being edited), so the icon stays and the row doesn't suggest dragging.
+   */
+  showDragHandle?: boolean;
 }
 
 // Figma: Question navigation (357:4645) — one row per question. Question-type icon (muted; accent when selected), warning on error (destructive border when selected, soft red fill on hover), drag handle on hover. Label is 14px.
 export const QuestionNavItem = React.forwardRef<HTMLButtonElement, QuestionNavItemProps>(
-  ({ className, questionType = 'select-one', selected, error, asChild, children, ...props }, ref) => {
+  ({ className, questionType = 'select-one', selected, error, asChild, showDragHandle = true, children, ...props }, ref) => {
     const Comp = asChild ? Slot.Root : 'button';
     return (
       <Comp
@@ -39,8 +44,8 @@ export const QuestionNavItem = React.forwardRef<HTMLButtonElement, QuestionNavIt
         {...props}
       >
         <span aria-hidden="true" className="relative flex size-4 shrink-0 items-center justify-center">
-          <DotsSixVertical size={16} className="hidden group-hover/nav:block" />
-          <span className="group-hover/nav:hidden">
+          {showDragHandle && <DotsSixVertical size={16} className="hidden group-hover/nav:block" />}
+          <span className={showDragHandle ? 'group-hover/nav:hidden' : undefined}>
             {error ? (
               <Warning size={16} className="text-destructive-foreground" />
             ) : (

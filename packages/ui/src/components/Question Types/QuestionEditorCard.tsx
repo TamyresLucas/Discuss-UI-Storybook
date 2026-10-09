@@ -45,6 +45,8 @@ export interface QuestionEditorCardProps extends Omit<
   note?: React.ReactNode;
   /** Makes the "Question N" tag a drag handle for reordering. See `QuestionHeader`'s `dragHandleProps`. */
   dragHandleProps?: React.ComponentPropsWithRef<'span'>;
+  /** Whether the grip icon shows in the "Question N" tag on hover. Defaults to true; set false when the card can't be moved. See `QuestionHeader`. */
+  showDragHandle?: boolean;
 }
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
@@ -73,6 +75,7 @@ export const QuestionEditorCard = React.forwardRef<
       error,
       meta,
       dragHandleProps,
+      showDragHandle,
       children,
       ...props
     },
@@ -101,6 +104,7 @@ export const QuestionEditorCard = React.forwardRef<
                 active={active}
                 showCounter={!!active}
                 dragHandleProps={dragHandleProps}
+                showDragHandle={showDragHandle}
                 meta={meta}
                 maxLength={maxLength}
                 actions={

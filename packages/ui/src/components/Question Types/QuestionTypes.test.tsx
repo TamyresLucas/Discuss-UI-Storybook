@@ -10,6 +10,7 @@ import { ImagePreview, ImageThumbnails, VideoPlayer } from './Media';
 import { OpenEndAnswer } from './OpenEndAnswer';
 import { QuestionCard } from './QuestionCard';
 import { QuestionHeader } from './QuestionHeader';
+import { QuestionNavItem } from './QuestionNavItem';
 import { QuestionOption, QuestionOptionEditor, QuestionOtherOption } from './QuestionOption';
 import { QuestionTypeIcon } from './QuestionTypeIcon';
 import { RankList } from './RankList';
@@ -61,6 +62,24 @@ describe('QuestionHeader', () => {
     expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-transparent');
     rerender(<QuestionHeader number={1} editor active title="Hi" />);
     expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-accent-foreground');
+  });
+});
+
+describe('showDragHandle', () => {
+  it('QuestionHeader: shows the grip by default and leaves it out when the question cannot be moved', () => {
+    const { container, rerender } = render(<QuestionHeader editor number={1} title="Q" />);
+    expect(container.querySelector('svg')).not.toBeNull();
+    rerender(<QuestionHeader editor number={1} title="Q" showDragHandle={false} />);
+    expect(container.querySelector('svg')).toBeNull();
+    expect(container.querySelector('.hover\\:pl-1')).toBeNull();
+  });
+
+  it('QuestionNavItem: swaps the type icon for the grip on hover by default, and keeps the icon when showDragHandle is false', () => {
+    const { container, rerender } = render(<QuestionNavItem questionType="open-end">Q</QuestionNavItem>);
+    expect(container.querySelectorAll('svg').length).toBe(2);
+    rerender(<QuestionNavItem questionType="open-end" showDragHandle={false}>Q</QuestionNavItem>);
+    expect(container.querySelectorAll('svg').length).toBe(1);
+    expect(container.querySelector('.group-hover\\/nav\\:hidden')).toBeNull();
   });
 });
 
