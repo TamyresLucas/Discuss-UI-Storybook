@@ -127,10 +127,16 @@ export interface QuestionOptionEditorProps {
    * the pointer; the row left behind in the list is dimmed by the caller.
    */
   lifted?: boolean;
+  /**
+   * Locks the row's place in the list: the label stays editable, but there is no drag grip (hover keeps the radio or checkbox
+   * indicator; a ranking row keeps its number) and no remove or add buttons. For editing a translation, where the options themselves
+   * are shared with the original.
+   */
+  locked?: boolean;
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind, rank, dragHandleProps, lifted }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
   // The grip: decorative unless the caller makes it a drag handle.
   const gripProps: React.ComponentPropsWithRef<'span'> = dragHandleProps
@@ -160,7 +166,7 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
       >
         {kind === 'rank' ? (
           <>
-            {grip}
+            {!locked && grip}
             <span
               aria-hidden="true"
               className="flex size-6 shrink-0 items-center justify-center rounded-full border border-border bg-background bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-ui-caption text-surface-foreground"
@@ -168,6 +174,10 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
               {rank}
             </span>
           </>
+        ) : reveal && locked ? (
+          <span aria-hidden="true" className="relative flex size-5 shrink-0 items-center justify-center">
+            <span className={cn('inline-flex size-4 border-2 border-input bg-surface', kind === 'radio' ? 'rounded-full' : 'rounded-xxs')} />
+          </span>
         ) : reveal ? (
           <span {...gripProps} className={cn('relative flex size-5 shrink-0 items-center justify-center', gripProps.className)}>
             <span
@@ -187,7 +197,7 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
               )}
             />
           </span>
-        ) : (
+        ) : locked ? null : (
           grip
         )}
         <input
@@ -197,19 +207,21 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
           className="min-w-0 flex-1 bg-transparent text-body-base text-surface-foreground outline-none"
         />
       </div>
-      <div
-        className={cn(
-          'flex items-center gap-2',
-          reveal && 'opacity-0 transition-opacity group-hover/option:opacity-100 group-focus-within/option:opacity-100',
-        )}
-      >
-        <Button type="button" variant="destructive" size="icon-sm" aria-label="Remove option" onClick={onRemove}>
-          <Trash size={16} aria-hidden />
-        </Button>
-        <Button type="button" variant="ghost" size="icon-sm" aria-label="Add option" onClick={onAdd}>
-          <Plus size={16} aria-hidden />
-        </Button>
-      </div>
+      {!locked && (
+        <div
+          className={cn(
+            'flex items-center gap-2',
+            reveal && 'opacity-0 transition-opacity group-hover/option:opacity-100 group-focus-within/option:opacity-100',
+          )}
+        >
+          <Button type="button" variant="destructive" size="icon-sm" aria-label="Remove option" onClick={onRemove}>
+            <Trash size={16} aria-hidden />
+          </Button>
+          <Button type="button" variant="ghost" size="icon-sm" aria-label="Add option" onClick={onAdd}>
+            <Plus size={16} aria-hidden />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
