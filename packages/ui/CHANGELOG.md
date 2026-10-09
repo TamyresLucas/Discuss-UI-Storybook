@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.18.1
+
+### Patch Changes
+
+- [#76](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/76) [`3e6596f`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/3e6596fecafadb0ca314c6a3e2ea51a146f0c5c1) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - StatCard `subtle` variant: the tint is now the secondary background colour (it was the page background, which is too faint on a white panel).
+
 ## 0.18.0
 
 ### Minor Changes
