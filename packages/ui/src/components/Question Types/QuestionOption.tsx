@@ -161,7 +161,7 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
           reveal
             ? // The border is always visible and does not change on hover; only the shadow lifts the row. The field being edited keeps the accent.
               cn('border-border group-hover/option:shadow-md group-focus-within/option:shadow-md', lifted && 'shadow-md')
-            : 'border-border hover:border-input hover:shadow-md',
+            : 'border-border hover:border-input-muted hover:shadow-md',
         )}
       >
         {kind === 'rank' ? (

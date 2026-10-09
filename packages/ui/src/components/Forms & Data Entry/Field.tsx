@@ -16,7 +16,7 @@ export function fieldSurfaceClasses(status: FieldStatus = 'default') {
     'border bg-surface text-surface-foreground transition-colors',
     status === 'success' && 'border-success-foreground',
     status === 'error' && 'border-destructive',
-    status === 'default' && 'border-input hover:border-input-accent',
+    status === 'default' && 'border-input-muted hover:border-input-accent',
   );
 }
 

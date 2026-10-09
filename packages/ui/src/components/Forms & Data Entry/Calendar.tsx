@@ -48,7 +48,7 @@ export function Calendar({
         month_caption: 'flex h-8 items-center justify-center',
         dropdowns: 'flex items-center gap-1',
         dropdown_root:
-          'relative inline-flex items-center rounded-md border border-input bg-surface px-3 py-1.5 text-body-small shadow-xs hover:border-input-accent',
+          'relative inline-flex items-center rounded-md border border-input-muted bg-surface px-3 py-1.5 text-body-small shadow-xs hover:border-input-accent',
         dropdown: 'absolute inset-0 cursor-pointer opacity-0',
         caption_label: 'flex items-center gap-2 text-body-small text-surface-foreground',
         month_grid: 'w-full border-collapse',

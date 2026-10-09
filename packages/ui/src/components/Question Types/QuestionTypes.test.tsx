@@ -108,7 +108,7 @@ describe('QuestionOption', () => {
     for (const name of ['Designer', 'Engineer']) {
       const row = screen.getByText(name).closest('label');
       expect(row).toHaveClass('border-border', 'hover:bg-accent-soft');
-      expect(row).not.toHaveClass('hover:border-input');
+      expect(row).not.toHaveClass('hover:border-input-muted');
       expect(row).toHaveClass('has-[[data-state=checked]]:border-accent-foreground');
       expect(row).not.toHaveClass('has-[[data-state=checked]]:hover:border-accent-foreground');
     }
@@ -222,7 +222,7 @@ describe('QuestionOption', () => {
     it('without a kind the row is the unchanged always-on editor', () => {
       const { container } = render(<QuestionOptionEditor label="A" />);
       const field = container.querySelector('input')!.parentElement!;
-      expect(field).toHaveClass('border-border', 'hover:border-input');
+      expect(field).toHaveClass('border-border', 'hover:border-input-muted');
       expect(field).not.toHaveClass('border-transparent');
       expect(screen.getByRole('button', { name: 'Remove option' }).parentElement).not.toHaveClass('opacity-0');
     });

@@ -155,7 +155,10 @@
   --sys-color-accent-muted: var(--sys-color-orchid-300);
 
   --sys-color-border: var(--sys-color-plum-muted-200);
+  /* Figma foreground-input: the border of checkbox and radio controls (and nothing else). */
   --sys-color-input: var(--sys-color-plum-muted-500);
+  /* Figma foreground-input-muted: the border of every other input field (input, textarea, select, date and time pickers, search...). */
+  --sys-color-input-muted: var(--sys-color-plum-muted-300);
   /* Figma foreground-input-accent: checked/selected control fill. */
   --sys-color-input-accent: var(--sys-color-orchid-500);
   /* Brand override: selected controls (checkbox/radio/switch/toggle) and focus
@@ -489,7 +492,8 @@
   --sys-color-muted-foreground: var(--sys-color-plum-muted-400);
 
   --sys-color-border: var(--sys-color-plum-muted-700);
-  --sys-color-input: var(--sys-color-plum-muted-500);
+  --sys-color-input: var(--sys-color-plum-muted-600);
+  --sys-color-input-muted: var(--sys-color-plum-muted-500);
   --sys-color-input-accent: var(--sys-color-orchid-500);
   --sys-color-ring: var(--sys-color-orchid-500);
 

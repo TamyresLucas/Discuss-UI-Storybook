@@ -34,7 +34,7 @@ export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
       <div
         className={cn(
           'flex h-10 w-full items-center gap-2 rounded-md border bg-surface px-3 py-2 transition-colors',
-          'border-input focus-within:border-input-accent focus-within:ring-1 focus-within:ring-input-accent',
+          'border-input-muted focus-within:border-input-accent focus-within:ring-1 focus-within:ring-input-accent',
           current !== '' && 'border-input-accent ring-1 ring-input-accent',
           disabled && 'opacity-50',
           className,

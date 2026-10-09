@@ -148,8 +148,12 @@
    "#d8d1df",
    "#6b5287"
   ],
-  "foreground-input-muted": [
+  "foreground-input": [
    "#9785ab",
+   "#816b99"
+  ],
+  "foreground-input-muted": [
+   "#c2b8ce",
    "#9785ab"
   ],
   "foreground-ring": [
