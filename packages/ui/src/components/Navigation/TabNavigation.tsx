@@ -4,8 +4,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '../../lib/utils';
 
-/** `filter` is the pill-shaped table filter; `toggle` is the icon-only mode switch. */
-export type TabNavigationVariant = 'filter' | 'toggle';
+/** `filter` is the pill-shaped table filter; `toggle` is the icon-only mode switch; `underline` is the page-level tab bar (give it the height of its bar, e.g. `h-16`; the active tab gets an accent underline). */
+export type TabNavigationVariant = 'filter' | 'toggle' | 'underline';
 
 export const TabNavigationContext = React.createContext<TabNavigationVariant>('filter');
 
@@ -14,6 +14,7 @@ const tabNavigationVariants = cva('inline-flex items-start gap-1 p-0.5', {
     variant: {
       filter: 'rounded-full border border-border bg-surface',
       toggle: 'rounded-md bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5',
+      underline: 'items-stretch p-0',
     },
   },
   defaultVariants: { variant: 'filter' },

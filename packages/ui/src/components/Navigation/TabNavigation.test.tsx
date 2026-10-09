@@ -56,6 +56,20 @@ describe('TabNavigation / TabItem', () => {
     expect(screen.getByRole('tab', { name: 'Code' })).toHaveClass('rounded-sm');
   });
 
+  it('styles items as a page-level tab bar inside the underline variant', () => {
+    render(
+      <Tabs defaultValue="design">
+        <TabNavigation variant="underline" aria-label="Sections" className="h-16">
+          <TabItem value="design">Design</TabItem>
+          <TabItem value="launch">Launch</TabItem>
+        </TabNavigation>
+      </Tabs>,
+    );
+    const tab = screen.getByRole('tab', { name: 'Design' });
+    expect(tab).toHaveClass('h-full', 'after:h-0.5', 'data-[state=active]:after:bg-accent');
+    expect(tab).not.toHaveClass('rounded-full');
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<Example />);
     expect(await axe(container)).toHaveNoViolations();

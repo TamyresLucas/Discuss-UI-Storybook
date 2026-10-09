@@ -22,3 +22,6 @@ export const Warning_: Story = {
   name: 'Warning',
   args: { variant: 'warning', value: '38', icon: <Warning size={24} className="text-warning-soft-foreground" /> },
 };
+
+/** A tinted card with no border, for stats on a white panel. */
+export const Subtle: Story = { args: { variant: 'subtle' } };

@@ -53,3 +53,15 @@ export const ModeToggle: Story = {
     </Tabs>
   ),
 };
+
+/** The page-level tab bar: the tab fills the bar's height and the active one gets an accent underline. */
+export const Underline: Story = {
+  render: () => (
+    <Tabs defaultValue="design">
+      <TabNavigation variant="underline" aria-label="Sections" className="h-16 border-b border-border">
+        <TabItem value="design">Design</TabItem>
+        <TabItem value="launch">Launch</TabItem>
+      </TabNavigation>
+    </Tabs>
+  ),
+};

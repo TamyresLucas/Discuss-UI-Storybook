@@ -7,6 +7,8 @@ const statCardVariants = cva('flex min-w-0 flex-col gap-2 rounded-md border p-3'
   variants: {
     variant: {
       default: 'border-border bg-transparent',
+      // A tinted card with no border, for stats on a white panel.
+      subtle: 'border-transparent bg-background',
       warning: 'border-warning-soft-border bg-warning-soft',
     },
   },
