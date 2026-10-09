@@ -21,11 +21,13 @@ export interface AIMiniAvatarProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 // Figma: AI Mini Avatar (57) › AI feedback — the accent squiggle mark with an optional status line.
-// While busy the mark draws itself on, left to right, and repeats (still under prefers-reduced-motion).
+// While busy the mark draws itself on along its own path, holds, clears the same way and repeats (still under prefers-reduced-motion).
 export const AIMiniAvatar = React.forwardRef<HTMLDivElement, AIMiniAvatarProps>(
   ({ className, status = 'idle', label, elapsed, ...props }, ref) => {
     const glyph = status === 'working' ? AI_GLYPH_WORKING : AI_GLYPH_THINKING;
     const busy = status !== 'idle';
+    // The busy mark is drawn on along its own path, so each instance needs its own mask.
+    const maskId = React.useId();
     return (
       <div
         ref={ref}
@@ -41,10 +43,27 @@ export const AIMiniAvatar = React.forwardRef<HTMLDivElement, AIMiniAvatarProps>(
           className={cn(
             'h-5.75 shrink-0 fill-accent',
             status === 'working' ? 'w-5' : 'w-5.25',
-            busy && 'motion-safe:animate-ai-draw-on',
           )}
         >
-          <path d={glyph.d} />
+          {busy && (
+            <>
+              <mask id={maskId} maskUnits="userSpaceOnUse" style={{ maskType: 'alpha' }}>
+                {/* A thick stroke along the mark's centre line. It is revealed gradually (see `animate-ai-draw-on`), uncovering the mark behind it. */}
+                <path
+                  d={glyph.line}
+                  pathLength={1}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="motion-safe:animate-ai-draw-on"
+                />
+              </mask>
+              <path d={glyph.d} mask={`url(#${maskId})`} />
+            </>
+          )}
+          {!busy && <path d={glyph.d} />}
         </svg>
         {busy && (
           <span
