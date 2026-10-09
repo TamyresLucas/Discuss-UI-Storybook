@@ -111,3 +111,13 @@ export const DragHandleAndLifted: StoryObj<typeof QuestionOptionEditor> = {
     </div>
   ),
 };
+
+/** `locked`: the label stays editable but the row can't be dragged, removed or added to (e.g. while editing a translation). */
+export const Locked: StoryObj<typeof QuestionOptionEditor> = {
+  render: () => (
+    <div className="flex w-150 flex-col gap-2">
+      <QuestionOptionEditor kind="checkbox" label="Recipes" locked />
+      <QuestionOptionEditor kind="rank" rank={2} label="Delivery" locked />
+    </div>
+  ),
+};

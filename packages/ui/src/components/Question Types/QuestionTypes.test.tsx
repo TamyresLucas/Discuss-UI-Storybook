@@ -148,6 +148,18 @@ describe('QuestionOption', () => {
       expect(container.querySelector('.shadow-md')).not.toBeNull();
     });
 
+    it('locked: the label stays editable, with no grip, no add or remove buttons and the indicator kept on hover', () => {
+      const { container, rerender } = render(<QuestionOptionEditor kind="checkbox" rank={2} label="A" dragHandleProps={{}} locked />);
+      expect(screen.getByRole('textbox', { name: 'Option label' })).toBeEnabled();
+      expect(screen.queryByLabelText(/Reorder option/)).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Remove option' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Add option' })).toBeNull();
+      expect(container.querySelector('svg')).toBeNull();
+      rerender(<QuestionOptionEditor kind="rank" rank={2} label="A" locked />);
+      expect(container.querySelector('svg')).toBeNull();
+      expect(screen.getByText('2')).toBeInTheDocument();
+    });
+
     it('keeps the grip decorative without dragHandleProps', () => {
       render(<QuestionOptionEditor kind="radio" label="A" />);
       expect(screen.queryByLabelText(/Reorder option/)).toBeNull();
