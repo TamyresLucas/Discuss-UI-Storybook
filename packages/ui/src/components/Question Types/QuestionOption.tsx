@@ -116,11 +116,37 @@ export interface QuestionOptionEditorProps {
    * its drag handle and number at rest and, like the other kinds, becomes the editor on hover or keyboard focus.
    */
   rank?: number;
+  /**
+   * Makes the grip a drag handle for reordering (spread the handle props of your drag library, e.g. dnd-kit's `attributes` and
+   * `listeners`, with its `setActivatorNodeRef` as `ref`). The grip gets a grab cursor and is focusable; it is labelled
+   * "Reorder option N" (N from `rank`) unless you pass your own `aria-label`. Omit it for a plain, decorative grip.
+   */
+  dragHandleProps?: React.ComponentPropsWithRef<'span'>;
+  /**
+   * The look of the row while it is being dragged: lifted shadow and the grip showing, as on hover. Use it on the copy that follows
+   * the pointer; the row left behind in the list is dimmed by the caller.
+   */
+  lifted?: boolean;
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind, rank }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind, rank, dragHandleProps, lifted }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
+  // The grip: decorative unless the caller makes it a drag handle.
+  const gripProps: React.ComponentPropsWithRef<'span'> = dragHandleProps
+    ? {
+        'aria-label': rank ? `Reorder option ${rank}` : 'Reorder option',
+        ...dragHandleProps,
+        className: cn('cursor-grab touch-none select-none', dragHandleProps.className),
+      }
+    : { 'aria-hidden': true };
+  const grip = dragHandleProps ? (
+    <span {...gripProps} className={cn('shrink-0', gripProps.className)}>
+      <DotsSixVertical size={20} aria-hidden className="text-surface-foreground" />
+    </span>
+  ) : (
+    <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
+  );
   return (
     <div className={cn('group/option flex w-full items-center gap-2', className)}>
       <div
@@ -128,13 +154,13 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
           'flex h-11.5 min-w-0 flex-1 items-center gap-2 rounded-md border bg-surface px-4 py-2 focus-within:border-input-accent',
           reveal
             ? // The border is always visible and does not change on hover; only the shadow lifts the row. The field being edited keeps the accent.
-              'border-border group-hover/option:shadow-md group-focus-within/option:shadow-md'
+              cn('border-border group-hover/option:shadow-md group-focus-within/option:shadow-md', lifted && 'shadow-md')
             : 'border-border hover:border-input hover:shadow-md',
         )}
       >
         {kind === 'rank' ? (
           <>
-            <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
+            {grip}
             <span
               aria-hidden="true"
               className="flex size-6 shrink-0 items-center justify-center rounded-full border border-border bg-background bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-ui-caption text-surface-foreground"
@@ -143,20 +169,26 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
             </span>
           </>
         ) : reveal ? (
-          <span aria-hidden="true" className="relative flex size-5 shrink-0 items-center justify-center">
+          <span {...gripProps} className={cn('relative flex size-5 shrink-0 items-center justify-center', gripProps.className)}>
             <span
+              aria-hidden="true"
               className={cn(
                 'inline-flex size-4 border-2 border-input bg-surface group-hover/option:hidden group-focus-within/option:hidden',
+                lifted && 'hidden',
                 kind === 'radio' ? 'rounded-full' : 'rounded-xxs',
               )}
             />
             <DotsSixVertical
               size={20}
-              className="hidden shrink-0 text-surface-foreground group-hover/option:block group-focus-within/option:block"
+              aria-hidden
+              className={cn(
+                'hidden shrink-0 text-surface-foreground group-hover/option:block group-focus-within/option:block',
+                lifted && 'block',
+              )}
             />
           </span>
         ) : (
-          <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
+          grip
         )}
         <input
           aria-label="Option label"

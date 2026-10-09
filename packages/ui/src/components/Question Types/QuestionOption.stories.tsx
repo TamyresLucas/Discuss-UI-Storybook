@@ -101,3 +101,13 @@ export const EditorCheckboxOnHover: StoryObj<typeof QuestionOptionEditor> = { re
 
 /** Ranking question: handle and position number at rest; hover or focus turns the row into the editor. */
 export const EditorRankOnHover: StoryObj<typeof QuestionOptionEditor> = { render: () => <RevealRows kind="rank" /> };
+
+/** Pass `dragHandleProps` (here a plain button-like span; with dnd-kit spread `attributes` and `listeners`) to make the grip a reorder handle, and `lifted` for the copy that follows the pointer. */
+export const DragHandleAndLifted: StoryObj<typeof QuestionOptionEditor> = {
+  render: () => (
+    <div className="flex w-150 flex-col gap-2">
+      <QuestionOptionEditor kind="checkbox" rank={1} label="Resting row with a drag handle" dragHandleProps={{ tabIndex: 0, role: 'button' }} />
+      <QuestionOptionEditor kind="checkbox" rank={2} label="Lifted: the row while it is being dragged" dragHandleProps={{ tabIndex: 0, role: 'button' }} lifted />
+    </div>
+  ),
+};

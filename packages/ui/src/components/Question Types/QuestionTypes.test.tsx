@@ -136,6 +136,23 @@ describe('QuestionOption', () => {
       expect(container.querySelector('span[aria-hidden] > span')).toHaveClass('rounded-full');
     });
 
+    it('turns the grip into a labelled drag handle when dragHandleProps is given, and lifts the row while it is dragged', () => {
+      const onPointerDown = vi.fn();
+      const { container, rerender } = render(<QuestionOptionEditor kind="checkbox" rank={3} label="A" dragHandleProps={{ onPointerDown }} />);
+      const handle = screen.getByLabelText('Reorder option 3');
+      expect(handle).toHaveClass('cursor-grab', 'touch-none');
+      fireEvent.pointerDown(handle);
+      expect(onPointerDown).toHaveBeenCalledTimes(1);
+      expect(container.querySelector('.shadow-md')).toBeNull();
+      rerender(<QuestionOptionEditor kind="checkbox" rank={3} label="A" dragHandleProps={{ onPointerDown }} lifted />);
+      expect(container.querySelector('.shadow-md')).not.toBeNull();
+    });
+
+    it('keeps the grip decorative without dragHandleProps', () => {
+      render(<QuestionOptionEditor kind="radio" label="A" />);
+      expect(screen.queryByLabelText(/Reorder option/)).toBeNull();
+    });
+
     it('rank kind keeps the drag handle and shows the position number at rest, and still reveals the editor on hover', () => {
       render(<QuestionOptionEditor kind="rank" rank={2} label="Price" />);
       const field = screen.getByRole('textbox', { name: 'Option label' }).parentElement!;
