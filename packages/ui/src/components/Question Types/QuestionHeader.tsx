@@ -35,6 +35,11 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
    * pass your own `aria-label`. Omit it for the plain tag.
    */
   dragHandleProps?: React.ComponentPropsWithRef<'span'>;
+  /**
+   * Whether the grip icon appears in the "Question N" tag on hover or focus. Defaults to true. Set it to false when the question
+   * can't be moved (for example while a translation is being edited), so the tag doesn't suggest dragging.
+   */
+  showDragHandle?: boolean;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -42,7 +47,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -61,21 +66,24 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               aria-label={dragHandleProps ? `Reorder question ${number}` : undefined}
               {...dragHandleProps}
               className={cn(
-                'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption hover:pl-1',
-                // Inside a QuestionEditorCard the tag takes its hover look whenever the card is hovered.
-                'group-hover/editor:pl-1',
+                'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption',
+                // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered.
+                showDragHandle && 'hover:pl-1 group-hover/editor:pl-1',
                 active
                   ? 'bg-accent-soft text-accent-soft-foreground'
                   : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
-                dragHandleProps && 'cursor-grab touch-none select-none focus-visible:pl-1',
+                dragHandleProps && 'cursor-grab touch-none select-none',
+                dragHandleProps && showDragHandle && 'focus-visible:pl-1',
                 dragHandleProps?.className,
               )}
             >
-              <DotsSixVertical
-                size={16}
-                aria-hidden
-                className="hidden shrink-0 group-hover/editor:block group-hover/handle:block group-focus-visible/handle:block"
-              />
+              {showDragHandle && (
+                <DotsSixVertical
+                  size={16}
+                  aria-hidden
+                  className="hidden shrink-0 group-hover/editor:block group-hover/handle:block group-focus-visible/handle:block"
+                />
+              )}
               Question {number}
             </span>
             {meta}

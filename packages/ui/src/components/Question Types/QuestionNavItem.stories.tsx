@@ -39,3 +39,6 @@ export const List: Story = {
     </nav>
   ),
 };
+
+/** `showDragHandle={false}`: the type icon stays on hover, for a row that can't be moved (e.g. while editing a translation). */
+export const NotDraggable: Story = { args: { children: 'Which of the following best describes your primary role?', questionType: 'select-one', showDragHandle: false } };
