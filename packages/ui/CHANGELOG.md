@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.14.1
+
+### Patch Changes
+
+- [#66](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/66) [`ababa73`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/ababa73f18dd671ed95f2f93f7e53e4354310ded) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - AIMiniAvatar: the busy animation now draws the mark along its own curve (from its first end through its loops to the last), holds, then clears the same way, instead of wiping it in from the left. Nothing changes for callers; reduced-motion users still see the still mark.
+
 ## 0.14.0
 
 ### Minor Changes
