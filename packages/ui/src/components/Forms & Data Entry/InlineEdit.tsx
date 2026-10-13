@@ -33,6 +33,11 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
    * different message appears.
    */
   showLimits?: boolean;
+  /**
+   * Multiline only: Enter saves (like a single-line field) and Shift+Enter inserts a line break. Cmd/Ctrl+Enter keeps
+   * saving too. The `question` variant already works this way.
+   */
+  submitOnEnter?: boolean;
   disabled?: boolean;
   /** Called when editing starts or ends. */
   onEditingChange?: (editing: boolean) => void;
@@ -76,6 +81,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       minLength,
       validate,
       showLimits,
+      submitOnEnter,
       disabled,
       onEditingChange,
       onDraftChange,
@@ -186,7 +192,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
                 finish(false, true);
               } else if (
                 event.key === 'Enter' &&
-                (!multiline || event.metaKey || event.ctrlKey || (question && !event.shiftKey))
+                (!multiline || event.metaKey || event.ctrlKey || ((question || submitOnEnter) && !event.shiftKey))
               ) {
                 event.preventDefault();
                 finish(true, true);
