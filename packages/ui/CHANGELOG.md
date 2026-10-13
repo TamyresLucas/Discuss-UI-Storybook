@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.24.1
+
+### Patch Changes
+
+- [#92](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/92) [`6477868`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/6477868c4a29e522791868b1a91f637be6c6306e) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit`: the read text now shows the text cursor on hover (it showed the default arrow), as editable text should. A disabled field keeps the not-allowed cursor.
+
 ## 0.24.0
 
 ### Minor Changes
