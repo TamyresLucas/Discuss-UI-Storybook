@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.21.0
+
+### Minor Changes
+
+- [#84](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/84) [`da5c71d`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/da5c71d53726b8ba0f5836fadc8bb4f77dd18b47) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit`: new optional `showLimits` prop. While editing it shows the allowed length under the field (for example "150–500 characters", from `minLength` and `maxLength`) with a live character counter. After a refused save that same line turns into the error state (error colour and icon). Off by default, so nothing changes unless it is set.
+
 ## 0.20.0
 
 ### Minor Changes
