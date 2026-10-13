@@ -156,4 +156,45 @@ describe('InlineEdit', () => {
     await user.click(screen.getByRole('button'));
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  it('does not save an edit shorter than minLength: it stays open with a message', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<InlineEdit aria-label="Goal" multiline minLength={10} defaultValue="A long enough value" onValueChange={onValueChange} />);
+    await user.click(screen.getByRole('button'));
+    const field = screen.getByRole('textbox', { name: 'Goal' });
+    await user.clear(field);
+    await user.type(field, 'short');
+    await user.tab();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Enter at least 10 characters (5 now).');
+    expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveAttribute('aria-invalid', 'true');
+    // The message follows what is typed, and the edit saves once it is long enough.
+    await user.type(screen.getByRole('textbox', { name: 'Goal' }), ' enough');
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    await user.tab();
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('short enough');
+  });
+
+  it('refuses an edit that validate rejects, and Escape still reverts', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<InlineEdit aria-label="Name" defaultValue="Alpha" validate={(v) => (v.includes('!') ? 'No exclamation marks.' : null)} onValueChange={onValueChange} />);
+    await user.click(screen.getByRole('button'));
+    await user.type(screen.getByRole('textbox'), '!{Enter}');
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('No exclamation marks.');
+    await user.type(screen.getByRole('textbox'), '{Escape}');
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveTextContent('Alpha');
+  });
+
+  it('leaves an unchanged value alone even if it would not pass', async () => {
+    const user = userEvent.setup();
+    render(<InlineEdit aria-label="Goal" minLength={50} defaultValue="Too short" />);
+    await user.click(screen.getByRole('button'));
+    await user.tab();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveTextContent('Too short');
+  });
 });

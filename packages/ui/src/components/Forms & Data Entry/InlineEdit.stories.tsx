@@ -55,6 +55,16 @@ export const QuestionEmpty: Story = {
   args: { ...Question.args, defaultValue: '', placeholder: 'Click to write the question text' },
 };
 export const Heading: Story = { args: { textClassName: 'text-heading-h4', 'aria-label': 'Section title', defaultValue: 'Target Audience' } };
+/** A longer text with a length range: leaving it too short (or empty) is refused with a message instead of saved. */
+export const Validated: Story = {
+  args: {
+    multiline: true,
+    minLength: 20,
+    maxLength: 120,
+    'aria-label': 'Research goal',
+    defaultValue: 'Understand why subscribers stay with the service.',
+  },
+};
 export const Disabled: Story = { args: { disabled: true } };
 export const Controlled: Story = {
   render: (args) => {
