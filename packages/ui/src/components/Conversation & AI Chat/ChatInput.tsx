@@ -105,7 +105,7 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
               aria-label={sendLabel}
               disabled={disabled || !filled}
               onClick={submit}
-              className={cn(!filled && 'disabled:opacity-100 disabled:border-border disabled:text-muted-foreground')}
+              className={cn('rounded-full', !filled && 'disabled:opacity-100 disabled:border-border disabled:text-muted-foreground')}
             >
               <ArrowUp size={16} aria-hidden />
             </Button>

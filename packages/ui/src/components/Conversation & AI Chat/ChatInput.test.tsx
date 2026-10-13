@@ -44,6 +44,11 @@ describe('ChatInput', () => {
     expect(onAdd).toHaveBeenCalledTimes(1);
   });
 
+  it('has a round send button', () => {
+    render(<ChatInput />);
+    expect(screen.getByRole('button', { name: 'Send' })).toHaveClass('rounded-full');
+  });
+
   it('can send with only an attachment', () => {
     render(<ChatInput attachments={<span>file</span>} />);
     expect(screen.getByRole('button', { name: 'Send' })).toBeEnabled();
