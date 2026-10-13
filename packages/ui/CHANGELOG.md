@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.22.0
+
+### Minor Changes
+
+- [#86](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/86) [`33207c1`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/33207c1d978d213ad8c430ecc70be4583996df24) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit`: new optional `submitOnEnter` prop for `multiline` fields. Enter saves the edit (a refused edit stays open and focused with its message) and Shift+Enter inserts a line break; Cmd/Ctrl+Enter keeps saving. Off by default, so multiline fields behave as before unless it is set.
+
 ## 0.21.0
 
 ### Minor Changes
