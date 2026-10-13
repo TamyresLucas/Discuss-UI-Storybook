@@ -27,6 +27,12 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
    * message and `onValueChange` is not called. Return nothing (or `null`) to accept. Runs after `minLength`.
    */
   validate?: (value: string) => string | null | undefined;
+  /**
+   * While editing, shows the allowed length under the field (from `minLength` and `maxLength`) with a live character
+   * counter. After a refused save the same line turns into the error state (error colour and icon) instead of a
+   * different message appears.
+   */
+  showLimits?: boolean;
   disabled?: boolean;
   /** Called when editing starts or ends. */
   onEditingChange?: (editing: boolean) => void;
@@ -45,6 +51,14 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   textClassName?: string;
 }
 
+/** "150–500 characters", "At least 150 characters" or "Up to 500 characters", from whichever limits are set. */
+function limitsText(min?: number, max?: number) {
+  if (min !== undefined && max !== undefined) return `${min}–${max} characters`;
+  if (min !== undefined) return `At least ${min} characters`;
+  if (max !== undefined) return `Up to ${max} characters`;
+  return '';
+}
+
 // Not in Figma: shadcn has no inline-edit primitive, so this is a plain toggle between a button and a field.
 // Read mode is a button (so it is keyboard- and screen-reader-reachable); editing swaps in an input that commits on
 // Enter/blur and reverts on Escape.
@@ -61,6 +75,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       maxLength,
       minLength,
       validate,
+      showLimits,
       disabled,
       onEditingChange,
       onDraftChange,
@@ -137,7 +152,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     return (
       <div
         ref={ref}
-        className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', editing && error && 'flex-col gap-1.5', className)}
+        className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', editing && (error || showLimits) && 'flex-col gap-1.5', className)}
         {...props}
       >
         {editing ? (
@@ -148,7 +163,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             maxLength,
             'aria-label': ariaLabel,
             'aria-invalid': error ? true : undefined,
-            'aria-describedby': error ? errorId : undefined,
+            'aria-describedby': error || showLimits ? errorId : undefined,
             ...(multiline ? { rows: 1 } : { type: 'text' }),
             className: cn(
               'w-full px-3 py-1 outline-none',
@@ -181,10 +196,24 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               if (!cancelled.current) finish(true, false);
             },
           })}
-          {error && (
-            <p id={errorId} role="alert" className="flex items-start gap-2 px-3 text-ui-caption text-destructive">
-              <WarningCircle size={16} aria-hidden className="shrink-0" />
-              {error}
+          {(error || showLimits) && (
+            <p
+              id={errorId}
+              role={error ? 'alert' : undefined}
+              className={cn('flex items-start justify-between gap-2 px-3 text-ui-caption', error ? 'text-destructive' : 'text-secondary-muted-foreground')}
+            >
+              <span className="flex items-start gap-2">
+                {error && <WarningCircle size={16} aria-hidden className="shrink-0" />}
+                {showLimits ? limitsText(minLength, maxLength) : error}
+                {/* The line stays the same in the error state; screen readers also get the reason. */}
+                {showLimits && error && <span className="sr-only">{error}</span>}
+              </span>
+              {showLimits && (
+                <span aria-hidden className="shrink-0 tabular-nums">
+                  {draft.length}
+                  {maxLength !== undefined && `/${maxLength}`}
+                </span>
+              )}
             </p>
           )}
           </>
