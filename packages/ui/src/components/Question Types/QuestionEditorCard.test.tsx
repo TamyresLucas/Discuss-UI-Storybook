@@ -229,6 +229,13 @@ describe('ActivityStructure', () => {
     spy.mockRestore();
   });
 
+  it('StatCard has success and destructive variants besides warning', () => {
+    const { container, rerender } = render(<StatCard label="Issues" value="None" variant="success" />);
+    expect(container.firstElementChild).toHaveClass('border-success-soft-border', 'bg-success-soft');
+    rerender(<StatCard label="Issues" value="3" variant="destructive" />);
+    expect(container.firstElementChild).toHaveClass('border-destructive-soft-border', 'bg-destructive-soft');
+  });
+
   it('StatCard shows label and value', () => {
     render(<StatCard label="Completion time" value="10 minutes" variant="warning" />);
     expect(screen.getByText('10 minutes')).toBeInTheDocument();
