@@ -61,6 +61,7 @@ export const Validated: Story = {
     multiline: true,
     minLength: 20,
     maxLength: 120,
+    showLimits: true,
     'aria-label': 'Research goal',
     defaultValue: 'Understand why subscribers stay with the service.',
   },
