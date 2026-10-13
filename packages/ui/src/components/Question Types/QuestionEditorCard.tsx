@@ -23,6 +23,11 @@ export interface QuestionEditorCardProps extends Omit<
   onTitleChange?: (title: string) => void;
   /** The question is being edited: accent border, counter and footer are shown. */
   active?: boolean;
+  /**
+   * Shows the hover look (lifted card, revealed actions and grip) without the pointer, for mirroring a hover that happens
+   * elsewhere, such as over the same question's row in an outline.
+   */
+  hovered?: boolean;
   maxLength?: number;
   /** Footer label, e.g. "4/20 choices". Shown while `active`. */
   countLabel?: React.ReactNode;
@@ -62,6 +67,7 @@ export const QuestionEditorCard = React.forwardRef<
       title,
       onTitleChange,
       active,
+      hovered,
       maxLength,
       countLabel,
       actions,
@@ -86,11 +92,12 @@ export const QuestionEditorCard = React.forwardRef<
       <div
         ref={ref}
         className={cn("group/editor flex w-full items-start gap-2", className)}
+        data-hovered={hovered ? "" : undefined}
         {...props}
       >
         <div
           className={cn(
-            "flex w-full max-w-200 flex-col overflow-hidden rounded-xl border bg-surface transition-shadow group-hover/editor:shadow-lg group-focus-within/editor:shadow-lg",
+            "flex w-full max-w-200 flex-col overflow-hidden rounded-xl border bg-surface transition-shadow group-hover/editor:shadow-lg group-focus-within/editor:shadow-lg group-data-[hovered]/editor:shadow-lg",
             active ? "border-accent" : "border-border",
           )}
         >
@@ -189,7 +196,7 @@ export const QuestionEditorCard = React.forwardRef<
             size="icon-sm"
             aria-label="Ask AI"
             onClick={onAskAi}
-            className="shrink-0 opacity-0 transition-opacity group-hover/editor:opacity-100 group-focus-within/editor:opacity-100 focus-visible:opacity-100"
+            className="shrink-0 opacity-0 transition-opacity group-hover/editor:opacity-100 group-focus-within/editor:opacity-100 group-data-[hovered]/editor:opacity-100 focus-visible:opacity-100"
           >
             <Sparkle size={16} aria-hidden />
           </Button>

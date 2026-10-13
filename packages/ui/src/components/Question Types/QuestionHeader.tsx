@@ -68,7 +68,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               className={cn(
                 'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption',
                 // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered.
-                showDragHandle && 'hover:pl-1 group-hover/editor:pl-1',
+                showDragHandle && 'hover:pl-1 group-hover/editor:pl-1 group-data-[hovered]/editor:pl-1',
                 active
                   ? 'bg-accent-soft text-accent-soft-foreground'
                   : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
@@ -81,7 +81,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
                 <DotsSixVertical
                   size={16}
                   aria-hidden
-                  className="hidden shrink-0 group-hover/editor:block group-hover/handle:block group-focus-visible/handle:block"
+                  className="hidden shrink-0 group-hover/editor:block group-data-[hovered]/editor:block group-hover/handle:block group-focus-visible/handle:block"
                 />
               )}
               Question {number}
@@ -92,7 +92,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               <div className={cn(
                   'flex items-center gap-2 opacity-0 transition-opacity group-focus-within/header:opacity-100 group-hover/header:opacity-100',
                   // Inside a QuestionEditorCard, hovering or focusing anywhere on the card reveals them too.
-                  'group-focus-within/editor:opacity-100 group-hover/editor:opacity-100',
+                  'group-focus-within/editor:opacity-100 group-hover/editor:opacity-100 group-data-[hovered]/editor:opacity-100',
                 )}>
                 {actions}
               </div>
