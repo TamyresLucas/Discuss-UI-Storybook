@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.19.1
+
+### Patch Changes
+
+- [#80](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/80) [`d84a221`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/d84a221292b9b197c2eaf8d3ee671ed1896866f8) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ChatInput`: the send button is now round (it was a rounded square), matching the Figma chat input.
+
 ## 0.19.0
 
 ### Minor Changes
