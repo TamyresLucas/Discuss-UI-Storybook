@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.23.0
+
+### Minor Changes
+
+- [#88](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/88) [`cfc8630`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/cfc86301c4dec947b5201d340e681292a4155dac) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionNavItem` and `QuestionEditorCard`: new optional `hovered` prop that shows the hover look without the pointer (the nav row's soft fill and drag grip; the card's lift, revealed actions and grip), for mirroring a hover that happens elsewhere, such as over the same question's row or card. Off by default; nothing changes unless it is set.
+
 ## 0.22.0
 
 ### Minor Changes
