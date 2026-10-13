@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PencilSimple } from '@phosphor-icons/react';
+import { PencilSimple, WarningCircle } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
 import { fieldSurfaceClasses } from './Field';
@@ -17,6 +17,16 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /** Use a textarea. Enter inserts a line break; Cmd/Ctrl+Enter commits. */
   multiline?: boolean;
   maxLength?: number;
+  /**
+   * Shortest value (in characters, ignoring surrounding spaces) that may be saved. An edit that is too short is not saved:
+   * the field stays open with an error message, and Escape still reverts.
+   */
+  minLength?: number;
+  /**
+   * Checks an edit before it is saved (on Enter or blur). Return a message to refuse it: the field stays open showing the
+   * message and `onValueChange` is not called. Return nothing (or `null`) to accept. Runs after `minLength`.
+   */
+  validate?: (value: string) => string | null | undefined;
   disabled?: boolean;
   /** Called when editing starts or ends. */
   onEditingChange?: (editing: boolean) => void;
@@ -49,6 +59,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       placeholder = 'Click to edit',
       multiline,
       maxLength,
+      minLength,
+      validate,
       disabled,
       onEditingChange,
       onDraftChange,
@@ -63,6 +75,9 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     const value = valueProp ?? internal;
     const [editing, setEditing] = React.useState(false);
     const [draft, setDraft] = React.useState(value);
+    // The reason the last attempt to save was refused; cleared by the next valid keystroke, Escape or a save.
+    const [error, setError] = React.useState<string | null>(null);
+    const errorId = React.useId();
     const fieldRef = React.useRef<HTMLInputElement & HTMLTextAreaElement>(null);
     const readRef = React.useRef<HTMLButtonElement>(null);
     // Set while an Escape revert is pending so the blur that follows it does not commit.
@@ -79,14 +94,31 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       }
     }, [editing]);
 
+    const problemWith = (text: string) => {
+      if (minLength !== undefined && text.trim().length < minLength) {
+        return `Enter at least ${minLength} characters (${text.trim().length} now).`;
+      }
+      return validate?.(text) ?? null;
+    };
+
     const start = () => {
       if (disabled) return;
       setDraft(value);
+      setError(null);
       cancelled.current = false;
       setEditing(true);
       onEditingChange?.(true);
     };
     const finish = (commit: boolean, refocus: boolean) => {
+      if (commit && draft !== value) {
+        // An edit that fails validation is not saved: the field stays open and says why.
+        const problem = problemWith(draft);
+        if (problem) {
+          setError(problem);
+          return;
+        }
+      }
+      setError(null);
       restoreFocus.current = refocus;
       if (commit && draft !== value) {
         if (valueProp === undefined) setInternal(draft);
@@ -103,29 +135,39 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     const fill = multiline || question;
 
     return (
-      <div ref={ref} className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', className)} {...props}>
+      <div
+        ref={ref}
+        className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', editing && error && 'flex-col gap-1.5', className)}
+        {...props}
+      >
         {editing ? (
-          React.createElement(multiline ? 'textarea' : 'input', {
+          <>
+          {React.createElement(multiline ? 'textarea' : 'input', {
             ref: fieldRef,
             value: draft,
             maxLength,
             'aria-label': ariaLabel,
+            'aria-invalid': error ? true : undefined,
+            'aria-describedby': error ? errorId : undefined,
             ...(multiline ? { rows: 1 } : { type: 'text' }),
             className: cn(
               'w-full px-3 py-1 outline-none',
               multiline && 'field-sizing-content resize-none',
               question
-                ? 'rounded-none border-0 border-b-2 border-accent-foreground bg-transparent'
-                : cn('rounded-md focus-visible:border-input-accent', fieldSurfaceClasses('default')),
+                ? cn('rounded-none border-0 border-b-2 bg-transparent', error ? 'border-destructive' : 'border-accent-foreground')
+                : cn('rounded-md', !error && 'focus-visible:border-input-accent', fieldSurfaceClasses(error ? 'error' : 'default')),
               textClasses,
             ),
             onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
               setDraft(event.target.value);
+              // After a refused save, the message follows what is typed and goes away as soon as the text is acceptable.
+              if (error) setError(problemWith(event.target.value));
               onDraftChange?.(event.target.value);
             },
             onKeyDown: (event: React.KeyboardEvent) => {
               if (event.key === 'Escape') {
                 cancelled.current = true;
+                setError(null);
                 finish(false, true);
               } else if (
                 event.key === 'Enter' &&
@@ -138,7 +180,14 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             onBlur: () => {
               if (!cancelled.current) finish(true, false);
             },
-          })
+          })}
+          {error && (
+            <p id={errorId} role="alert" className="flex items-start gap-2 px-3 text-ui-caption text-destructive">
+              <WarningCircle size={16} aria-hidden className="shrink-0" />
+              {error}
+            </p>
+          )}
+          </>
         ) : (
           <button
             ref={readRef}
