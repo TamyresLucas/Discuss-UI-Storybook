@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.20.0
+
+### Minor Changes
+
+- [#82](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/82) [`3a419e5`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/3a419e592a9831322bd08df205a9edb01156d61c) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit`: new optional `minLength` and `validate` props. An edit that is too short, or that `validate` rejects (by returning a message), is not saved on Enter or blur: the field stays open with an error border and message, `onValueChange` is not called, and the message follows what is typed. Escape still reverts. Without the props nothing changes.
+
 ## 0.19.1
 
 ### Patch Changes
