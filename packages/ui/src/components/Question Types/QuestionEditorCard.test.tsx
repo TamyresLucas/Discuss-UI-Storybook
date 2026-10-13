@@ -75,6 +75,26 @@ describe('QuestionEditorCard', () => {
   });
 });
 
+describe('hovered', () => {
+  it('QuestionEditorCard shows the hover look without the pointer when hovered is set', () => {
+    const { container, rerender } = render(<QuestionEditorCard number={1} title="Hi" onAskAi={() => {}} />);
+    expect(container.firstElementChild).not.toHaveAttribute('data-hovered');
+    rerender(<QuestionEditorCard hovered number={1} title="Hi" onAskAi={() => {}} />);
+    expect(container.firstElementChild).toHaveAttribute('data-hovered');
+    expect(container.querySelector('.group-data-\\[hovered\\]\\/editor\\:shadow-lg')).toBeInTheDocument();
+  });
+
+  it('QuestionNavItem takes the hover fill and swaps its icon for the grip when hovered is set', () => {
+    const { rerender } = render(<QuestionNavItem>One</QuestionNavItem>);
+    expect(screen.getByRole('button')).not.toHaveAttribute('data-hovered');
+    rerender(<QuestionNavItem hovered>One</QuestionNavItem>);
+    expect(screen.getByRole('button')).toHaveAttribute('data-hovered');
+    expect(screen.getByRole('button')).toHaveClass('bg-accent-soft');
+    rerender(<QuestionNavItem hovered error>One</QuestionNavItem>);
+    expect(screen.getByRole('button')).toHaveClass('bg-destructive-soft');
+  });
+});
+
 describe('QuestionNavItem', () => {
   it('marks the selected row and flags errors for screen readers', () => {
     render(
