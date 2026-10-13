@@ -24,4 +24,6 @@ export const Warning_: Story = {
 };
 
 /** A tinted card with no border, for stats on a white panel. */
+export const Success: Story = { args: { variant: 'success', label: 'Issues', value: 'None' } };
+export const Destructive: Story = { args: { variant: 'destructive', label: 'Issues', value: '3' } };
 export const Subtle: Story = { args: { variant: 'subtle' } };

@@ -10,6 +10,8 @@ const statCardVariants = cva('flex min-w-0 flex-col gap-2 rounded-md border p-3'
       // A card tinted with the secondary background and no border, for stats on a white panel.
       subtle: 'border-transparent bg-secondary',
       warning: 'border-warning-soft-border bg-warning-soft',
+      success: 'border-success-soft-border bg-success-soft',
+      destructive: 'border-destructive-soft-border bg-destructive-soft',
     },
   },
   defaultVariants: { variant: 'default' },
@@ -22,7 +24,7 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   icon?: React.ReactNode;
 }
 
-// Figma: Activity control (361:5214) › stat-card — a small bordered label/value tile; `warning` tints it yellow.
+// Figma: Activity control (361:5214) › stat-card — a small bordered label/value tile; `warning` tints it yellow, `success` green and `destructive` red.
 export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
   ({ className, variant, label, value, icon, ...props }, ref) => (
     <div ref={ref} className={cn(statCardVariants({ variant }), className)} {...props}>
