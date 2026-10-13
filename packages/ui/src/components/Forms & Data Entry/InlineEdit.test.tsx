@@ -250,4 +250,11 @@ describe('InlineEdit', () => {
     expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveFocus();
     expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveValue('short');
   });
+
+  it('shows the text cursor over the read text, and not over a disabled field', () => {
+    const { rerender } = render(<InlineEdit aria-label="Name" defaultValue="Alpha" />);
+    expect(screen.getByRole('button')).toHaveClass('enabled:cursor-text');
+    rerender(<InlineEdit aria-label="Name" defaultValue="Alpha" disabled />);
+    expect(screen.getByRole('button')).toHaveClass('disabled:cursor-not-allowed');
+  });
 });

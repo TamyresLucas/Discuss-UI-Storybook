@@ -240,7 +240,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
                   ? 'rounded-none border-b-2 border-accent-foreground py-1'
                   : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input-muted enabled:focus-visible:border-input-muted'
                 : 'rounded-md border border-transparent py-1 enabled:focus-visible:border-input-accent',
-              'enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
+              // The text is editable in place, so hovering it shows the text cursor.
+              'enabled:cursor-text enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
               textClasses,
             )}
           >
