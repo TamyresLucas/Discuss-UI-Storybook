@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.24.0
+
+### Minor Changes
+
+- [#90](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/90) [`e939c7a`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/e939c7a960bbb9a18ef12cf1775004b63ccdc533) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `StatCard`: new `success` (green) and `destructive` (red) variants next to `warning`, for stats that report a good or bad state, such as an issue count. Existing variants are unchanged.
+
 ## 0.23.0
 
 ### Minor Changes
