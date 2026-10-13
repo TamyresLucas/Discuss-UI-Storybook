@@ -62,6 +62,7 @@ export const Validated: Story = {
     minLength: 20,
     maxLength: 120,
     showLimits: true,
+    submitOnEnter: true,
     'aria-label': 'Research goal',
     defaultValue: 'Understand why subscribers stay with the service.',
   },

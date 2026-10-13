@@ -222,4 +222,32 @@ describe('InlineEdit', () => {
     await user.click(screen.getByRole('button'));
     expect(screen.queryByText('10–40 characters')).not.toBeInTheDocument();
   });
+
+  it('submitOnEnter: Enter saves a multiline edit and Shift+Enter adds a line break', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<InlineEdit aria-label="Goal" multiline submitOnEnter defaultValue="Alpha" onValueChange={onValueChange} />);
+    await user.click(screen.getByRole('button'));
+    const field = screen.getByRole('textbox', { name: 'Goal' });
+    await user.type(field, '{Shift>}{Enter}{/Shift}more');
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(field).toHaveValue('Alpha\nmore');
+    await user.type(field, '{Enter}');
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('Alpha\nmore');
+    expect(screen.getByRole('button')).toHaveFocus();
+  });
+
+  it('submitOnEnter with a too-short edit: Enter is refused and the field stays open and focused', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<InlineEdit aria-label="Goal" multiline submitOnEnter minLength={20} defaultValue="A long enough value here" onValueChange={onValueChange} />);
+    await user.click(screen.getByRole('button'));
+    const field = screen.getByRole('textbox', { name: 'Goal' });
+    await user.clear(field);
+    await user.type(field, 'short{Enter}');
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveFocus();
+    expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveValue('short');
+  });
 });
