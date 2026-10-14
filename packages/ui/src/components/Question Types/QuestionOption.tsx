@@ -214,9 +214,9 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         )}
       >
         <div className="flex min-w-0 items-start gap-2">
-        {/* The leading grip, indicator or number is one line tall, so the input and its helper line stay aligned with each other. */}
+        {/* The leading grip, indicator or number is as tall as the input's line (28px), so they stay centred on the text; the helper line then sits under the input. */}
         {(kind !== undefined || !locked) && (
-        <div className="flex h-6 shrink-0 items-center gap-2">
+        <div className="flex h-7 shrink-0 items-center gap-2">
         {kind === 'rank' ? (
           <>
             {!locked && grip}
