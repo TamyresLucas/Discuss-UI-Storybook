@@ -199,8 +199,8 @@ describe('QuestionOption', () => {
 
     it('is quiet at rest: its normal border, an indicator instead of a visible drag handle, buttons present but transparent', () => {
       const { container } = render(<QuestionOptionEditor kind="radio" label="Recipes" />);
-      // The bordered box is the input's row's parent: the row holds the grip and the input, the helper line sits below it inside the box.
-      const field = container.querySelector('input')!.parentElement!.parentElement!;
+      // The bordered box around the grip, the input and the helper line.
+      const field = container.querySelector('input')!.closest<HTMLElement>('.rounded-md')!;
       // The row border stays visible in every state and does not change on hover.
       expect(field).toHaveClass('border-border');
       expect(field).not.toHaveClass('border-transparent');
@@ -251,7 +251,7 @@ describe('QuestionOption', () => {
 
     it('rank kind keeps the drag handle and shows the position number at rest, and still reveals the editor on hover', () => {
       render(<QuestionOptionEditor kind="rank" rank={2} label="Price" />);
-      const field = screen.getByRole('textbox', { name: 'Option label' }).parentElement!.parentElement!;
+      const field = screen.getByRole('textbox', { name: 'Option label' }).closest<HTMLElement>('.rounded-md')!;
       expect(field).toHaveClass('group-hover/option:shadow-md', 'group-focus-within/option:shadow-md');
       const handle = field.querySelector('svg')!;
       expect(handle).not.toHaveClass('hidden');
@@ -286,8 +286,8 @@ describe('QuestionOption', () => {
 
     it('without a kind the row is the unchanged always-on editor', () => {
       const { container } = render(<QuestionOptionEditor label="A" />);
-      // The bordered box is the input's row's parent: the row holds the grip and the input, the helper line sits below it inside the box.
-      const field = container.querySelector('input')!.parentElement!.parentElement!;
+      // The bordered box around the grip, the input and the helper line.
+      const field = container.querySelector('input')!.closest<HTMLElement>('.rounded-md')!;
       expect(field).toHaveClass('border-border', 'hover:border-input-muted');
       expect(field).not.toHaveClass('border-transparent');
       expect(screen.getByRole('button', { name: 'Remove option' }).parentElement).not.toHaveClass('opacity-0');

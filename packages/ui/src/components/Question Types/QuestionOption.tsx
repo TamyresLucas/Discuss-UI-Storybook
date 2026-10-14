@@ -213,7 +213,10 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             : 'border-border hover:border-input-muted hover:shadow-md',
         )}
       >
-        <div className="flex min-w-0 items-center gap-2">
+        <div className="flex min-w-0 items-start gap-2">
+        {/* The leading grip, indicator or number is one line tall, so the input and its helper line stay aligned with each other. */}
+        {(kind !== undefined || !locked) && (
+        <div className="flex h-6 shrink-0 items-center gap-2">
         {kind === 'rank' ? (
           <>
             {!locked && grip}
@@ -250,6 +253,9 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         ) : locked ? null : (
           grip
         )}
+        </div>
+        )}
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
         <input
           ref={fieldRef}
           aria-label="Option label"
@@ -295,7 +301,6 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             placeholderTone === 'regular' ? 'placeholder:text-surface-foreground' : 'placeholder:text-muted-foreground',
           )}
         />
-        </div>
     {guarded && draft !== null && (
       <p
         id={helperId}
@@ -313,6 +318,8 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         </span>
       </p>
     )}
+        </div>
+        </div>
       </div>
       {!locked && (
         <div
