@@ -9,10 +9,11 @@ export type TabItemProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.T
 // Figma: Tab Item (08). The shape and states follow the parent TabNavigation variant.
 const base =
   'inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap px-2.5 py-1 text-ui-label transition-colors disabled:pointer-events-none disabled:opacity-50';
+// `relative` puts the tab above the TabNavigation's sliding indicator, which draws the selected tab's background.
 const filter =
-  'rounded-full text-surface-foreground hover:text-accent data-[state=active]:bg-secondary data-[state=active]:bg-linear-to-r data-[state=active]:from-overlay-dark-5 data-[state=active]:to-overlay-dark-5 data-[state=active]:hover:bg-accent-soft data-[state=active]:hover:bg-none data-[state=active]:hover:text-accent-soft-foreground disabled:text-muted-foreground';
+  'relative rounded-full text-surface-foreground hover:text-accent data-[state=active]:hover:bg-accent-soft data-[state=active]:hover:text-accent-soft-foreground disabled:text-muted-foreground';
 const toggle =
-  'rounded-sm text-secondary-muted-foreground hover:text-surface-foreground data-[state=active]:bg-surface data-[state=active]:text-surface-foreground';
+  'relative rounded-sm text-secondary-muted-foreground hover:text-surface-foreground data-[state=active]:text-surface-foreground';
 
 // Page-level tab bar: the tab fills the bar's height; the active one is semibold with a 2px accent underline.
 const underline =
