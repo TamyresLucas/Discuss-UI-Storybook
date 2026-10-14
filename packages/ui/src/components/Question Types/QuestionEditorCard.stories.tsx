@@ -112,3 +112,12 @@ export const WithError: Story = {
 export const WithMeta: Story = {
   render: () => <Editable meta={<span className="text-ui-caption text-secondary-muted-foreground">5 min</span>} />,
 };
+
+export const LongTitle: Story = {
+  args: {
+    number: 1,
+    title: 'Thinking about everything you have ever received from us, including the boxes, the recipe cards, the packaging, the delivery windows, the app, the emails and the support team, walk me through what you remember about each of them and how it made you feel.',
+    titleRecommendedMax: 200,
+    titleRecommendedNote: 'Avoid anything longer than 200 characters: it causes cognitive fatigue, so respondents speed through or abandon the survey.',
+  },
+};

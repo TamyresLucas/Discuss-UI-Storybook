@@ -9,6 +9,24 @@ import { QuestionEditorCard } from './QuestionEditorCard';
 import { QuestionNavItem } from './QuestionNavItem';
 
 describe('QuestionEditorCard', () => {
+  it('drops a title over titleRecommendedMax to the body style and shows the recommendation, live while typing', async () => {
+    const user = userEvent.setup();
+    const note = 'Avoid anything longer than 12 characters.';
+    render(<QuestionEditorCard number={1} title="Short one" titleRecommendedMax={12} titleRecommendedNote={note} maxLength={100} />);
+    expect(screen.queryByText(note)).not.toBeInTheDocument();
+    expect(screen.getByText('Short one').closest('button')!.className).toContain('text-heading-h4');
+    await user.click(screen.getByRole('button', { name: /Question title/ }));
+    await user.type(screen.getByRole('textbox', { name: 'Question title' }), ' and a bit more');
+    expect(screen.getByText(note)).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Question title' }).className).toContain('text-body-base');
+  });
+
+  it('shows the recommendation for a saved title that is already long', () => {
+    render(<QuestionEditorCard number={1} title="A fairly long saved title" titleRecommendedMax={12} titleRecommendedNote="Keep it short." />);
+    expect(screen.getByText('Keep it short.')).toBeInTheDocument();
+    expect(screen.getByText('A fairly long saved title').closest('button')!.className).toContain('text-body-base');
+  });
+
   it('guards the title when titleMinLength is set: limits line only while editing, refusal when too short', async () => {
     const user = userEvent.setup();
     const onTitleChange = vi.fn();

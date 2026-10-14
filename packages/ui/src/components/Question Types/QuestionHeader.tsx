@@ -28,6 +28,13 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
    * saved (the field stays open and says why), and the always-on counter is replaced by that line.
    */
   titleMinLength?: number;
+  /**
+   * Editor mode: a title longer than this many characters (counted live while it is typed) switches to the regular 16px body style
+   * instead of the heading style and shows `titleRecommendedNote` under it. Both need to be set.
+   */
+  titleRecommendedMax?: number;
+  /** Editor mode: the recommendation shown under a title that is longer than `titleRecommendedMax`. */
+  titleRecommendedNote?: React.ReactNode;
   /** Editor mode: action buttons (copy, delete, preview, AI) revealed on hover or focus. */
   actions?: React.ReactNode;
   /** Editor mode: content shown right beside the "Question N" tag, e.g. the time allowed for the question. */
@@ -57,7 +64,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -68,6 +75,8 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
     if (editor) {
       const text = typeof title === 'string' ? title : '';
       const count = (draft ?? text).length;
+      // A long title drops to the regular body style and gets a recommendation, because a long question is tiring to read.
+      const long = titleRecommendedMax !== undefined && titleRecommendedNote != null && count > titleRecommendedMax;
       return (
         <div ref={ref} className={cn('group/header flex w-full flex-col gap-2', className)} {...props}>
           <div className="flex items-center justify-between">
@@ -126,8 +135,9 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             onEditingChange={(editing) => {
               if (!editing) setDraft(null);
             }}
-            textClassName="text-heading-h4"
+            textClassName={long ? 'text-body-base' : 'text-heading-h4'}
           />
+          {long && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}
           {showCounter && titleMinLength === undefined && (
             <p className="text-ui-caption text-secondary-muted-foreground">
               {count}/{maxLength} characters
