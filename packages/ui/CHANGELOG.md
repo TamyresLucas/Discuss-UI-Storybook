@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.27.0
+
+### Minor Changes
+
+- [#98](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/98) [`9c29e17`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/9c29e17ecae358617451931fd003d6406c894c74) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionOptionEditor` takes optional `removeDisabled` and `addDisabled` props that disable its trash and add (+) buttons, for example at a question's minimum or maximum number of options. Without them nothing changes.
+
 ## 0.26.0
 
 ### Minor Changes
