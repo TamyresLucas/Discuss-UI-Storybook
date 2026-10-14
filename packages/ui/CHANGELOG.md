@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.26.0
+
+### Minor Changes
+
+- [#96](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/96) [`b7cb516`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/b7cb516418206054de5f26c4c10d2fb3e7e9edb5) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ToastInline` takes an optional `actions` slot (for example a ghost "Dismiss" and an outline "Fix" `Button size="sm"`) shown after the message, and a new quiet `variant="neutral"` (secondary background, standard border) for suggestions. Existing variants and the `onClose` button are unchanged.
+
 ## 0.25.0
 
 ### Minor Changes
