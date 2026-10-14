@@ -24,6 +24,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Click a tab: the selected background slides to it (the same in the toggle). It is a single element measured from the selected tab; with reduced motion it jumps. */
 export const TableFilter: Story = {
   args: { variant: 'filter', 'aria-label': 'Table filter' },
   render: (args) => (
