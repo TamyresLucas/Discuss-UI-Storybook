@@ -20,6 +20,22 @@ const toastVariants = cva('border', {
   defaultVariants: { variant: 'info' },
 });
 
+// The in-page banner also has a quiet look (Figma: Persistent Message › info), used for suggestions rather than status.
+const inlineVariants = cva('border', {
+  variants: {
+    variant: {
+      neutral: 'border-border bg-secondary',
+      info: 'border-info-border bg-surface',
+      success: 'border-success-soft-border bg-success-soft',
+      warning: 'border-warning-soft-border bg-warning-soft',
+      destructive: 'border-destructive-soft-border bg-destructive-soft',
+    },
+  },
+  defaultVariants: { variant: 'info' },
+});
+
+export type ToastInlineVariant = ToastVariant | 'neutral';
+
 const iconColour: Record<ToastVariant, string> = {
   info: 'text-surface-foreground',
   success: 'text-success-soft-foreground',
@@ -105,25 +121,28 @@ Toast.displayName = 'Toast';
 
 export const ToastAction = ToastPrimitive.Action;
 
-export interface ToastInlineProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof toastVariants> {
+export interface ToastInlineProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof inlineVariants> {
+  /** Buttons shown after the message, for example a ghost "Dismiss" and an outline "Fix" (both `size="sm"`). */
+  actions?: React.ReactNode;
   /** Show a close button and call this when it is pressed. */
   onClose?: () => void;
   closeLabel?: string;
 }
 
-// Figma: Toast Inline — a single-line banner (46px) for in-page messages.
+// Figma: Toast Inline / Persistent Message — a single-line banner (46px) for in-page messages, with optional actions.
 export const ToastInline = React.forwardRef<HTMLDivElement, ToastInlineProps>(
-  ({ className, variant = 'info', onClose, closeLabel = 'Close', children, ...props }, ref) => {
+  ({ className, variant = 'info', actions, onClose, closeLabel = 'Close', children, ...props }, ref) => {
     const v = variant ?? 'info';
     return (
       <div
         ref={ref}
         role={v === 'destructive' ? 'alert' : 'status'}
-        className={cn('flex items-center gap-2 rounded-sm px-2 py-1.5', toastVariants({ variant: v }), className)}
+        className={cn('flex items-center gap-2 rounded-sm px-2 py-1.5', inlineVariants({ variant: v }), className)}
         {...props}
       >
-        <VariantIcon variant={v} size={16} />
+        <VariantIcon variant={v === 'neutral' ? 'info' : v} size={16} />
         <p className="min-w-0 flex-1 text-body-small text-secondary-muted-foreground">{children}</p>
+        {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         {onClose && (
           <Button type="button" variant="ghost" size="icon-sm" aria-label={closeLabel} onClick={onClose}>
             <X size={16} aria-hidden />
