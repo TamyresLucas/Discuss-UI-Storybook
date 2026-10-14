@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.30.0
+
+### Minor Changes
+
+- [#107](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/107) [`43f364a`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/43f364a042167fd14b8cd4748e15829f81a90be8) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard` and `QuestionHeader` take `titleRecommendedMax` and `titleRecommendedNote`: a title longer than that many characters (counted live while typing) switches from the heading style to the regular 16px body style and shows the note under it. Opt-in; without the props nothing changes.
+
 ## 0.29.1
 
 ### Patch Changes
