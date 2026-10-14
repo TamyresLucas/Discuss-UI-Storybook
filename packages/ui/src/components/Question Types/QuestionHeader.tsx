@@ -30,10 +30,10 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   titleMinLength?: number;
   /**
    * Editor mode: a title longer than this many characters (counted live while it is typed) switches to the regular 16px body style
-   * instead of the heading style and shows `titleRecommendedNote` under it. Both need to be set.
+   * instead of the heading style, and shows `titleRecommendedNote` under it when that is given.
    */
   titleRecommendedMax?: number;
-  /** Editor mode: the recommendation shown under a title that is longer than `titleRecommendedMax`. */
+  /** Editor mode: optional text shown under a title that is longer than `titleRecommendedMax`. Leave it out to change only the style (for example when the recommendation is shown elsewhere). */
   titleRecommendedNote?: React.ReactNode;
   /** Editor mode: action buttons (copy, delete, preview, AI) revealed on hover or focus. */
   actions?: React.ReactNode;
@@ -76,7 +76,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
       const text = typeof title === 'string' ? title : '';
       const count = (draft ?? text).length;
       // A long title drops to the regular body style and gets a recommendation, because a long question is tiring to read.
-      const long = titleRecommendedMax !== undefined && titleRecommendedNote != null && count > titleRecommendedMax;
+      const long = titleRecommendedMax !== undefined && count > titleRecommendedMax;
       return (
         <div ref={ref} className={cn('group/header flex w-full flex-col gap-2', className)} {...props}>
           <div className="flex items-center justify-between">
@@ -137,7 +137,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             }}
             textClassName={long ? 'text-body-base' : 'text-heading-h4'}
           />
-          {long && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}
+          {long && titleRecommendedNote != null && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}
           {showCounter && titleMinLength === undefined && (
             <p className="text-ui-caption text-secondary-muted-foreground">
               {count}/{maxLength} characters

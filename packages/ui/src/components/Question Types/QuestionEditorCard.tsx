@@ -27,9 +27,9 @@ export interface QuestionEditorCardProps extends Omit<
   titlePlaceholderTone?: 'muted' | 'regular';
   /** Shortest title (in characters) that may be saved. Turns on the title guardrail: see `QuestionHeader`'s `titleMinLength`. */
   titleMinLength?: number;
-  /** A title longer than this many characters switches to the regular 16px body style and shows `titleRecommendedNote` under it. See `QuestionHeader`. */
+  /** A title longer than this many characters switches to the regular 16px body style, and shows `titleRecommendedNote` under it when given. See `QuestionHeader`. */
   titleRecommendedMax?: number;
-  /** The recommendation shown under a title that is longer than `titleRecommendedMax`. */
+  /** Optional text shown under a title that is longer than `titleRecommendedMax`; leave it out to change only the style. */
   titleRecommendedNote?: React.ReactNode;
   /** The question is being edited: accent border, counter and footer are shown. */
   active?: boolean;

@@ -21,6 +21,11 @@ describe('QuestionEditorCard', () => {
     expect(screen.getByRole('textbox', { name: 'Question title' }).className).toContain('text-body-base');
   });
 
+  it('changes only the style when there is no note', () => {
+    render(<QuestionEditorCard number={1} title="A fairly long saved title" titleRecommendedMax={12} />);
+    expect(screen.getByText('A fairly long saved title').closest('button')!.className).toContain('text-body-base');
+  });
+
   it('shows the recommendation for a saved title that is already long', () => {
     render(<QuestionEditorCard number={1} title="A fairly long saved title" titleRecommendedMax={12} titleRecommendedNote="Keep it short." />);
     expect(screen.getByText('Keep it short.')).toBeInTheDocument();
