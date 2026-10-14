@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.28.0
+
+### Minor Changes
+
+- [#100](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/100) [`0fc18de`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/0fc18ded23abc77fedb0af83fe7a23fe55816e22) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard` and `QuestionHeader` take an optional `titlePlaceholder` (default unchanged: "Click to write the question text"), and `QuestionOptionEditor` takes an optional `placeholder` for its empty option text.
+
 ## 0.27.0
 
 ### Minor Changes
