@@ -58,10 +58,9 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   textClassName?: string;
 }
 
-/** "150–500 characters", "At least 150 characters" or "Up to 500 characters", from whichever limits are set. */
+/** "150 characters required" (the maximum shows in the live count beside it), or "Up to 500 characters" when there is no minimum. */
 function limitsText(min?: number, max?: number) {
-  if (min !== undefined && max !== undefined) return `${min}–${max} characters`;
-  if (min !== undefined) return `At least ${min} characters`;
+  if (min !== undefined) return `${min} ${min === 1 ? 'character' : 'characters'} required`;
   if (max !== undefined) return `Up to ${max} characters`;
   return '';
 }

@@ -13,11 +13,11 @@ describe('QuestionEditorCard', () => {
     const user = userEvent.setup();
     const onTitleChange = vi.fn();
     render(<QuestionEditorCard active number={1} title="How old are you?" titleMinLength={10} maxLength={50} onTitleChange={onTitleChange} />);
-    expect(screen.queryByText('10–50 characters')).not.toBeInTheDocument();
+    expect(screen.queryByText('10 characters required')).not.toBeInTheDocument();
     // The always-on counter is replaced by the limits line.
     expect(screen.queryByText('16/50 characters')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Question title/ }));
-    expect(screen.getByText('10–50 characters')).toBeInTheDocument();
+    expect(screen.getByText('10 characters required')).toBeInTheDocument();
     await user.clear(screen.getByRole('textbox', { name: 'Question title' }));
     await user.type(screen.getByRole('textbox', { name: 'Question title' }), 'Why?');
     await user.keyboard('{Enter}');

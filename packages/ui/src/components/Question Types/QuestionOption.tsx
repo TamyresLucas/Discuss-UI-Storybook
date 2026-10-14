@@ -154,12 +154,10 @@ export interface QuestionOptionEditorProps {
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-/** "1–100 characters", "At least 1 character" or "Up to 100 characters", from whichever limits are set. */
+/** "1 character required" (the maximum shows in the live count beside it), or "Up to 100 characters" when there is no minimum. */
 function limitsText(min?: number, max?: number) {
-  const unit = (n: number) => `${n} ${n === 1 ? 'character' : 'characters'}`;
-  if (min !== undefined && max !== undefined) return `${min}–${unit(max)}`;
-  if (min !== undefined) return `At least ${unit(min)}`;
-  if (max !== undefined) return `Up to ${unit(max)}`;
+  if (min !== undefined) return `${min} ${min === 1 ? 'character' : 'characters'} required`;
+  if (max !== undefined) return `Up to ${max} characters`;
   return '';
 }
 
@@ -205,17 +203,17 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
     <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
   );
   return (
-    <div className="flex w-full flex-col gap-1.5">
     <div className={cn('group/option flex w-full items-center gap-2', className)}>
       <div
         className={cn(
-          'flex h-11.5 min-w-0 flex-1 items-center gap-2 rounded-md border bg-surface px-4 py-2 focus-within:border-input-accent',
+          'flex min-h-11.5 min-w-0 flex-1 flex-col justify-center gap-1 rounded-md border bg-surface px-4 py-2 focus-within:border-input-accent',
           reveal
             ? // The border is always visible and does not change on hover; only the shadow lifts the row. The field being edited keeps the accent.
               cn('border-border group-hover/option:shadow-md group-focus-within/option:shadow-md', lifted && 'shadow-md')
             : 'border-border hover:border-input-muted hover:shadow-md',
         )}
       >
+        <div className="flex min-w-0 items-center gap-2">
         {kind === 'rank' ? (
           <>
             {!locked && grip}
@@ -297,6 +295,24 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             placeholderTone === 'regular' ? 'placeholder:text-surface-foreground' : 'placeholder:text-muted-foreground',
           )}
         />
+        </div>
+    {guarded && draft !== null && (
+      <p
+        id={helperId}
+        role={error ? 'alert' : undefined}
+        className={cn('flex items-start justify-between gap-2 text-ui-caption', error ? 'text-destructive' : 'text-secondary-muted-foreground')}
+      >
+        <span className="flex items-start gap-2">
+          {error && <WarningCircle size={16} aria-hidden className="shrink-0" />}
+          {limitsText(minLength, maxLength)}
+          {error && <span className="sr-only">{error}</span>}
+        </span>
+        <span aria-hidden className="shrink-0 tabular-nums">
+          {draft.length}
+          {maxLength !== undefined && `/${maxLength}`}
+        </span>
+      </p>
+    )}
       </div>
       {!locked && (
         <div
@@ -313,24 +329,6 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
           </Button>
         </div>
       )}
-    </div>
-    {guarded && draft !== null && (
-      <p
-        id={helperId}
-        role={error ? 'alert' : undefined}
-        className={cn('flex items-start justify-between gap-2 px-4 text-ui-caption', error ? 'text-destructive' : 'text-secondary-muted-foreground')}
-      >
-        <span className="flex items-start gap-2">
-          {error && <WarningCircle size={16} aria-hidden className="shrink-0" />}
-          {limitsText(minLength, maxLength)}
-          {error && <span className="sr-only">{error}</span>}
-        </span>
-        <span aria-hidden className="shrink-0 tabular-nums">
-          {draft.length}
-          {maxLength !== undefined && `/${maxLength}`}
-        </span>
-      </p>
-    )}
     </div>
   );
 }

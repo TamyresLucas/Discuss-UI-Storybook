@@ -201,9 +201,9 @@ describe('InlineEdit', () => {
   it('showLimits shows the allowed length and a live counter while editing, and the same line turns into the error state', async () => {
     const user = userEvent.setup();
     render(<InlineEdit aria-label="Goal" multiline minLength={10} maxLength={40} showLimits defaultValue="A long enough value" />);
-    expect(screen.queryByText('10–40 characters')).not.toBeInTheDocument();
+    expect(screen.queryByText('10 characters required')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button'));
-    expect(screen.getByText('10–40 characters')).toBeInTheDocument();
+    expect(screen.getByText('10 characters required')).toBeInTheDocument();
     expect(screen.getByText('19/40')).toBeInTheDocument();
     const field = screen.getByRole('textbox', { name: 'Goal' });
     await user.clear(field);
@@ -211,7 +211,7 @@ describe('InlineEdit', () => {
     expect(screen.getByText('5/40')).toBeInTheDocument();
     await user.tab();
     const alert = screen.getByRole('alert');
-    expect(alert).toHaveTextContent('10–40 characters');
+    expect(alert).toHaveTextContent('10 characters required');
     expect(alert).toHaveTextContent('Enter at least 10 characters (5 now).');
     expect(alert).toHaveClass('text-destructive');
   });
@@ -220,7 +220,7 @@ describe('InlineEdit', () => {
     const user = userEvent.setup();
     render(<InlineEdit aria-label="Goal" minLength={10} maxLength={40} defaultValue="A long enough value" />);
     await user.click(screen.getByRole('button'));
-    expect(screen.queryByText('10–40 characters')).not.toBeInTheDocument();
+    expect(screen.queryByText('10 characters required')).not.toBeInTheDocument();
   });
 
   it('submitOnEnter: Enter saves a multiline edit and Shift+Enter adds a line break', async () => {

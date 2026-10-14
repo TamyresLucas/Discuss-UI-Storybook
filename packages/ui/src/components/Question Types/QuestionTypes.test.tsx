@@ -143,10 +143,10 @@ describe('QuestionOption', () => {
       const onLabelChange = vi.fn();
       render(<QuestionOptionEditor label="Price" minLength={2} maxLength={10} onLabelChange={onLabelChange} />);
       const field = screen.getByRole('textbox', { name: 'Option label' });
-      expect(screen.queryByText('2–10 characters')).not.toBeInTheDocument();
+      expect(screen.queryByText('2 characters required')).not.toBeInTheDocument();
 
       await user.click(field);
-      expect(screen.getByText('2–10 characters')).toBeInTheDocument();
+      expect(screen.getByText('2 characters required')).toBeInTheDocument();
       await user.clear(field);
       await user.type(field, 'a');
       expect(onLabelChange).not.toHaveBeenCalled();
@@ -160,7 +160,7 @@ describe('QuestionOption', () => {
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
       await user.keyboard('{Enter}');
       expect(onLabelChange).toHaveBeenCalledExactlyOnceWith('abc');
-      expect(screen.queryByText('2–10 characters')).not.toBeInTheDocument();
+      expect(screen.queryByText('2 characters required')).not.toBeInTheDocument();
     });
 
     it('reverts a guarded label on Escape and never refuses an unchanged one', async () => {
@@ -199,7 +199,8 @@ describe('QuestionOption', () => {
 
     it('is quiet at rest: its normal border, an indicator instead of a visible drag handle, buttons present but transparent', () => {
       const { container } = render(<QuestionOptionEditor kind="radio" label="Recipes" />);
-      const field = container.querySelector('input')!.parentElement!;
+      // The bordered box is the input's row's parent: the row holds the grip and the input, the helper line sits below it inside the box.
+      const field = container.querySelector('input')!.parentElement!.parentElement!;
       // The row border stays visible in every state and does not change on hover.
       expect(field).toHaveClass('border-border');
       expect(field).not.toHaveClass('border-transparent');
@@ -250,7 +251,7 @@ describe('QuestionOption', () => {
 
     it('rank kind keeps the drag handle and shows the position number at rest, and still reveals the editor on hover', () => {
       render(<QuestionOptionEditor kind="rank" rank={2} label="Price" />);
-      const field = screen.getByRole('textbox', { name: 'Option label' }).parentElement!;
+      const field = screen.getByRole('textbox', { name: 'Option label' }).parentElement!.parentElement!;
       expect(field).toHaveClass('group-hover/option:shadow-md', 'group-focus-within/option:shadow-md');
       const handle = field.querySelector('svg')!;
       expect(handle).not.toHaveClass('hidden');
@@ -285,7 +286,8 @@ describe('QuestionOption', () => {
 
     it('without a kind the row is the unchanged always-on editor', () => {
       const { container } = render(<QuestionOptionEditor label="A" />);
-      const field = container.querySelector('input')!.parentElement!;
+      // The bordered box is the input's row's parent: the row holds the grip and the input, the helper line sits below it inside the box.
+      const field = container.querySelector('input')!.parentElement!.parentElement!;
       expect(field).toHaveClass('border-border', 'hover:border-input-muted');
       expect(field).not.toHaveClass('border-transparent');
       expect(screen.getByRole('button', { name: 'Remove option' }).parentElement).not.toHaveClass('opacity-0');
