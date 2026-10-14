@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.30.1
+
+### Patch Changes
+
+- [#109](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/109) [`09b0261`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/09b026152cd200df34744f7bd964352c17aa5d54) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionEditorCard` / `QuestionHeader`: `titleRecommendedMax` now switches a long title to the 16px body style on its own; `titleRecommendedNote` is optional and only adds the text under it.
+
 ## 0.30.0
 
 ### Minor Changes
