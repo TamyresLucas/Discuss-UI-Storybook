@@ -138,6 +138,52 @@ describe('QuestionOption', () => {
       expect(screen.getByPlaceholderText('Option 1')).toHaveValue('');
     });
 
+    it('guards a label with minLength and maxLength: draft, helper line while editing, refusal, save, Escape', async () => {
+      const user = userEvent.setup();
+      const onLabelChange = vi.fn();
+      render(<QuestionOptionEditor label="Price" minLength={2} maxLength={10} onLabelChange={onLabelChange} />);
+      const field = screen.getByRole('textbox', { name: 'Option label' });
+      expect(screen.queryByText('2–10 characters')).not.toBeInTheDocument();
+
+      await user.click(field);
+      expect(screen.getByText('2–10 characters')).toBeInTheDocument();
+      await user.clear(field);
+      await user.type(field, 'a');
+      expect(onLabelChange).not.toHaveBeenCalled();
+
+      // Too short: Enter is refused, the field stays open and says why.
+      await user.keyboard('{Enter}');
+      expect(onLabelChange).not.toHaveBeenCalled();
+      expect(screen.getByRole('alert')).toHaveTextContent('Enter at least 2 characters.');
+
+      await user.type(field, 'bc');
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      await user.keyboard('{Enter}');
+      expect(onLabelChange).toHaveBeenCalledExactlyOnceWith('abc');
+      expect(screen.queryByText('2–10 characters')).not.toBeInTheDocument();
+    });
+
+    it('reverts a guarded label on Escape and never refuses an unchanged one', async () => {
+      const user = userEvent.setup();
+      const onLabelChange = vi.fn();
+      render(<QuestionOptionEditor label="" minLength={2} maxLength={10} onLabelChange={onLabelChange} />);
+      const field = screen.getByRole('textbox', { name: 'Option label' });
+      await user.click(field);
+      await user.keyboard('{Tab}');
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(onLabelChange).not.toHaveBeenCalled();
+      await user.click(field);
+      await user.type(field, 'x');
+      await user.keyboard('{Escape}');
+      expect(field).toHaveValue('');
+      expect(onLabelChange).not.toHaveBeenCalled();
+    });
+
+    it('shows the placeholder in the regular text colour when asked', () => {
+      render(<QuestionOptionEditor label="" placeholder="Option 1" placeholderTone="regular" />);
+      expect(screen.getByPlaceholderText('Option 1').className).toContain('placeholder:text-surface-foreground');
+    });
+
     it('disables the trash and add buttons when removeDisabled / addDisabled are set', async () => {
       const user = userEvent.setup();
       const onRemove = vi.fn();

@@ -257,4 +257,11 @@ describe('InlineEdit', () => {
     rerender(<InlineEdit aria-label="Name" defaultValue="Alpha" disabled />);
     expect(screen.getByRole('button')).toHaveClass('disabled:cursor-not-allowed');
   });
+
+  it('shows the placeholder in the regular text colour when placeholderTone is regular', () => {
+    const { rerender } = render(<InlineEdit aria-label="Name" placeholder="Click to edit" />);
+    expect(screen.getByText('Click to edit').className).toContain('text-muted-foreground');
+    rerender(<InlineEdit aria-label="Name" placeholder="Click to edit" placeholderTone="regular" />);
+    expect(screen.getByText('Click to edit').className).not.toContain('text-muted-foreground');
+  });
 });

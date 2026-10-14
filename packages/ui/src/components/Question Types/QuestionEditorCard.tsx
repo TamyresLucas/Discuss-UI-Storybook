@@ -23,6 +23,10 @@ export interface QuestionEditorCardProps extends Omit<
   onTitleChange?: (title: string) => void;
   /** Shown while the title is empty. Defaults to "Click to write the question text". */
   titlePlaceholder?: string;
+  /** `regular` shows the title placeholder in the normal text colour instead of the muted one. Default `muted`. */
+  titlePlaceholderTone?: 'muted' | 'regular';
+  /** Shortest title (in characters) that may be saved. Turns on the title guardrail: see `QuestionHeader`'s `titleMinLength`. */
+  titleMinLength?: number;
   /** The question is being edited: accent border, counter and footer are shown. */
   active?: boolean;
   /**
@@ -69,6 +73,8 @@ export const QuestionEditorCard = React.forwardRef<
       title,
       onTitleChange,
       titlePlaceholder,
+      titlePlaceholderTone,
+      titleMinLength,
       active,
       hovered,
       maxLength,
@@ -112,6 +118,8 @@ export const QuestionEditorCard = React.forwardRef<
                 title={title}
                 onTitleChange={onTitleChange}
                 titlePlaceholder={titlePlaceholder}
+                titlePlaceholderTone={titlePlaceholderTone}
+                titleMinLength={titleMinLength}
                 active={active}
                 showCounter={!!active}
                 dragHandleProps={dragHandleProps}

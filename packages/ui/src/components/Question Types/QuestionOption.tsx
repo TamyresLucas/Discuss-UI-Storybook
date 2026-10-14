@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Check, DotsSixVertical, Plus, Trash } from '@phosphor-icons/react';
+import { Check, DotsSixVertical, Plus, Trash, WarningCircle } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
 import { Button } from '../Buttons & Actions/Button';
@@ -105,6 +105,18 @@ export interface QuestionOptionEditorProps {
   onAdd?: () => void;
   /** Shown while the option is empty, for example "Option 1". */
   placeholder?: string;
+  /** `regular` shows the placeholder in the normal text colour instead of the muted one. Default `muted`. */
+  placeholderTone?: 'muted' | 'regular';
+  /**
+   * Shortest label (in characters, ignoring surrounding spaces) that may be saved. With `minLength` or `maxLength` the label is
+   * guarded like an `InlineEdit`: typing only changes a draft, Enter or leaving the field saves it through `onLabelChange`, a label
+   * that is too short is not saved (the field stays open and says why), Escape reverts, and while it is being edited a line under
+   * the row shows the allowed range and the live count. An unchanged label is never refused. Without either, `onLabelChange` is
+   * called on every keystroke as before.
+   */
+  minLength?: number;
+  /** Longest label (in characters). See `minLength`. */
+  maxLength?: number;
   /** Disables the trash button, for example when the question is already at its minimum number of options. */
   removeDisabled?: boolean;
   /** Disables the add (+) button, for example when the question is already at its maximum number of options. */
@@ -142,8 +154,41 @@ export interface QuestionOptionEditorProps {
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, placeholder, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
+/** "1–100 characters", "At least 1 character" or "Up to 100 characters", from whichever limits are set. */
+function limitsText(min?: number, max?: number) {
+  const unit = (n: number) => `${n} ${n === 1 ? 'character' : 'characters'}`;
+  if (min !== undefined && max !== undefined) return `${min}–${unit(max)}`;
+  if (min !== undefined) return `At least ${unit(min)}`;
+  if (max !== undefined) return `Up to ${unit(max)}`;
+  return '';
+}
+
+export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeholderTone = 'muted', minLength, maxLength, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
+  const guarded = minLength !== undefined || maxLength !== undefined;
+  // Guarded mode: `draft` is the text being typed (null while not editing) and `error` why the last save was refused.
+  const [draft, setDraft] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const helperId = React.useId();
+  const fieldRef = React.useRef<HTMLInputElement>(null);
+  // Set while an Escape revert or a save by Enter is pending so the blur that follows does not save again.
+  const skipBlur = React.useRef(false);
+  const problemWith = (text: string) =>
+    minLength !== undefined && text.trim().length < minLength ? `Enter at least ${minLength} ${minLength === 1 ? 'character' : 'characters'}.` : null;
+  const save = () => {
+    if (draft === null) return true;
+    if (draft !== label) {
+      const problem = problemWith(draft);
+      if (problem) {
+        setError(problem);
+        return false;
+      }
+      onLabelChange?.(draft);
+    }
+    setDraft(null);
+    setError(null);
+    return true;
+  };
   // The grip: decorative unless the caller makes it a drag handle.
   const gripProps: React.ComponentPropsWithRef<'span'> = dragHandleProps
     ? {
@@ -160,6 +205,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, onRemo
     <DotsSixVertical size={20} aria-hidden className="shrink-0 text-surface-foreground" />
   );
   return (
+    <div className="flex w-full flex-col gap-1.5">
     <div className={cn('group/option flex w-full items-center gap-2', className)}>
       <div
         className={cn(
@@ -207,11 +253,49 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, onRemo
           grip
         )}
         <input
+          ref={fieldRef}
           aria-label="Option label"
+          aria-invalid={error ? true : undefined}
+          aria-describedby={guarded && draft !== null ? helperId : undefined}
           placeholder={placeholder}
-          value={label}
-          onChange={(event) => onLabelChange?.(event.target.value)}
-          className="min-w-0 flex-1 bg-transparent text-body-base text-surface-foreground outline-none"
+          maxLength={maxLength}
+          value={guarded ? (draft ?? label) : label}
+          onFocus={() => {
+            if (guarded && draft === null) setDraft(label);
+          }}
+          onChange={(event) => {
+            if (!guarded) return onLabelChange?.(event.target.value);
+            setDraft(event.target.value);
+            // After a refused save the message follows what is typed and goes away once the text is acceptable.
+            if (error) setError(problemWith(event.target.value));
+          }}
+          onKeyDown={(event) => {
+            if (!guarded) return;
+            if (event.key === 'Escape') {
+              skipBlur.current = true;
+              setDraft(null);
+              setError(null);
+              fieldRef.current?.blur();
+            } else if (event.key === 'Enter') {
+              event.preventDefault();
+              if (save()) {
+                skipBlur.current = true;
+                fieldRef.current?.blur();
+              }
+            }
+          }}
+          onBlur={() => {
+            if (!guarded) return;
+            if (skipBlur.current) {
+              skipBlur.current = false;
+              return;
+            }
+            save();
+          }}
+          className={cn(
+            'min-w-0 flex-1 bg-transparent text-body-base text-surface-foreground outline-none',
+            placeholderTone === 'regular' ? 'placeholder:text-surface-foreground' : 'placeholder:text-muted-foreground',
+          )}
         />
       </div>
       {!locked && (
@@ -229,6 +313,24 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, onRemo
           </Button>
         </div>
       )}
+    </div>
+    {guarded && draft !== null && (
+      <p
+        id={helperId}
+        role={error ? 'alert' : undefined}
+        className={cn('flex items-start justify-between gap-2 px-4 text-ui-caption', error ? 'text-destructive' : 'text-secondary-muted-foreground')}
+      >
+        <span className="flex items-start gap-2">
+          {error && <WarningCircle size={16} aria-hidden className="shrink-0" />}
+          {limitsText(minLength, maxLength)}
+          {error && <span className="sr-only">{error}</span>}
+        </span>
+        <span aria-hidden className="shrink-0 tabular-nums">
+          {draft.length}
+          {maxLength !== undefined && `/${maxLength}`}
+        </span>
+      </p>
+    )}
     </div>
   );
 }
