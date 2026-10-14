@@ -21,6 +21,8 @@ export interface QuestionEditorCardProps extends Omit<
   number: number;
   title: string;
   onTitleChange?: (title: string) => void;
+  /** Shown while the title is empty. Defaults to "Click to write the question text". */
+  titlePlaceholder?: string;
   /** The question is being edited: accent border, counter and footer are shown. */
   active?: boolean;
   /**
@@ -66,6 +68,7 @@ export const QuestionEditorCard = React.forwardRef<
       number,
       title,
       onTitleChange,
+      titlePlaceholder,
       active,
       hovered,
       maxLength,
@@ -108,6 +111,7 @@ export const QuestionEditorCard = React.forwardRef<
                 number={number}
                 title={title}
                 onTitleChange={onTitleChange}
+                titlePlaceholder={titlePlaceholder}
                 active={active}
                 showCounter={!!active}
                 dragHandleProps={dragHandleProps}

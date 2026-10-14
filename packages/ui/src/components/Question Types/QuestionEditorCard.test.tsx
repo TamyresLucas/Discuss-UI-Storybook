@@ -9,6 +9,13 @@ import { QuestionEditorCard } from './QuestionEditorCard';
 import { QuestionNavItem } from './QuestionNavItem';
 
 describe('QuestionEditorCard', () => {
+  it('shows a custom title placeholder while the title is empty, and the default otherwise', () => {
+    const { rerender } = render(<QuestionEditorCard number={1} title="" titlePlaceholder="This is a checkbox question type" />);
+    expect(screen.getByText('This is a checkbox question type')).toBeInTheDocument();
+    rerender(<QuestionEditorCard number={1} title="" />);
+    expect(screen.getByText('Click to write the question text')).toBeInTheDocument();
+  });
+
   it('hides counter and footer until active', () => {
     const { rerender } = render(<QuestionEditorCard number={1} title="Hi" countLabel="4/20 choices" onAdd={() => {}} />);
     expect(screen.queryByText('4/20 choices')).not.toBeInTheDocument();

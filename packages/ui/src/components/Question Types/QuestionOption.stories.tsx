@@ -74,6 +74,15 @@ function Editor() {
   );
 }
 
+export const EditorRowPlaceholders: StoryObj<typeof QuestionOptionEditor> = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      <QuestionOptionEditor kind="checkbox" label="" placeholder="Option 1" onRemove={() => {}} onAdd={() => {}} />
+      <QuestionOptionEditor kind="checkbox" label="" placeholder="Option 2" onRemove={() => {}} onAdd={() => {}} />
+    </div>
+  ),
+};
+
 export const EditorRowLimits: StoryObj<typeof QuestionOptionEditor> = {
   render: () => (
     <div className="flex flex-col gap-2">
