@@ -83,6 +83,13 @@ export const EditorRowPlaceholders: StoryObj<typeof QuestionOptionEditor> = {
   ),
 };
 
+function GuardedEditor() {
+  const [label, setLabel] = React.useState('Price');
+  return <QuestionOptionEditor kind="checkbox" label={label} placeholder="Option 1" placeholderTone="regular" minLength={1} maxLength={100} onLabelChange={setLabel} onRemove={() => {}} onAdd={() => {}} />;
+}
+
+export const EditorRowGuardrail: StoryObj<typeof QuestionOptionEditor> = { render: () => <GuardedEditor /> };
+
 export const EditorRowLimits: StoryObj<typeof QuestionOptionEditor> = {
   render: () => (
     <div className="flex flex-col gap-2">

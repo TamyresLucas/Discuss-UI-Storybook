@@ -10,8 +10,10 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   defaultValue?: string;
   /** Called when an edit is committed (Enter, blur or the commit key for multiline) with a changed value. */
   onValueChange?: (value: string) => void;
-  /** Shown in read mode, muted, while the value is empty. */
+  /** Shown in read mode while the value is empty, muted unless `placeholderTone` says otherwise. */
   placeholder?: string;
+  /** `regular` shows the placeholder in the normal text colour instead of the muted one, for hints that read as real content. Default `muted`. */
+  placeholderTone?: 'muted' | 'regular';
   /** Accessible name for the read button and the field. Required: there is no visible label. */
   'aria-label': string;
   /** Use a textarea. Enter inserts a line break; Cmd/Ctrl+Enter commits. */
@@ -56,10 +58,9 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   textClassName?: string;
 }
 
-/** "150–500 characters", "At least 150 characters" or "Up to 500 characters", from whichever limits are set. */
+/** "150 characters required" (the maximum shows in the live count beside it), or "Up to 500 characters" when there is no minimum. */
 function limitsText(min?: number, max?: number) {
-  if (min !== undefined && max !== undefined) return `${min}–${max} characters`;
-  if (min !== undefined) return `At least ${min} characters`;
+  if (min !== undefined) return `${min} ${min === 1 ? 'character' : 'characters'} required`;
   if (max !== undefined) return `Up to ${max} characters`;
   return '';
 }
@@ -76,6 +77,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       defaultValue = '',
       onValueChange,
       placeholder = 'Click to edit',
+      placeholderTone = 'muted',
       multiline,
       maxLength,
       minLength,
@@ -245,7 +247,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               textClasses,
             )}
           >
-            <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && 'text-muted-foreground')}>
+            <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && placeholderTone === 'muted' && 'text-muted-foreground')}>
               {value || placeholder}
             </span>
             {!fill && (

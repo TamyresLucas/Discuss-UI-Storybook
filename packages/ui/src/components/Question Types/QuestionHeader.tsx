@@ -20,6 +20,14 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   onTitleChange?: (title: string) => void;
   /** Editor mode: shown while the title is empty. Defaults to "Click to write the question text". */
   titlePlaceholder?: string;
+  /** Editor mode: `regular` shows the title placeholder in the normal text colour instead of the muted one. Default `muted`. */
+  titlePlaceholderTone?: 'muted' | 'regular';
+  /**
+   * Editor mode: shortest title (in characters) that may be saved. When set, the title's limits guardrail turns on: while the title
+   * is being edited a line under it shows the allowed range and the live count (using `maxLength`), a title that is too short is not
+   * saved (the field stays open and says why), and the always-on counter is replaced by that line.
+   */
+  titleMinLength?: number;
   /** Editor mode: action buttons (copy, delete, preview, AI) revealed on hover or focus. */
   actions?: React.ReactNode;
   /** Editor mode: content shown right beside the "Question N" tag, e.g. the time allowed for the question. */
@@ -49,7 +57,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -108,6 +116,9 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             className="-mx-3 w-auto"
             aria-label="Question title"
             placeholder={titlePlaceholder}
+            placeholderTone={titlePlaceholderTone}
+            minLength={titleMinLength}
+            showLimits={titleMinLength !== undefined}
             value={text}
             maxLength={maxLength}
             onValueChange={onTitleChange}
@@ -117,7 +128,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             }}
             textClassName="text-heading-h4"
           />
-          {showCounter && (
+          {showCounter && titleMinLength === undefined && (
             <p className="text-ui-caption text-secondary-muted-foreground">
               {count}/{maxLength} characters
             </p>

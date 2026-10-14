@@ -9,6 +9,27 @@ import { QuestionEditorCard } from './QuestionEditorCard';
 import { QuestionNavItem } from './QuestionNavItem';
 
 describe('QuestionEditorCard', () => {
+  it('guards the title when titleMinLength is set: limits line only while editing, refusal when too short', async () => {
+    const user = userEvent.setup();
+    const onTitleChange = vi.fn();
+    render(<QuestionEditorCard active number={1} title="How old are you?" titleMinLength={10} maxLength={50} onTitleChange={onTitleChange} />);
+    expect(screen.queryByText('10 characters required')).not.toBeInTheDocument();
+    // The always-on counter is replaced by the limits line.
+    expect(screen.queryByText('16/50 characters')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Question title/ }));
+    expect(screen.getByText('10 characters required')).toBeInTheDocument();
+    await user.clear(screen.getByRole('textbox', { name: 'Question title' }));
+    await user.type(screen.getByRole('textbox', { name: 'Question title' }), 'Why?');
+    await user.keyboard('{Enter}');
+    expect(onTitleChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Enter at least 10 characters');
+  });
+
+  it('shows the title placeholder in the regular text colour when asked', () => {
+    render(<QuestionEditorCard number={1} title="" titlePlaceholder="This is a checkbox question type" titlePlaceholderTone="regular" />);
+    expect(screen.getByText('This is a checkbox question type').className).not.toContain('text-muted-foreground');
+  });
+
   it('shows a custom title placeholder while the title is empty, and the default otherwise', () => {
     const { rerender } = render(<QuestionEditorCard number={1} title="" titlePlaceholder="This is a checkbox question type" />);
     expect(screen.getByText('This is a checkbox question type')).toBeInTheDocument();
