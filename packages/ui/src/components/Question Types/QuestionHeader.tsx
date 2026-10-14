@@ -18,6 +18,8 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   editor?: boolean;
   /** Editor mode: called as the title is typed. `title` must then be a string. */
   onTitleChange?: (title: string) => void;
+  /** Editor mode: shown while the title is empty. Defaults to "Click to write the question text". */
+  titlePlaceholder?: string;
   /** Editor mode: action buttons (copy, delete, preview, AI) revealed on hover or focus. */
   actions?: React.ReactNode;
   /** Editor mode: content shown right beside the "Question N" tag, e.g. the time allowed for the question. */
@@ -47,7 +49,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -105,7 +107,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             selected={active}
             className="-mx-3 w-auto"
             aria-label="Question title"
-            placeholder="Click to write the question text"
+            placeholder={titlePlaceholder}
             value={text}
             maxLength={maxLength}
             onValueChange={onTitleChange}

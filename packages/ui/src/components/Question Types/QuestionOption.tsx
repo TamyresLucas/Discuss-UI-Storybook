@@ -103,6 +103,8 @@ export interface QuestionOptionEditorProps {
   onRemove?: () => void;
   /** Called by the add (+) button. */
   onAdd?: () => void;
+  /** Shown while the option is empty, for example "Option 1". */
+  placeholder?: string;
   /** Disables the trash button, for example when the question is already at its minimum number of options. */
   removeDisabled?: boolean;
   /** Disables the add (+) button, for example when the question is already at its maximum number of options. */
@@ -140,7 +142,7 @@ export interface QuestionOptionEditorProps {
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, placeholder, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
   // The grip: decorative unless the caller makes it a drag handle.
   const gripProps: React.ComponentPropsWithRef<'span'> = dragHandleProps
@@ -206,6 +208,7 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, re
         )}
         <input
           aria-label="Option label"
+          placeholder={placeholder}
           value={label}
           onChange={(event) => onLabelChange?.(event.target.value)}
           className="min-w-0 flex-1 bg-transparent text-body-base text-surface-foreground outline-none"

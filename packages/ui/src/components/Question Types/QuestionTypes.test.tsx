@@ -133,6 +133,11 @@ describe('QuestionOption', () => {
   });
 
   describe('editor row with a kind (reveals on hover)', () => {
+    it('shows a placeholder while the option is empty', () => {
+      render(<QuestionOptionEditor label="" placeholder="Option 1" />);
+      expect(screen.getByPlaceholderText('Option 1')).toHaveValue('');
+    });
+
     it('disables the trash and add buttons when removeDisabled / addDisabled are set', async () => {
       const user = userEvent.setup();
       const onRemove = vi.fn();
