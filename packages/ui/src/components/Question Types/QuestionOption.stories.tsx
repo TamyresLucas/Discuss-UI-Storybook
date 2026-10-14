@@ -74,6 +74,15 @@ function Editor() {
   );
 }
 
+export const EditorRowLimits: StoryObj<typeof QuestionOptionEditor> = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      <QuestionOptionEditor label="At the minimum: can't remove" removeDisabled onRemove={() => {}} onAdd={() => {}} />
+      <QuestionOptionEditor label="At the maximum: can't add" addDisabled onRemove={() => {}} onAdd={() => {}} />
+    </div>
+  ),
+};
+
 export const EditorRow: StoryObj<typeof QuestionOptionEditor> = { render: () => <Editor /> };
 
 function RevealRows({ kind }: { kind: 'radio' | 'checkbox' | 'rank' }) {

@@ -133,6 +133,19 @@ describe('QuestionOption', () => {
   });
 
   describe('editor row with a kind (reveals on hover)', () => {
+    it('disables the trash and add buttons when removeDisabled / addDisabled are set', async () => {
+      const user = userEvent.setup();
+      const onRemove = vi.fn();
+      const onAdd = vi.fn();
+      render(<QuestionOptionEditor label="A" onRemove={onRemove} onAdd={onAdd} removeDisabled addDisabled />);
+      expect(screen.getByRole('button', { name: 'Remove option' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Add option' })).toBeDisabled();
+      await user.click(screen.getByRole('button', { name: 'Remove option' }));
+      await user.click(screen.getByRole('button', { name: 'Add option' }));
+      expect(onRemove).not.toHaveBeenCalled();
+      expect(onAdd).not.toHaveBeenCalled();
+    });
+
     it('is quiet at rest: its normal border, an indicator instead of a visible drag handle, buttons present but transparent', () => {
       const { container } = render(<QuestionOptionEditor kind="radio" label="Recipes" />);
       const field = container.querySelector('input')!.parentElement!;

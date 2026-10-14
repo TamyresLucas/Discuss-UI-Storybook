@@ -103,6 +103,10 @@ export interface QuestionOptionEditorProps {
   onRemove?: () => void;
   /** Called by the add (+) button. */
   onAdd?: () => void;
+  /** Disables the trash button, for example when the question is already at its minimum number of options. */
+  removeDisabled?: boolean;
+  /** Disables the add (+) button, for example when the question is already at its maximum number of options. */
+  addDisabled?: boolean;
   className?: string;
   /**
    * Answer type. When set the row is quiet at rest: its normal border, the radio or checkbox indicator in front of the
@@ -136,7 +140,7 @@ export interface QuestionOptionEditorProps {
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
-export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
   // The grip: decorative unless the caller makes it a drag handle.
   const gripProps: React.ComponentPropsWithRef<'span'> = dragHandleProps
@@ -214,10 +218,10 @@ export function QuestionOptionEditor({ label, onLabelChange, onRemove, onAdd, cl
             reveal && 'opacity-0 transition-opacity group-hover/option:opacity-100 group-focus-within/option:opacity-100',
           )}
         >
-          <Button type="button" variant="destructive" size="icon-sm" aria-label="Remove option" onClick={onRemove}>
+          <Button type="button" variant="destructive" size="icon-sm" aria-label="Remove option" disabled={removeDisabled} onClick={onRemove}>
             <Trash size={16} aria-hidden />
           </Button>
-          <Button type="button" variant="ghost" size="icon-sm" aria-label="Add option" onClick={onAdd}>
+          <Button type="button" variant="ghost" size="icon-sm" aria-label="Add option" disabled={addDisabled} onClick={onAdd}>
             <Plus size={16} aria-hidden />
           </Button>
         </div>
