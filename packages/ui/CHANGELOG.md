@@ -1,5 +1,13 @@
 # @discuss-ds/ui
 
+## 0.29.1
+
+### Patch Changes
+
+- [#104](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/104) [`1918d72`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1918d72cab1c11e67c889abd7158e3b07aabe365) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionOptionEditor`: the helper line shown while a guarded option is edited lines up with the option text instead of the drag grip.
+
+- [#106](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/106) [`3b04f34`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/3b04f34cedb63b5ae41edefedb0ed13de28fc3b8) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionOptionEditor`: the grip, indicator or number stays vertically centred with the option text in the default state.
+
 ## 0.29.0
 
 ### Minor Changes
