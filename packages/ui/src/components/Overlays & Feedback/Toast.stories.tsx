@@ -59,6 +59,24 @@ export const Success: Story = { args: { variant: 'success' } };
 export const Warning: Story = { args: { variant: 'warning' } };
 export const Destructive: Story = { args: { variant: 'destructive', withAction: true } };
 
+export const InlineWithActions: Story = {
+  render: () => {
+    const actions = (
+      <>
+        <Button size="sm" variant="ghost">Dismiss</Button>
+        <Button size="sm" variant="outline">Fix</Button>
+      </>
+    );
+    return (
+      <div className="flex w-110 flex-col gap-4">
+        <ToastInline variant="neutral" actions={actions}>Enable Candidate Availability Collection.</ToastInline>
+        <ToastInline variant="warning" actions={actions}>Enable Candidate Availability Collection.</ToastInline>
+        <ToastInline variant="destructive" actions={actions}>Question type not supported.</ToastInline>
+      </div>
+    );
+  },
+};
+
 export const Inline: Story = {
   render: () => (
     <div className="flex w-110 flex-col gap-4">

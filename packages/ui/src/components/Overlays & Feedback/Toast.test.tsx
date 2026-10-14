@@ -56,6 +56,20 @@ describe('ToastInline', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('shows actions after the message, and each one works', async () => {
+    const user = userEvent.setup();
+    const onFix = vi.fn();
+    render(
+      <ToastInline variant="neutral" actions={<><button type="button">Dismiss</button><button type="button" onClick={onFix}>Fix</button></>}>
+        Question type not supported.
+      </ToastInline>,
+    );
+    expect(screen.getByRole('status')).toHaveTextContent('Question type not supported.');
+    await user.click(screen.getByRole('button', { name: 'Fix' }));
+    expect(onFix).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+  });
+
   it('has no accessibility violations', async () => {
     const { container } = render(<ToastInline variant="success" onClose={() => {}}>Saved</ToastInline>);
     expect(await axe(container)).toHaveNoViolations();
