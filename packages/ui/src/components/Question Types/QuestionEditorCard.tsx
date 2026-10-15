@@ -68,6 +68,10 @@ export interface QuestionEditorCardProps extends Omit<
   questionType?: QuestionType;
   /** Ranges of the saved question text to underline in the destructive colour, such as misspelled words. See `QuestionHeader`'s `titleMarks`. */
   titleMarks?: InlineEditMark[];
+  /** Makes the underlined words clickable; called with the mark and the chosen correction. See `QuestionHeader`'s `onTitleMarkApply`. */
+  onTitleMarkApply?: (mark: InlineEditMark, replacement: string) => void;
+  /** Called when a mark is dismissed from its card. */
+  onTitleMarkDismiss?: (mark: InlineEditMark) => void;
 }
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
@@ -105,6 +109,8 @@ export const QuestionEditorCard = React.forwardRef<
       showDragHandle,
       questionType,
       titleMarks,
+      onTitleMarkApply,
+      onTitleMarkDismiss,
       children,
       ...props
     },
@@ -142,6 +148,8 @@ export const QuestionEditorCard = React.forwardRef<
                 showDragHandle={showDragHandle}
                 questionType={questionType}
                 titleMarks={titleMarks}
+                onTitleMarkApply={onTitleMarkApply}
+                onTitleMarkDismiss={onTitleMarkDismiss}
                 meta={meta}
                 maxLength={maxLength}
                 actions={

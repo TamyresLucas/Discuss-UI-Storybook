@@ -65,6 +65,10 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   questionType?: QuestionType;
   /** Editor mode: ranges of the saved title to underline in the destructive colour (misspelled words, for example). See `InlineEdit`'s `marks`. */
   titleMarks?: InlineEditMark[];
+  /** Editor mode: makes the underlined words clickable; called with the mark and the chosen correction. See `InlineEdit`'s `onMarkApply`. */
+  onTitleMarkApply?: (mark: InlineEditMark, replacement: string) => void;
+  /** Editor mode: called when a mark is dismissed from its card. See `InlineEdit`'s `onMarkDismiss`. */
+  onTitleMarkDismiss?: (mark: InlineEditMark) => void;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -72,7 +76,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, titleMarks, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, titleMarks, onTitleMarkApply, onTitleMarkDismiss, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -153,6 +157,8 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               if (!editing) setDraft(null);
             }}
             marks={titleMarks}
+            onMarkApply={onTitleMarkApply}
+            onMarkDismiss={onTitleMarkDismiss}
             textClassName={long ? 'text-body-base' : 'text-heading-h4'}
           />
           {long && titleRecommendedNote != null && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}

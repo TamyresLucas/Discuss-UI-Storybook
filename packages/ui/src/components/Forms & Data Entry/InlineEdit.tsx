@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { PencilSimple, WarningCircle } from '@phosphor-icons/react';
+import { PencilSimple, Trash, WarningCircle } from '@phosphor-icons/react';
+import { Popover as PopoverPrimitive } from 'radix-ui';
 
 import { cn } from '../../lib/utils';
+import { Button } from '../Buttons & Actions/Button';
 import { fieldSurfaceClasses } from './Field';
 
 export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
@@ -62,26 +64,98 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
    * out of bounds, empty or overlapping are ignored.
    */
   marks?: InlineEditMark[];
+  /**
+   * Makes each mark clickable: clicking an underlined word opens a small card with the marked text, its `suggestions` and a Dismiss action,
+   * instead of starting the edit. Called with the mark and the suggestion the reader chose; apply it to the value yourself.
+   */
+  onMarkApply?: (mark: InlineEditMark, replacement: string) => void;
+  /** Called when the reader dismisses a mark from its card. Remove the mark to make the underline go away. */
+  onMarkDismiss?: (mark: InlineEditMark) => void;
 }
 
 export interface InlineEditMark {
   start: number;
   end: number;
+  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`. */
+  suggestions?: string[];
 }
 
 /** The text split into plain and marked pieces; marks that don't fit the text are dropped. */
-function splitMarks(text: string, marks: InlineEditMark[] | undefined): { text: string; marked: boolean }[] {
+function splitMarks(text: string, marks: InlineEditMark[] | undefined): { text: string; mark?: InlineEditMark }[] {
   const valid = (marks ?? []).filter((m) => Number.isInteger(m.start) && Number.isInteger(m.end) && m.start >= 0 && m.end > m.start && m.end <= text.length).sort((a, b) => a.start - b.start);
-  const out: { text: string; marked: boolean }[] = [];
+  const out: { text: string; mark?: InlineEditMark }[] = [];
   let at = 0;
   for (const m of valid) {
     if (m.start < at) continue;
-    if (m.start > at) out.push({ text: text.slice(at, m.start), marked: false });
-    out.push({ text: text.slice(m.start, m.end), marked: true });
+    if (m.start > at) out.push({ text: text.slice(at, m.start) });
+    out.push({ text: text.slice(m.start, m.end), mark: m });
     at = m.end;
   }
-  if (at < text.length) out.push({ text: text.slice(at), marked: false });
+  if (at < text.length) out.push({ text: text.slice(at) });
   return out;
+}
+
+// A solid line a little below the word, as spell checkers draw it, not a border hugging the letters.
+const markClasses = 'border-b-2 border-destructive-foreground pb-0.5';
+
+/** A marked piece of text. Plain underline, or, when the owner handles marks, a button that opens a card to apply a suggestion or dismiss the mark. */
+function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; text: string; onApply?: (mark: InlineEditMark, replacement: string) => void; onDismiss?: (mark: InlineEditMark) => void }) {
+  if (!onApply && !onDismiss) {
+    return (
+      <span data-mark className={markClasses}>
+        {text}
+      </span>
+    );
+  }
+  const suggestions = (mark.suggestions ?? []).slice(0, 3);
+  // The mark sits inside the read-mode button, so clicks and keys here must not also start the edit.
+  const stop = (event: React.SyntheticEvent) => event.stopPropagation();
+  return (
+    <PopoverPrimitive.Root>
+      <PopoverPrimitive.Trigger asChild>
+        <span data-mark role="button" tabIndex={-1} onClick={stop} className={cn(markClasses, 'cursor-pointer')}>
+          {text}
+        </span>
+      </PopoverPrimitive.Trigger>
+      <PopoverPrimitive.Portal>
+        <PopoverPrimitive.Content
+          align="start"
+          sideOffset={8}
+          style={{ zIndex: 'var(--sys-z-40)' }}
+          onClick={stop}
+          onKeyDown={stop}
+          className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
+        >
+          <p className="text-ui-caption uppercase text-secondary-muted-foreground">Possible typo</p>
+          {suggestions.length > 0 ? (
+            <ul className="flex flex-col gap-2">
+              {suggestions.map((suggestion, i) => (
+                <li key={suggestion} className="flex items-center justify-between gap-3">
+                  <span className="min-w-0 break-words">
+                    <s className="text-destructive-foreground">{text}</s> <span className="font-semibold text-accent-foreground">{suggestion}</span>
+                  </span>
+                  {onApply && (
+                    <Button type="button" size="sm" variant={i === 0 ? 'default' : 'outline'} onClick={() => onApply(mark, suggestion)}>
+                      Apply
+                    </Button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              <s className="text-destructive-foreground">{text}</s> has no suggestion.
+            </p>
+          )}
+          {onDismiss && (
+            <Button type="button" size="sm" variant="ghost" className="self-start" onClick={() => onDismiss(mark)}>
+              <Trash size={16} aria-hidden /> Dismiss
+            </Button>
+          )}
+        </PopoverPrimitive.Content>
+      </PopoverPrimitive.Portal>
+    </PopoverPrimitive.Root>
+  );
 }
 
 /** "150 characters required" (the maximum shows in the live count beside it), or "Up to 500 characters" when there is no minimum. */
@@ -100,6 +174,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       className,
       textClassName,
       marks,
+      onMarkApply,
+      onMarkDismiss,
       value: valueProp,
       defaultValue = '',
       onValueChange,
@@ -277,11 +353,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && placeholderTone === 'muted' && 'text-muted-foreground')}>
               {value
                 ? splitMarks(value, marks).map((piece, i) =>
-                    piece.marked ? (
-                      // A solid line a little below the word, as spell checkers draw it, not a border hugging the letters.
-                      <span key={i} data-mark className="border-b-2 border-destructive-foreground pb-0.5">
-                        {piece.text}
-                      </span>
+                    piece.mark ? (
+                      <MarkedText key={i} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} />
                     ) : (
                       piece.text
                     ),

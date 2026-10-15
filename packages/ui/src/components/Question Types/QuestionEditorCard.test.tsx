@@ -318,4 +318,22 @@ describe('ActivityStructure', () => {
     expect(container.querySelector('[data-mark]')!.className).toContain('border-destructive-foreground');
     expect(screen.getByRole('button', { name: /Question title/ }).textContent).toBe('I has a speling mistake');
   });
+
+  it('opens a card on a marked word with its corrections and a Dismiss action, without starting the edit', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const onDismiss = vi.fn();
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a meal kit" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered', 'order'] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={onDismiss} />);
+    const word = () => container.querySelector('[data-mark]')!;
+    await user.click(word());
+    expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
+    expect(screen.getByText('ordered')).toBeInTheDocument();
+    await user.click(screen.getAllByRole('button', { name: 'Apply' })[0]);
+    expect(onApply).toHaveBeenCalledWith({ start: 2, end: 8, suggestions: ['ordered', 'order'] }, 'ordered');
+    await user.keyboard('{Escape}');
+    await user.click(word());
+    await user.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
+  });
 });
