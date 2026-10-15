@@ -95,14 +95,38 @@ function splitMarks(text: string, marks: InlineEditMark[] | undefined): { text: 
   return out;
 }
 
-// A solid line a little below the word, as spell checkers draw it, not a border hugging the letters.
-const markClasses = 'border-b-2 border-destructive-foreground pb-0.5';
+// A solid destructive line under the word. Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
+const markClasses = 'rounded-xxs border-b-2 border-destructive-foreground';
+
+/**
+ * Pads a mark so its bottom edge lands exactly on the bottom edge of the read-mode button: the field's hover and selected underline is drawn
+ * there, so the mark's line covers it instead of showing a second line a few pixels above. It depends on the font and line height, so it is measured.
+ */
+function useMarkAlignment(ref: React.RefObject<HTMLSpanElement | null>, text: string) {
+  const [padding, setPadding] = React.useState(0);
+  React.useLayoutEffect(() => {
+    const mark = ref.current;
+    const button = mark?.closest('button');
+    if (!mark || !button) return;
+    const align = () => {
+      const gap = button.getBoundingClientRect().bottom - mark.getBoundingClientRect().bottom;
+      if (Math.abs(gap) >= 0.5) setPadding((p) => Math.max(0, p + gap));
+    };
+    align();
+    const observer = new ResizeObserver(align);
+    observer.observe(button);
+    return () => observer.disconnect();
+  }, [ref, text]);
+  return padding;
+}
 
 /** A marked piece of text. Plain underline, or, when the owner handles marks, a button that opens a card to apply a suggestion or dismiss the mark. */
 function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; text: string; onApply?: (mark: InlineEditMark, replacement: string) => void; onDismiss?: (mark: InlineEditMark) => void }) {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const paddingBottom = useMarkAlignment(ref, text);
   if (!onApply && !onDismiss) {
     return (
-      <span data-mark className={markClasses}>
+      <span ref={ref} data-mark className={markClasses} style={{ paddingBottom }}>
         {text}
       </span>
     );
@@ -113,7 +137,7 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
-        <span data-mark role="button" tabIndex={-1} onClick={stop} className={cn(markClasses, 'cursor-pointer')}>
+        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={{ paddingBottom }} className={cn(markClasses, 'cursor-pointer hover:bg-destructive-soft')}>
           {text}
         </span>
       </PopoverPrimitive.Trigger>
