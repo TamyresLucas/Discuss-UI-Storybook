@@ -92,13 +92,14 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               {...dragHandleProps}
               className={cn(
                 'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption',
-                // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered.
-                showDragHandle && 'hover:pl-1 group-hover/editor:pl-1 group-data-[hovered]/editor:pl-1',
+                // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered. With a type icon the grip
+                // takes the icon's place, so the tag keeps its padding and its width.
+                showDragHandle && !questionType && 'hover:pl-1 group-hover/editor:pl-1 group-data-[hovered]/editor:pl-1',
                 active
                   ? 'bg-accent-soft text-accent-soft-foreground'
                   : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
                 dragHandleProps && 'cursor-grab touch-none select-none',
-                dragHandleProps && showDragHandle && 'focus-visible:pl-1',
+                dragHandleProps && showDragHandle && !questionType && 'focus-visible:pl-1',
                 dragHandleProps?.className,
               )}
             >

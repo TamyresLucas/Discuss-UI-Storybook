@@ -298,6 +298,9 @@ describe('ActivityStructure', () => {
     const icon = tag.querySelector('svg[class*="shrink-0"]:not([class*="group-hover/handle:block"])')!;
     expect(icon).toBeInTheDocument();
     expect(icon.getAttribute('class')).toContain('group-hover/editor:hidden');
+    // The grip takes the icon's place, so the tag keeps its padding (and its width) between states.
+    expect(tag.className).not.toContain('hover:pl-1');
+    expect(tag.className).not.toContain('group-hover/editor:pl-1');
     // No grip means no hover swap: the icon stays.
     rerender(<QuestionEditorCard number={1} title="Pick one" questionType="select-one" showDragHandle={false} />);
     expect(screen.getByText('Question 1').querySelectorAll('svg')).toHaveLength(1);
