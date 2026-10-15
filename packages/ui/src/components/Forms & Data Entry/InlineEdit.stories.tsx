@@ -68,14 +68,16 @@ export const Validated: Story = {
   },
 };
 export const Disabled: Story = { args: { disabled: true } };
+function ControlledExample(args: React.ComponentProps<typeof InlineEdit>) {
+  const [value, setValue] = React.useState('Controlled value');
+  return (
+    <div className="flex flex-col gap-2">
+      <InlineEdit {...args} value={value} onValueChange={setValue} />
+      <p className="text-ui-caption text-secondary-muted-foreground">Saved: {value}</p>
+    </div>
+  );
+}
+
 export const Controlled: Story = {
-  render: (args) => {
-    const [value, setValue] = React.useState('Controlled value');
-    return (
-      <div className="flex flex-col gap-2">
-        <InlineEdit {...args} value={value} onValueChange={setValue} />
-        <p className="text-ui-caption text-secondary-muted-foreground">Saved: {value}</p>
-      </div>
-    );
-  },
+  render: (args) => <ControlledExample {...args} />,
 };
