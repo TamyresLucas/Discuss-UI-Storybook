@@ -138,6 +138,21 @@ describe('QuestionOption', () => {
       expect(screen.getByPlaceholderText('Option 1')).toHaveValue('');
     });
 
+    it('underlines marked words over the label while it is not edited, with a card to apply or dismiss; editing shows the plain field', async () => {
+      const user = userEvent.setup();
+      const onApply = vi.fn();
+      const onDismiss = vi.fn();
+      const { container } = render(<QuestionOptionEditor label="Recipe varity" marks={[{ start: 7, end: 13, suggestions: ['variety'] }]} onMarkApply={onApply} onMarkDismiss={onDismiss} />);
+      const mark = container.querySelector('[data-mark]')!;
+      expect(mark.textContent).toBe('varity');
+      await user.click(mark);
+      await user.click(screen.getByRole('button', { name: 'Apply' }));
+      expect(onApply).toHaveBeenCalledWith({ start: 7, end: 13, suggestions: ['variety'] }, 'variety');
+      await user.keyboard('{Escape}');
+      await user.click(screen.getByRole('textbox', { name: 'Option label' }));
+      expect(container.querySelector('[data-mark]')).not.toBeInTheDocument();
+    });
+
     it('guards a label with minLength and maxLength: draft, helper line while editing, refusal, save, Escape', async () => {
       const user = userEvent.setup();
       const onLabelChange = vi.fn();

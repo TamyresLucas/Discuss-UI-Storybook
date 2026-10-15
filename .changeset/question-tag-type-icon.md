@@ -7,3 +7,5 @@
 With a type icon the tag keeps the same width on hover: the grip replaces the icon in place instead of the tag trimming its left padding.
 
 `InlineEdit`, `QuestionHeader` (`titleMarks`) and `QuestionEditorCard` (`titleMarks`) also take optional ranges (`marks`) of the saved text to underline in the destructive colour, for example misspelled words found by a spell checker. Read mode only; without them nothing changes.
+
+`QuestionOptionEditor` takes the same `marks`, `onMarkApply` and `onMarkDismiss`: an answer option's label shows its marked words underlined (with the same card) while it is not being edited. Without them nothing changes.

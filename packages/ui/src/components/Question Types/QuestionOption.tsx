@@ -4,6 +4,7 @@ import { Check, DotsSixVertical, Plus, Trash, WarningCircle } from '@phosphor-ic
 import { cn } from '../../lib/utils';
 import { Button } from '../Buttons & Actions/Button';
 import { Checkbox } from '../Forms & Data Entry/Checkbox';
+import { MarkedText, splitMarks, type InlineEditMark } from '../Forms & Data Entry/MarkedText';
 import { RadioGroupItem } from '../Forms & Data Entry/RadioGroup';
 
 const optionClasses =
@@ -151,6 +152,15 @@ export interface QuestionOptionEditorProps {
    * are shared with the original.
    */
   locked?: boolean;
+  /**
+   * Ranges of the label to underline in the destructive colour, for example misspelled words found by a spell checker. The underline shows
+   * while the label is not being edited. See `InlineEdit`'s `marks`.
+   */
+  marks?: InlineEditMark[];
+  /** Makes each mark clickable: clicking an underlined word opens a card with the corrections and a Dismiss action. See `InlineEdit`'s `onMarkApply`. */
+  onMarkApply?: (mark: InlineEditMark, replacement: string) => void;
+  /** Called when a mark is dismissed from its card. */
+  onMarkDismiss?: (mark: InlineEditMark) => void;
 }
 
 // Figma: Question input › Editor=Yes — an option being authored: drag handle, editable label, remove and add buttons.
@@ -161,13 +171,15 @@ function limitsText(min?: number, max?: number) {
   return '';
 }
 
-export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeholderTone = 'muted', minLength, maxLength, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked }: QuestionOptionEditorProps) {
+export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeholderTone = 'muted', minLength, maxLength, onRemove, onAdd, removeDisabled, addDisabled, className, kind, rank, dragHandleProps, lifted, locked, marks, onMarkApply, onMarkDismiss }: QuestionOptionEditorProps) {
   const reveal = kind !== undefined;
   const guarded = minLength !== undefined || maxLength !== undefined;
   // Guarded mode: `draft` is the text being typed (null while not editing) and `error` why the last save was refused.
   const [draft, setDraft] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const helperId = React.useId();
+  const [focused, setFocused] = React.useState(false);
+  const showMarks = !!marks?.length && !focused && draft === null;
   const fieldRef = React.useRef<HTMLInputElement>(null);
   // Set while an Escape revert or a save by Enter is pending so the blur that follows does not save again.
   const skipBlur = React.useRef(false);
@@ -256,6 +268,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         </div>
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <div className="relative min-w-0">
         <input
           ref={fieldRef}
           aria-label="Option label"
@@ -265,6 +278,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
           maxLength={maxLength}
           value={guarded ? (draft ?? label) : label}
           onFocus={() => {
+            setFocused(true);
             if (guarded && draft === null) setDraft(label);
           }}
           onChange={(event) => {
@@ -289,6 +303,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             }
           }}
           onBlur={() => {
+            setFocused(false);
             if (!guarded) return;
             if (skipBlur.current) {
               skipBlur.current = false;
@@ -297,10 +312,20 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             save();
           }}
           className={cn(
-            'min-w-0 flex-1 bg-transparent text-body-base text-surface-foreground outline-none',
+            'w-full min-w-0 bg-transparent text-body-base text-surface-foreground outline-none',
             placeholderTone === 'regular' ? 'placeholder:text-surface-foreground' : 'placeholder:text-muted-foreground',
+            // The marked text is drawn over the field, so the field's own letters step aside until it is edited.
+            showMarks && 'text-transparent',
           )}
         />
+        {showMarks && (
+          <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center overflow-hidden whitespace-pre text-body-base text-surface-foreground [&_[data-mark]]:pointer-events-auto">
+            {splitMarks(label, marks).map((piece, i) =>
+              piece.mark ? <MarkedText key={i} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} /> : <span key={i}>{piece.text}</span>,
+            )}
+          </div>
+        )}
+        </div>
     {guarded && draft !== null && (
       <p
         id={helperId}
