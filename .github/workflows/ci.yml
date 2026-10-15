@@ -3,10 +3,14 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  # The release bot's "Version Packages" PR is opened with GITHUB_TOKEN, which
+  # doesn't trigger pull_request workflows, so run on its branch push instead.
+  push:
+    branches: [changeset-release/main]
 
 # A new push to the same PR cancels the in-flight run.
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
