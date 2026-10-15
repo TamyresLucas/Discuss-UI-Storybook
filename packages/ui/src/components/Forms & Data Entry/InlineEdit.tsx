@@ -78,6 +78,10 @@ export interface InlineEditMark {
   end: number;
   /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`. */
   suggestions?: string[];
+  /** Short heading of the mark's card, for the kind of problem ("Placeholder text"). Defaults to "Possible typo". */
+  label?: string;
+  /** One sentence in the mark's card saying what to do, for problems that have no correction to apply. */
+  message?: string;
 }
 
 /** The text split into plain and marked pieces; marks that don't fit the text are dropped. */
@@ -168,7 +172,7 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
           onKeyDown={stop}
           className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
-          <p className="text-ui-caption uppercase text-secondary-muted-foreground">Possible typo</p>
+          <p className="text-ui-caption uppercase text-secondary-muted-foreground">{mark.label ?? 'Possible typo'}</p>
           {suggestions.length > 0 ? (
             <ul className="flex flex-col gap-2">
               {suggestions.map((suggestion, i) => (
@@ -186,9 +190,10 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
             </ul>
           ) : (
             <p>
-              <s className="text-destructive-foreground">{text}</s> has no suggestion.
+              <s className="text-destructive-foreground">{text}</s> {mark.message ? '' : 'has no suggestion.'}
             </p>
           )}
+          {mark.message && <p className="text-secondary-muted-foreground">{mark.message}</p>}
           {onDismiss && (
             <Button type="button" size="sm" variant="ghost" className="self-start" onClick={() => onDismiss(mark)}>
               <Trash size={16} aria-hidden /> Dismiss

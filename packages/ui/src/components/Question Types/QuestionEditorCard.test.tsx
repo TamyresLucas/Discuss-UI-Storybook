@@ -336,4 +336,14 @@ describe('ActivityStructure', () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
   });
+
+  it('names the kind of problem in the card and shows its message when there is nothing to apply', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<QuestionEditorCard number={1} title="Hello [brand] there" titleMarks={[{ start: 6, end: 13, label: 'Placeholder text', message: 'Replace it with the real name before launch.' }]} onTitleMarkApply={vi.fn()} onTitleMarkDismiss={vi.fn()} />);
+    await user.click(container.querySelector('[data-mark]')!);
+    expect(screen.getByText('Placeholder text')).toBeInTheDocument();
+    expect(screen.getByText('Replace it with the real name before launch.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+  });
 });
