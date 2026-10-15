@@ -321,7 +321,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         {showMarks && (
           <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center overflow-hidden whitespace-pre text-body-base text-surface-foreground [&_[data-mark]]:pointer-events-auto">
             {splitMarks(label, marks).map((piece, i) =>
-              piece.mark ? <MarkedText key={i} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} /> : <span key={i}>{piece.text}</span>,
+              piece.mark ? <MarkedText key={`${piece.mark.start}:${piece.text}`} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} /> : <span key={i}>{piece.text}</span>,
             )}
           </div>
         )}

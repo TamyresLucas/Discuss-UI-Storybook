@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ActivityStructure } from '../Research-Specific/ActivityStructure';
@@ -374,5 +375,34 @@ describe('ActivityStructure', () => {
     expect(screen.getByText('spelling')).toBeInTheDocument();
     expect(screen.queryByText('ordered')).not.toBeInTheDocument();
     expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  });
+
+  it('keeps the title being edited active when the card is clicked outside the field', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<QuestionEditorCard number={1} title="Pick one" maxLength={100} />);
+    await user.click(screen.getByRole('button', { name: /Question title/ }));
+    const field = screen.getByRole('textbox', { name: 'Question title' });
+    expect(field).toHaveFocus();
+    // The card's own padding: the mouse-down is not allowed to move the focus away.
+    const card = container.firstElementChild as HTMLElement;
+    expect(fireEvent.mouseDown(card.firstElementChild!)).toBe(false);
+    expect(field).toHaveFocus();
+    // A button inside the card keeps its own behaviour.
+    const buttons = container.querySelectorAll('button');
+    expect(fireEvent.mouseDown(buttons[buttons.length - 1])).toBe(true);
+  });
+
+  it('does not open the card of the mark that takes the place of one that was just fixed', async () => {
+    const user = userEvent.setup();
+    const marks = (text: string) => (text.includes('[brand]') ? [{ start: 11, end: 18, suggestions: [''] }] : [{ start: 7, end: 11, suggestions: [''] }]);
+    const Wrapper = () => {
+      const [title, setTitle] = React.useState('We ask with [brand].');
+      return <QuestionEditorCard number={1} title={title} titleMarks={marks(title)} onTitleMarkApply={() => setTitle('We ask with.')} onTitleMarkDismiss={vi.fn()} />;
+    };
+    const { container } = render(<Wrapper />);
+    await user.click(container.querySelector('[data-mark]')!);
+    await user.click(screen.getByRole('button', { name: 'Remove' }));
+    expect(container.querySelector('[data-mark]')!.textContent).toBe('with');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

@@ -9,6 +9,7 @@ import {
   Warning,
 } from "@phosphor-icons/react";
 
+import { keepEditingFocus } from "../../lib/keepEditingFocus";
 import { cn } from "../../lib/utils";
 import { Button } from "../Buttons & Actions/Button";
 import { QuestionHeader } from "./QuestionHeader";
@@ -123,6 +124,11 @@ export const QuestionEditorCard = React.forwardRef<
         className={cn("group/editor flex w-full items-start gap-2", className)}
         data-hovered={hovered ? "" : undefined}
         {...props}
+        // A click inside the card, outside the field, keeps a title being edited active.
+        onMouseDown={(event) => {
+          keepEditingFocus(event);
+          props.onMouseDown?.(event);
+        }}
       >
         <div
           className={cn(

@@ -196,7 +196,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               'w-full px-3 py-1 outline-none',
               multiline && 'field-sizing-content resize-none',
               question
-                ? cn('rounded-none border-0 border-b-2 bg-transparent', error ? 'border-destructive' : 'border-accent-foreground')
+                ? cn('rounded-none border-0 border-b-2 bg-transparent', error ? 'border-destructive' : 'border-accent-muted')
                 : cn('rounded-md', !error && 'focus-visible:border-input-accent', fieldSurfaceClasses(error ? 'error' : 'default')),
               textClasses,
             ),
@@ -270,9 +270,9 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
           >
             <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && placeholderTone === 'muted' && 'text-muted-foreground')}>
               {value
-                ? splitMarks(value, marks).map((piece, i) =>
+                ? splitMarks(value, marks).map((piece) =>
                     piece.mark ? (
-                      <MarkedText key={i} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} />
+                      <MarkedText key={`${piece.mark.start}:${piece.text}`} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} />
                     ) : (
                       piece.text
                     ),
