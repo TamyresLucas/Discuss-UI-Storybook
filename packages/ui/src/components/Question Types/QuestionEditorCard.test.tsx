@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
@@ -337,13 +337,28 @@ describe('ActivityStructure', () => {
     expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
   });
 
-  it('names the kind of problem in the card and shows its message when there is nothing to apply', async () => {
+  it('names the kind of problem in the card, and offers Remove when the suggestion is an empty string', async () => {
     const user = userEvent.setup();
-    const { container } = render(<QuestionEditorCard number={1} title="Hello [brand] there" titleMarks={[{ start: 6, end: 13, label: 'Placeholder text', message: 'Replace it with the real name before launch.' }]} onTitleMarkApply={vi.fn()} onTitleMarkDismiss={vi.fn()} />);
+    const onApply = vi.fn();
+    const { container } = render(<QuestionEditorCard number={1} title="Hello [brand] there" titleMarks={[{ start: 6, end: 13, label: 'Placeholder text', suggestions: [''] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={vi.fn()} />);
     await user.click(container.querySelector('[data-mark]')!);
     expect(screen.getByText('Placeholder text')).toBeInTheDocument();
-    expect(screen.getByText('Replace it with the real name before launch.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Remove' }));
+    expect(onApply).toHaveBeenCalledWith({ start: 6, end: 13, label: 'Placeholder text', suggestions: [''] }, '');
     expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+  });
+
+  it('keeps only one mark card open: opening another closes the previous one', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a speling mistake" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered'] }, { start: 11, end: 18, suggestions: ['spelling'] }]} onTitleMarkApply={vi.fn()} onTitleMarkDismiss={vi.fn()} />);
+    const [first, second] = [...container.querySelectorAll('[data-mark]')];
+    await user.click(first);
+    expect(screen.getByText('ordered')).toBeInTheDocument();
+    // A plain click, without the pointer-down that would also dismiss the first card: the second card opening is what must close the first.
+    fireEvent.click(second);
+    expect(screen.getByText('spelling')).toBeInTheDocument();
+    expect(screen.queryByText('ordered')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
   });
 });

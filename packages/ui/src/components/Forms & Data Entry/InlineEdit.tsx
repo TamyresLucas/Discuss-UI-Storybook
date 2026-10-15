@@ -76,12 +76,10 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 export interface InlineEditMark {
   start: number;
   end: number;
-  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`. */
+  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`. An empty string offers to remove the marked text (the button reads "Remove"). */
   suggestions?: string[];
   /** Short heading of the mark's card, for the kind of problem ("Placeholder text"). Defaults to "Possible typo". */
   label?: string;
-  /** One sentence in the mark's card saying what to do, for problems that have no correction to apply. */
-  message?: string;
 }
 
 /** The text split into plain and marked pieces; marks that don't fit the text are dropped. */
@@ -141,9 +139,20 @@ function useMarkAlignment(ref: React.RefObject<HTMLSpanElement | null>, text: st
   return padding;
 }
 
+/** The card that is open right now, anywhere on the page: opening another one closes it, so only one is ever open. */
+let closeOpenMarkCard: (() => void) | null = null;
+
 /** A marked piece of text. Plain underline, or, when the owner handles marks, a button that opens a card to apply a suggestion or dismiss the mark. */
 function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; text: string; onApply?: (mark: InlineEditMark, replacement: string) => void; onDismiss?: (mark: InlineEditMark) => void }) {
   const ref = React.useRef<HTMLSpanElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const close = React.useCallback(() => setOpen(false), []);
+  React.useEffect(
+    () => () => {
+      if (closeOpenMarkCard === close) closeOpenMarkCard = null;
+    },
+    [close],
+  );
   const padding = useMarkAlignment(ref, text);
   const style = { paddingTop: padding.top, paddingBottom: padding.bottom };
   if (!onApply && !onDismiss) {
@@ -154,10 +163,19 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
     );
   }
   const suggestions = (mark.suggestions ?? []).slice(0, 3);
+  const handleOpenChange = (next: boolean) => {
+    if (next) {
+      if (closeOpenMarkCard && closeOpenMarkCard !== close) closeOpenMarkCard();
+      closeOpenMarkCard = close;
+    } else if (closeOpenMarkCard === close) {
+      closeOpenMarkCard = null;
+    }
+    setOpen(next);
+  };
   // The mark sits inside the read-mode button, so clicks and keys here must not also start the edit.
   const stop = (event: React.SyntheticEvent) => event.stopPropagation();
   return (
-    <PopoverPrimitive.Root>
+    <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
       <PopoverPrimitive.Trigger asChild>
         <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses, 'cursor-pointer hover:bg-destructive-soft')}>
           {text}
@@ -170,30 +188,33 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
           style={{ zIndex: 'var(--sys-z-40)' }}
           onClick={stop}
           onKeyDown={stop}
+          // The mark is not focusable, and focus jumping back to it would make a card opened next think focus left it.
+          onCloseAutoFocus={(event) => event.preventDefault()}
           className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
           <p className="text-ui-caption uppercase text-secondary-muted-foreground">{mark.label ?? 'Possible typo'}</p>
-          {suggestions.length > 0 ? (
+          {suggestions.length > 0 && (
             <ul className="flex flex-col gap-2">
               {suggestions.map((suggestion, i) => (
                 <li key={suggestion} className="flex items-center justify-between gap-3">
                   <span className="min-w-0 break-words">
-                    <s className="text-destructive-foreground">{text}</s> <span className="font-semibold text-accent-foreground">{suggestion}</span>
+                    <s className="text-destructive-foreground">{text}</s>
+                    {suggestion !== '' && (
+                      <>
+                        {' '}
+                        <span className="font-semibold text-accent-foreground">{suggestion}</span>
+                      </>
+                    )}
                   </span>
                   {onApply && (
                     <Button type="button" size="sm" variant={i === 0 ? 'default' : 'outline'} onClick={() => onApply(mark, suggestion)}>
-                      Apply
+                      {suggestion === '' ? 'Remove' : 'Apply'}
                     </Button>
                   )}
                 </li>
               ))}
             </ul>
-          ) : (
-            <p>
-              <s className="text-destructive-foreground">{text}</s> {mark.message ? '' : 'has no suggestion.'}
-            </p>
           )}
-          {mark.message && <p className="text-secondary-muted-foreground">{mark.message}</p>}
           {onDismiss && (
             <Button type="button" size="sm" variant="ghost" className="self-start" onClick={() => onDismiss(mark)}>
               <Trash size={16} aria-hidden /> Dismiss
@@ -393,7 +414,9 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
                   : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input-muted enabled:focus-visible:border-input-muted'
                 : 'rounded-md border border-transparent py-1 enabled:focus-visible:border-input-accent',
               // The text is editable in place, so hovering it shows the text cursor.
-              'enabled:cursor-text enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
+              // A selected question already stands out, so its text field takes no hover background.
+              question && selected ? 'enabled:cursor-text' : 'enabled:cursor-text enabled:hover:bg-secondary',
+              'disabled:cursor-not-allowed disabled:opacity-50',
               textClasses,
             )}
           >
