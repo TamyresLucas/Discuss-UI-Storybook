@@ -12,6 +12,7 @@ import {
 import { cn } from "../../lib/utils";
 import { Button } from "../Buttons & Actions/Button";
 import { QuestionHeader } from "./QuestionHeader";
+import type { QuestionType } from "./QuestionTypeIcon";
 
 export interface QuestionEditorCardProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -62,6 +63,8 @@ export interface QuestionEditorCardProps extends Omit<
   dragHandleProps?: React.ComponentPropsWithRef<'span'>;
   /** Whether the grip icon shows in the "Question N" tag on hover. Defaults to true; set false when the card can't be moved. See `QuestionHeader`. */
   showDragHandle?: boolean;
+  /** The question's type, shown as an icon in the "Question N" tag in its default and selected states (the grip replaces it on hover). See `QuestionHeader`. */
+  questionType?: QuestionType;
 }
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
@@ -97,6 +100,7 @@ export const QuestionEditorCard = React.forwardRef<
       meta,
       dragHandleProps,
       showDragHandle,
+      questionType,
       children,
       ...props
     },
@@ -132,6 +136,7 @@ export const QuestionEditorCard = React.forwardRef<
                 showCounter={!!active}
                 dragHandleProps={dragHandleProps}
                 showDragHandle={showDragHandle}
+                questionType={questionType}
                 meta={meta}
                 maxLength={maxLength}
                 actions={

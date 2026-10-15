@@ -4,6 +4,7 @@ import { DotsSixVertical } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { InlineEdit } from '../Forms & Data Entry/InlineEdit';
 import { ToastInline } from '../Overlays & Feedback/Toast';
+import { QuestionTypeIcon, type QuestionType } from './QuestionTypeIcon';
 
 export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'onChange'> {
   /** Question number, shown as "QUESTION 01". */
@@ -57,6 +58,11 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
    * can't be moved (for example while a translation is being edited), so the tag doesn't suggest dragging.
    */
   showDragHandle?: boolean;
+  /**
+   * Editor mode: the question's type, shown as a 16px icon at the start of the "Question N" tag in its default and selected states.
+   * On hover or focus (when the tag can be dragged) the grip icon replaces it. Leave it out for a tag with the number only.
+   */
+  questionType?: QuestionType;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -64,7 +70,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -96,6 +102,14 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
                 dragHandleProps?.className,
               )}
             >
+              {questionType && (
+                <QuestionTypeIcon
+                  type={questionType}
+                  size={16}
+                  // The grip takes the icon's place whenever it shows; a tag that can't be dragged keeps the icon.
+                  className={cn('shrink-0', showDragHandle && 'group-hover/editor:hidden group-data-[hovered]/editor:hidden group-hover/handle:hidden group-focus-visible/handle:hidden')}
+                />
+              )}
               {showDragHandle && (
                 <DotsSixVertical
                   size={16}

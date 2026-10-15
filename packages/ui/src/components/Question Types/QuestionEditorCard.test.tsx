@@ -291,4 +291,20 @@ describe('ActivityStructure', () => {
     render(<StatCard label="Completion time" value="10 minutes" variant="warning" />);
     expect(screen.getByText('10 minutes')).toBeInTheDocument();
   });
+
+  it('shows the question type icon in the tag, and the grip replaces it on hover only when the card can be dragged', () => {
+    const { container, rerender } = render(<QuestionEditorCard number={1} title="Pick one" questionType="select-one" />);
+    const tag = screen.getByText('Question 1');
+    const icon = tag.querySelector('svg[class*="shrink-0"]:not([class*="group-hover/handle:block"])')!;
+    expect(icon).toBeInTheDocument();
+    expect(icon.getAttribute('class')).toContain('group-hover/editor:hidden');
+    // No grip means no hover swap: the icon stays.
+    rerender(<QuestionEditorCard number={1} title="Pick one" questionType="select-one" showDragHandle={false} />);
+    expect(screen.getByText('Question 1').querySelectorAll('svg')).toHaveLength(1);
+    expect(screen.getByText('Question 1').querySelector('svg')!.getAttribute('class')).not.toContain('hidden');
+    // Without a type, the tag is the number only (plus the grip).
+    rerender(<QuestionEditorCard number={1} title="Pick one" />);
+    expect(screen.getByText('Question 1').querySelectorAll('svg')).toHaveLength(1);
+    expect(container).toBeTruthy();
+  });
 });
