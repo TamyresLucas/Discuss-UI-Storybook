@@ -24,6 +24,7 @@
     "@tailwindcss/vite": "^4.1.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@vercel/toolbar": "^0.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/browser-playwright": "latest",
     "@vitest/coverage-v8": "latest",

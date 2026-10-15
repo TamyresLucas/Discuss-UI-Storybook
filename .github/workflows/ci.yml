@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  # The release bot's "Version Packages" PR is opened with GITHUB_TOKEN, which
+  # doesn't trigger pull_request workflows, so run on its branch push instead.
+  push:
+    branches: [changeset-release/main]
+
+# A new push to the same PR cancels the in-flight run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @discuss-ds/ui test
+      - run: pnpm build-storybook
