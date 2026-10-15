@@ -50,7 +50,7 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /**
    * `default` is a rounded field. A short single-line label shows the pencil and hugs its text; `multiline` (longer
    * text) hides the pencil and fills the width. `question` is for question text: it fills the width with no pencil,
-   * has square corners and shows a 1px bottom border on hover and focus (in the input border colour) that becomes a bolder 2px accent border while `selected`. Enter saves; Shift+Enter adds a
+   * has square corners and shows a 1px bottom border on hover and focus (in the input border colour) that becomes a bolder 2px muted accent border while `selected` (light enough to stay distinct from the destructive underline of a marked word). Enter saves; Shift+Enter adds a
    * line break when `multiline`.
    */
   variant?: 'default' | 'question';
@@ -99,18 +99,35 @@ function splitMarks(text: string, marks: InlineEditMark[] | undefined): { text: 
 const markClasses = 'rounded-xxs border-b-2 border-destructive-foreground';
 
 /**
- * Pads a mark so its bottom edge lands exactly on the bottom edge of the read-mode button: the field's hover and selected underline is drawn
- * there, so the mark's line covers it instead of showing a second line a few pixels above. It depends on the font and line height, so it is measured.
+ * Pads a mark so its background and line line up with the read-mode button. On a single line the mark fills the button's full height, and its
+ * bottom edge lands exactly on the button's bottom edge, where the field's own hover and selected underline is drawn (so the mark's line covers it
+ * instead of showing a second one). On a wrapped title it only fills its own line, so it never covers the lines around it. The right padding
+ * depends on the font and line height, so it is measured.
  */
 function useMarkAlignment(ref: React.RefObject<HTMLSpanElement | null>, text: string) {
-  const [padding, setPadding] = React.useState(0);
+  const [padding, setPadding] = React.useState({ top: 0, bottom: 0 });
   React.useLayoutEffect(() => {
     const mark = ref.current;
     const button = mark?.closest('button');
     if (!mark || !button) return;
     const align = () => {
-      const gap = button.getBoundingClientRect().bottom - mark.getBoundingClientRect().bottom;
-      if (Math.abs(gap) >= 0.5) setPadding((p) => Math.max(0, p + gap));
+      const m = mark.getBoundingClientRect();
+      const b = button.getBoundingClientRect();
+      const markStyle = getComputedStyle(mark);
+      const buttonStyle = getComputedStyle(button);
+      const border = parseFloat(markStyle.borderBottomWidth);
+      // The mark's own text area, without the padding added here.
+      const baseTop = m.top + parseFloat(markStyle.paddingTop);
+      const baseBottom = m.bottom - parseFloat(markStyle.paddingBottom) - border;
+      const contentTop = b.top + parseFloat(buttonStyle.borderTopWidth) + parseFloat(buttonStyle.paddingTop);
+      const contentBottom = b.bottom - parseFloat(buttonStyle.borderBottomWidth) - parseFloat(buttonStyle.paddingBottom);
+      const lineHeight = parseFloat(buttonStyle.lineHeight) || contentBottom - contentTop;
+      const lines = Math.max(1, Math.round((contentBottom - contentTop) / lineHeight));
+      const lineIndex = Math.min(lines - 1, Math.max(0, Math.floor(((baseTop + baseBottom) / 2 - contentTop) / lineHeight)));
+      const targetTop = lineIndex === 0 ? b.top : contentTop + lineIndex * lineHeight;
+      const targetBottom = lineIndex === lines - 1 ? b.bottom : contentTop + (lineIndex + 1) * lineHeight;
+      const next = { top: Math.max(0, baseTop - targetTop), bottom: Math.max(0, targetBottom - baseBottom - border) };
+      setPadding((p) => (Math.abs(p.top - next.top) < 0.5 && Math.abs(p.bottom - next.bottom) < 0.5 ? p : next));
     };
     align();
     const observer = new ResizeObserver(align);
@@ -123,10 +140,11 @@ function useMarkAlignment(ref: React.RefObject<HTMLSpanElement | null>, text: st
 /** A marked piece of text. Plain underline, or, when the owner handles marks, a button that opens a card to apply a suggestion or dismiss the mark. */
 function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; text: string; onApply?: (mark: InlineEditMark, replacement: string) => void; onDismiss?: (mark: InlineEditMark) => void }) {
   const ref = React.useRef<HTMLSpanElement>(null);
-  const paddingBottom = useMarkAlignment(ref, text);
+  const padding = useMarkAlignment(ref, text);
+  const style = { paddingTop: padding.top, paddingBottom: padding.bottom };
   if (!onApply && !onDismiss) {
     return (
-      <span ref={ref} data-mark className={markClasses} style={{ paddingBottom }}>
+      <span ref={ref} data-mark className={markClasses} style={style}>
         {text}
       </span>
     );
@@ -137,7 +155,7 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
-        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={{ paddingBottom }} className={cn(markClasses, 'cursor-pointer hover:bg-destructive-soft')}>
+        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses, 'cursor-pointer hover:bg-destructive-soft')}>
           {text}
         </span>
       </PopoverPrimitive.Trigger>
@@ -363,10 +381,10 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               'group inline-flex min-w-0 max-w-full items-center gap-2 px-3 text-left outline-none',
               fill && 'w-full',
               question
-                ? // Hover and focus show a 1px bottom border in the input colour; only a selected question gets the 2px accent
+                ? // Hover and focus show a 1px bottom border in the input colour; only a selected question gets the 2px muted accent
                   // one. The extra 1px of bottom padding keeps the height identical so the text never jumps.
                   selected
-                  ? 'rounded-none border-b-2 border-accent-foreground py-1'
+                  ? 'rounded-none border-b-2 border-accent-muted py-1'
                   : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input-muted enabled:focus-visible:border-input-muted'
                 : 'rounded-md border border-transparent py-1 enabled:focus-visible:border-input-accent',
               // The text is editable in place, so hovering it shows the text cursor.

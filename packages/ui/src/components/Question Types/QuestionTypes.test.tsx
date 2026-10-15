@@ -61,7 +61,7 @@ describe('QuestionHeader', () => {
     const { rerender } = render(<QuestionHeader number={1} editor title="Hi" />);
     expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-transparent');
     rerender(<QuestionHeader number={1} editor active title="Hi" />);
-    expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-accent-foreground');
+    expect(screen.getByRole('button', { name: /Question title/ })).toHaveClass('border-accent-muted');
   });
 });
 
