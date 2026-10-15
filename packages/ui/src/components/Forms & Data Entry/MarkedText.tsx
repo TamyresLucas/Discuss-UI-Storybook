@@ -10,7 +10,7 @@ import { Button } from '../Buttons & Actions/Button';
 export interface InlineEditMark {
   start: number;
   end: number;
-  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`: the first one is applied by the card's Apply button, the others by a click on them. An empty string offers to remove the marked text (the button reads "Remove"). */
+  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`: with one the card has an Apply button; with several each is a choice applied by a click on it and there is no Apply button. An empty string offers to remove the marked text (the button reads "Remove"). */
   suggestions?: string[];
 }
 
@@ -124,8 +124,17 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
           onCloseAutoFocus={(event) => event.preventDefault()}
           className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
-          {suggestions.length > 0 && (
-            <div className="flex flex-col gap-2">
+          {suggestions.length > 1 && onApply ? (
+            // Several possible fixes: each one is a choice, applied with a click, so there is no Apply button.
+            <div className="flex flex-col gap-1" role="group" aria-label="Choose a correction">
+              {suggestions.map((suggestion) => (
+                <Button key={suggestion} type="button" size="sm" variant="ghost" className="h-auto justify-start px-2 py-1 whitespace-normal" onClick={() => onApply(mark, suggestion)}>
+                  <s className="text-destructive-foreground">{text}</s> <span className="font-semibold text-accent-foreground">{suggestion === '' ? 'Remove' : suggestion}</span>
+                </Button>
+              ))}
+            </div>
+          ) : (
+            suggestions.length > 0 && (
               <p className="min-w-0 break-words">
                 <s className="text-destructive-foreground">{text}</s>
                 {suggestions[0] !== '' && (
@@ -135,14 +144,7 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
                   </>
                 )}
               </p>
-              {/* Other ways to fix it, each applied with one click. */}
-              {onApply &&
-                suggestions.slice(1).map((suggestion) => (
-                  <Button key={suggestion} type="button" size="sm" variant="ghost" className="h-auto justify-start py-1 whitespace-normal" onClick={() => onApply(mark, suggestion)}>
-                    <s className="text-destructive-foreground">{text}</s> <span className="font-semibold text-accent-foreground">{suggestion === '' ? 'Remove' : suggestion}</span>
-                  </Button>
-                ))}
-            </div>
+            )
           )}
           <div className="flex items-center justify-between gap-3">
             {onDismiss ? (
@@ -152,7 +154,7 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
             ) : (
               <span />
             )}
-            {onApply && suggestions.length > 0 && (
+            {onApply && suggestions.length === 1 && (
               <Button type="button" size="sm" onClick={() => onApply(mark, suggestions[0])}>
                 {suggestions[0] === '' ? 'Remove' : 'Apply'}
               </Button>

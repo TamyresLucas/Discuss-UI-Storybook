@@ -319,22 +319,33 @@ describe('ActivityStructure', () => {
     expect(screen.getByRole('button', { name: /Question title/ }).textContent).toBe('I has a speling mistake');
   });
 
-  it('opens a card on a marked word with its corrections and a Dismiss action, without starting the edit', async () => {
+  it('opens a card on a marked word without starting the edit; one correction has an Apply button, Dismiss calls back', async () => {
     const user = userEvent.setup();
     const onApply = vi.fn();
     const onDismiss = vi.fn();
-    const { container } = render(<QuestionEditorCard number={1} title="I ordred a meal kit" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered', 'order'] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={onDismiss} />);
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a meal kit" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered'] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={onDismiss} />);
     const word = () => container.querySelector('[data-mark]')!;
     await user.click(word());
     expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
     expect(screen.getByText('ordered')).toBeInTheDocument();
-    await user.click(screen.getAllByRole('button', { name: 'Apply' })[0]);
-    expect(onApply).toHaveBeenCalledWith({ start: 2, end: 8, suggestions: ['ordered', 'order'] }, 'ordered');
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    expect(onApply).toHaveBeenCalledWith({ start: 2, end: 8, suggestions: ['ordered'] }, 'ordered');
     await user.keyboard('{Escape}');
     await user.click(word());
     await user.click(screen.getByRole('button', { name: 'Dismiss' }));
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
+  });
+
+  it('with several corrections each one is a choice applied by a click, and there is no Apply button', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a meal kit" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered', 'order'] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={vi.fn()} />);
+    await user.click(container.querySelector('[data-mark]')!);
+    expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /order$/ }));
+    expect(onApply).toHaveBeenCalledWith({ start: 2, end: 8, suggestions: ['ordered', 'order'] }, 'order');
   });
 
   it('puts Dismiss on the left and Apply on the right of one row, with no heading, and Apply reads Remove for an empty suggestion', async () => {
