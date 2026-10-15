@@ -278,7 +278,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               {value
                 ? splitMarks(value, marks).map((piece, i) =>
                     piece.marked ? (
-                      <span key={i} data-mark className="border-b-2 border-destructive-foreground">
+                      // A solid line a little below the word, as spell checkers draw it, not a border hugging the letters.
+                      <span key={i} data-mark className="border-b-2 border-destructive-foreground pb-0.5">
                         {piece.text}
                       </span>
                     ) : (
