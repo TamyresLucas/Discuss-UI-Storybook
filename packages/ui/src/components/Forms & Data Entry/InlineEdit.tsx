@@ -76,10 +76,8 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 export interface InlineEditMark {
   start: number;
   end: number;
-  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`. An empty string offers to remove the marked text (the button reads "Remove"). */
+  /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`: the first one is applied by the card's Apply button, the others by a click on them. An empty string offers to remove the marked text (the button reads "Remove"). */
   suggestions?: string[];
-  /** Short heading of the mark's card, for the kind of problem ("Placeholder text"). Defaults to "Possible typo". */
-  label?: string;
 }
 
 /** The text split into plain and marked pieces; marks that don't fit the text are dropped. */
@@ -192,34 +190,40 @@ function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEditMark; 
           onCloseAutoFocus={(event) => event.preventDefault()}
           className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
-          <p className="text-ui-caption uppercase text-secondary-muted-foreground">{mark.label ?? 'Possible typo'}</p>
           {suggestions.length > 0 && (
-            <ul className="flex flex-col gap-2">
-              {suggestions.map((suggestion, i) => (
-                <li key={suggestion} className="flex items-center justify-between gap-3">
-                  <span className="min-w-0 break-words">
-                    <s className="text-destructive-foreground">{text}</s>
-                    {suggestion !== '' && (
-                      <>
-                        {' '}
-                        <span className="font-semibold text-accent-foreground">{suggestion}</span>
-                      </>
-                    )}
-                  </span>
-                  {onApply && (
-                    <Button type="button" size="sm" variant={i === 0 ? 'default' : 'outline'} onClick={() => onApply(mark, suggestion)}>
-                      {suggestion === '' ? 'Remove' : 'Apply'}
-                    </Button>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-col gap-2">
+              <p className="min-w-0 break-words">
+                <s className="text-destructive-foreground">{text}</s>
+                {suggestions[0] !== '' && (
+                  <>
+                    {' '}
+                    <span className="font-semibold text-accent-foreground">{suggestions[0]}</span>
+                  </>
+                )}
+              </p>
+              {/* Other ways to fix it, each applied with one click. */}
+              {onApply &&
+                suggestions.slice(1).map((suggestion) => (
+                  <Button key={suggestion} type="button" size="sm" variant="ghost" className="h-auto justify-start py-1 whitespace-normal" onClick={() => onApply(mark, suggestion)}>
+                    <s className="text-destructive-foreground">{text}</s> <span className="font-semibold text-accent-foreground">{suggestion === '' ? 'Remove' : suggestion}</span>
+                  </Button>
+                ))}
+            </div>
           )}
-          {onDismiss && (
-            <Button type="button" size="sm" variant="ghost" className="self-start" onClick={() => onDismiss(mark)}>
-              <Trash size={16} aria-hidden /> Dismiss
-            </Button>
-          )}
+          <div className="flex items-center justify-between gap-3">
+            {onDismiss ? (
+              <Button type="button" size="sm" variant="ghost" onClick={() => onDismiss(mark)}>
+                <Trash size={16} aria-hidden /> Dismiss
+              </Button>
+            ) : (
+              <span />
+            )}
+            {onApply && suggestions.length > 0 && (
+              <Button type="button" size="sm" onClick={() => onApply(mark, suggestions[0])}>
+                {suggestions[0] === '' ? 'Remove' : 'Apply'}
+              </Button>
+            )}
+          </div>
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>
     </PopoverPrimitive.Root>

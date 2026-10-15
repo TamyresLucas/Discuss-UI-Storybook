@@ -337,16 +337,19 @@ describe('ActivityStructure', () => {
     expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
   });
 
-  it('names the kind of problem in the card, and offers Remove when the suggestion is an empty string', async () => {
+  it('puts Dismiss on the left and Apply on the right of one row, with no heading, and Apply reads Remove for an empty suggestion', async () => {
     const user = userEvent.setup();
     const onApply = vi.fn();
-    const { container } = render(<QuestionEditorCard number={1} title="Hello [brand] there" titleMarks={[{ start: 6, end: 13, label: 'Placeholder text', suggestions: [''] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={vi.fn()} />);
+    const { container } = render(<QuestionEditorCard number={1} title="Hello [brand] there" titleMarks={[{ start: 6, end: 13, suggestions: [''] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={vi.fn()} />);
     await user.click(container.querySelector('[data-mark]')!);
-    expect(screen.getByText('Placeholder text')).toBeInTheDocument();
+    const dismiss = screen.getByRole('button', { name: 'Dismiss' });
+    const remove = screen.getByRole('button', { name: 'Remove' });
+    expect(dismiss.parentElement).toBe(remove.parentElement);
+    expect(dismiss.compareDocumentPosition(remove) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Remove' }));
-    expect(onApply).toHaveBeenCalledWith({ start: 6, end: 13, label: 'Placeholder text', suggestions: [''] }, '');
-    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+    expect(screen.queryByText(/possible typo/i)).not.toBeInTheDocument();
+    await user.click(remove);
+    expect(onApply).toHaveBeenCalledWith({ start: 6, end: 13, suggestions: [''] }, '');
   });
 
   it('keeps only one mark card open: opening another closes the previous one', async () => {
