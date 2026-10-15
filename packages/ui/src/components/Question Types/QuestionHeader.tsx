@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DotsSixVertical } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
-import { InlineEdit } from '../Forms & Data Entry/InlineEdit';
+import { InlineEdit, type InlineEditMark } from '../Forms & Data Entry/InlineEdit';
 import { ToastInline } from '../Overlays & Feedback/Toast';
 import { QuestionTypeIcon, type QuestionType } from './QuestionTypeIcon';
 
@@ -63,6 +63,8 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
    * On hover or focus (when the tag can be dragged) the grip icon replaces it. Leave it out for a tag with the number only.
    */
   questionType?: QuestionType;
+  /** Editor mode: ranges of the saved title to underline in the destructive colour (misspelled words, for example). See `InlineEdit`'s `marks`. */
+  titleMarks?: InlineEditMark[];
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -70,7 +72,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, titleMarks, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -150,6 +152,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             onEditingChange={(editing) => {
               if (!editing) setDraft(null);
             }}
+            marks={titleMarks}
             textClassName={long ? 'text-body-base' : 'text-heading-h4'}
           />
           {long && titleRecommendedNote != null && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}

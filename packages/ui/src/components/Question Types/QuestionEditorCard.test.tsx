@@ -310,4 +310,12 @@ describe('ActivityStructure', () => {
     expect(screen.getByText('Question 1').querySelectorAll('svg')).toHaveLength(1);
     expect(container).toBeTruthy();
   });
+
+  it('underlines marked ranges of the saved title and ignores ranges that do not fit', () => {
+    const { container } = render(<QuestionEditorCard number={1} title="I has a speling mistake" titleMarks={[{ start: 2, end: 5 }, { start: 8, end: 15 }, { start: 20, end: 90 }, { start: 4, end: 4 }]} />);
+    const marked = [...container.querySelectorAll('[data-mark]')].map((el) => el.textContent);
+    expect(marked).toEqual(['has', 'speling']);
+    expect(container.querySelector('[data-mark]')!.className).toContain('border-destructive-foreground');
+    expect(screen.getByRole('button', { name: /Question title/ }).textContent).toBe('I has a speling mistake');
+  });
 });

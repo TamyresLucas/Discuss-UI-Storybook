@@ -56,6 +56,32 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   selected?: boolean;
   /** Classes for the displayed/edited text, e.g. a heading text style. The field itself keeps the same box. */
   textClassName?: string;
+  /**
+   * Ranges of the saved text to underline in the destructive colour, for example misspelled words found by a spell checker. `start` is the
+   * first character and `end` the one after the last. Read mode only: the text box shown while editing has no underline. Ranges that are
+   * out of bounds, empty or overlapping are ignored.
+   */
+  marks?: InlineEditMark[];
+}
+
+export interface InlineEditMark {
+  start: number;
+  end: number;
+}
+
+/** The text split into plain and marked pieces; marks that don't fit the text are dropped. */
+function splitMarks(text: string, marks: InlineEditMark[] | undefined): { text: string; marked: boolean }[] {
+  const valid = (marks ?? []).filter((m) => Number.isInteger(m.start) && Number.isInteger(m.end) && m.start >= 0 && m.end > m.start && m.end <= text.length).sort((a, b) => a.start - b.start);
+  const out: { text: string; marked: boolean }[] = [];
+  let at = 0;
+  for (const m of valid) {
+    if (m.start < at) continue;
+    if (m.start > at) out.push({ text: text.slice(at, m.start), marked: false });
+    out.push({ text: text.slice(m.start, m.end), marked: true });
+    at = m.end;
+  }
+  if (at < text.length) out.push({ text: text.slice(at), marked: false });
+  return out;
 }
 
 /** "150 characters required" (the maximum shows in the live count beside it), or "Up to 500 characters" when there is no minimum. */
@@ -73,6 +99,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     {
       className,
       textClassName,
+      marks,
       value: valueProp,
       defaultValue = '',
       onValueChange,
@@ -248,7 +275,17 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             )}
           >
             <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && placeholderTone === 'muted' && 'text-muted-foreground')}>
-              {value || placeholder}
+              {value
+                ? splitMarks(value, marks).map((piece, i) =>
+                    piece.marked ? (
+                      <span key={i} data-mark className="border-b-2 border-destructive-foreground">
+                        {piece.text}
+                      </span>
+                    ) : (
+                      piece.text
+                    ),
+                  )
+                : placeholder}
             </span>
             {!fill && (
               <PencilSimple

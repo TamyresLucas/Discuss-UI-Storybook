@@ -12,6 +12,7 @@ import {
 import { cn } from "../../lib/utils";
 import { Button } from "../Buttons & Actions/Button";
 import { QuestionHeader } from "./QuestionHeader";
+import type { InlineEditMark } from "../Forms & Data Entry/InlineEdit";
 import type { QuestionType } from "./QuestionTypeIcon";
 
 export interface QuestionEditorCardProps extends Omit<
@@ -65,6 +66,8 @@ export interface QuestionEditorCardProps extends Omit<
   showDragHandle?: boolean;
   /** The question's type, shown as an icon in the "Question N" tag in its default and selected states (the grip replaces it on hover). See `QuestionHeader`. */
   questionType?: QuestionType;
+  /** Ranges of the saved question text to underline in the destructive colour, such as misspelled words. See `QuestionHeader`'s `titleMarks`. */
+  titleMarks?: InlineEditMark[];
 }
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
@@ -101,6 +104,7 @@ export const QuestionEditorCard = React.forwardRef<
       dragHandleProps,
       showDragHandle,
       questionType,
+      titleMarks,
       children,
       ...props
     },
@@ -137,6 +141,7 @@ export const QuestionEditorCard = React.forwardRef<
                 dragHandleProps={dragHandleProps}
                 showDragHandle={showDragHandle}
                 questionType={questionType}
+                titleMarks={titleMarks}
                 meta={meta}
                 maxLength={maxLength}
                 actions={

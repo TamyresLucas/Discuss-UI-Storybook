@@ -76,3 +76,8 @@ export const EditorWithTypeIcon: Story = {
     </div>
   ),
 };
+
+/** Misspelled words (or any ranges you pass) are underlined in the destructive colour in the saved title. */
+export const EditorWithMarks: Story = {
+  render: () => <QuestionHeader number={1} editor questionType="open-end" title="Tell me about a speling mistake you made" titleMarks={[{ start: 15, end: 22 }]} />,
+};
