@@ -28,9 +28,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm --filter @discuss-ds/ui test
-      # Every change to tokens or ui needs a changeset (see CLAUDE.md).
+      # Every change to tokens or ui needs a changeset (see CLAUDE.md). Not the release PR: it is the one that consumes them.
       - name: Changeset present
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
         run: pnpm exec changeset status --since=origin/main
       # Builds tokens, ui (type-checked via tsup), Storybook and the playground.
       - run: pnpm build
