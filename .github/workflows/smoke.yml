@@ -1,0 +1,28 @@
+name: Post-deploy smoke test
+
+# After Vercel finishes a production deployment, check the live site actually
+# serves Storybook with its stories. A failure here is the alert to roll back
+# (Vercel dashboard -> Deployments -> previous one -> Promote).
+on:
+  deployment_status:
+
+env:
+  SITE_URL: https://discuss-design-system-puce.vercel.app
+
+jobs:
+  smoke:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Site responds
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL/") && [ "$code" = 200 ] && exit 0
+            sleep 10
+          done
+          echo "::error::$SITE_URL returned $code"; exit 1
+      - name: Stories are indexed
+        run: |
+          count=$(curl -fsS "$SITE_URL/index.json" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(Object.keys(JSON.parse(s).entries).length))')
+          echo "stories indexed: $count"
+          if [ "$count" -lt 100 ]; then echo "::error::Only $count stories indexed (expected 300+)"; exit 1; fi
