@@ -2,8 +2,9 @@ import * as React from 'react';
 import { DotsSixVertical } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
-import { InlineEdit } from '../Forms & Data Entry/InlineEdit';
+import { InlineEdit, type InlineEditMark } from '../Forms & Data Entry/InlineEdit';
 import { ToastInline } from '../Overlays & Feedback/Toast';
+import { QuestionTypeIcon, type QuestionType } from './QuestionTypeIcon';
 
 export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'onChange'> {
   /** Question number, shown as "QUESTION 01". */
@@ -57,6 +58,17 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
    * can't be moved (for example while a translation is being edited), so the tag doesn't suggest dragging.
    */
   showDragHandle?: boolean;
+  /**
+   * Editor mode: the question's type, shown as a 16px icon at the start of the "Question N" tag in its default and selected states.
+   * On hover or focus (when the tag can be dragged) the grip icon replaces it. Leave it out for a tag with the number only.
+   */
+  questionType?: QuestionType;
+  /** Editor mode: ranges of the saved title to underline in the destructive colour (misspelled words, for example). See `InlineEdit`'s `marks`. */
+  titleMarks?: InlineEditMark[];
+  /** Editor mode: makes the underlined words clickable; called with the mark and the chosen correction. See `InlineEdit`'s `onMarkApply`. */
+  onTitleMarkApply?: (mark: InlineEditMark, replacement: string) => void;
+  /** Editor mode: called when a mark is dismissed from its card. See `InlineEdit`'s `onMarkDismiss`. */
+  onTitleMarkDismiss?: (mark: InlineEditMark) => void;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -64,7 +76,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, titleMarks, onTitleMarkApply, onTitleMarkDismiss, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -86,16 +98,25 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
               {...dragHandleProps}
               className={cn(
                 'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption',
-                // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered.
-                showDragHandle && 'hover:pl-1 group-hover/editor:pl-1 group-data-[hovered]/editor:pl-1',
+                // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered. With a type icon the grip
+                // takes the icon's place, so the tag keeps its padding and its width.
+                showDragHandle && !questionType && 'hover:pl-1 group-hover/editor:pl-1 group-data-[hovered]/editor:pl-1',
                 active
                   ? 'bg-accent-soft text-accent-soft-foreground'
                   : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
                 dragHandleProps && 'cursor-grab touch-none select-none',
-                dragHandleProps && showDragHandle && 'focus-visible:pl-1',
+                dragHandleProps && showDragHandle && !questionType && 'focus-visible:pl-1',
                 dragHandleProps?.className,
               )}
             >
+              {questionType && (
+                <QuestionTypeIcon
+                  type={questionType}
+                  size={16}
+                  // The grip takes the icon's place whenever it shows; a tag that can't be dragged keeps the icon.
+                  className={cn('shrink-0', showDragHandle && 'group-hover/editor:hidden group-data-[hovered]/editor:hidden group-hover/handle:hidden group-focus-visible/handle:hidden')}
+                />
+              )}
               {showDragHandle && (
                 <DotsSixVertical
                   size={16}
@@ -135,6 +156,9 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             onEditingChange={(editing) => {
               if (!editing) setDraft(null);
             }}
+            marks={titleMarks}
+            onMarkApply={onTitleMarkApply}
+            onMarkDismiss={onTitleMarkDismiss}
             textClassName={long ? 'text-body-base' : 'text-heading-h4'}
           />
           {long && titleRecommendedNote != null && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}

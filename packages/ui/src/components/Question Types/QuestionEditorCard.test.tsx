@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ActivityStructure } from '../Research-Specific/ActivityStructure';
@@ -290,5 +291,118 @@ describe('ActivityStructure', () => {
   it('StatCard shows label and value', () => {
     render(<StatCard label="Completion time" value="10 minutes" variant="warning" />);
     expect(screen.getByText('10 minutes')).toBeInTheDocument();
+  });
+
+  it('shows the question type icon in the tag, and the grip replaces it on hover only when the card can be dragged', () => {
+    const { container, rerender } = render(<QuestionEditorCard number={1} title="Pick one" questionType="select-one" />);
+    const tag = screen.getByText('Question 1');
+    const icon = tag.querySelector('svg[class*="shrink-0"]:not([class*="group-hover/handle:block"])')!;
+    expect(icon).toBeInTheDocument();
+    expect(icon.getAttribute('class')).toContain('group-hover/editor:hidden');
+    // The grip takes the icon's place, so the tag keeps its padding (and its width) between states.
+    expect(tag.className).not.toContain('hover:pl-1');
+    expect(tag.className).not.toContain('group-hover/editor:pl-1');
+    // No grip means no hover swap: the icon stays.
+    rerender(<QuestionEditorCard number={1} title="Pick one" questionType="select-one" showDragHandle={false} />);
+    expect(screen.getByText('Question 1').querySelectorAll('svg')).toHaveLength(1);
+    expect(screen.getByText('Question 1').querySelector('svg')!.getAttribute('class')).not.toContain('hidden');
+    // Without a type, the tag is the number only (plus the grip).
+    rerender(<QuestionEditorCard number={1} title="Pick one" />);
+    expect(screen.getByText('Question 1').querySelectorAll('svg')).toHaveLength(1);
+    expect(container).toBeTruthy();
+  });
+
+  it('underlines marked ranges of the saved title and ignores ranges that do not fit', () => {
+    const { container } = render(<QuestionEditorCard number={1} title="I has a speling mistake" titleMarks={[{ start: 2, end: 5 }, { start: 8, end: 15 }, { start: 20, end: 90 }, { start: 4, end: 4 }]} />);
+    const marked = [...container.querySelectorAll('[data-mark]')].map((el) => el.textContent);
+    expect(marked).toEqual(['has', 'speling']);
+    expect(container.querySelector('[data-mark]')!.className).toContain('border-destructive-foreground');
+    expect(screen.getByRole('button', { name: /Question title/ }).textContent).toBe('I has a speling mistake');
+  });
+
+  it('opens a card on a marked word without starting the edit; one correction has an Apply button, Dismiss calls back', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const onDismiss = vi.fn();
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a meal kit" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered'] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={onDismiss} />);
+    const word = () => container.querySelector('[data-mark]')!;
+    await user.click(word());
+    expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
+    expect(screen.getByText('ordered')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    expect(onApply).toHaveBeenCalledWith({ start: 2, end: 8, suggestions: ['ordered'] }, 'ordered');
+    await user.keyboard('{Escape}');
+    await user.click(word());
+    await user.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('textbox', { name: 'Question title' })).not.toBeInTheDocument();
+  });
+
+  it('with several corrections each one is a choice applied by a click, and there is no Apply button', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a meal kit" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered', 'order'] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={vi.fn()} />);
+    await user.click(container.querySelector('[data-mark]')!);
+    expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /order$/ }));
+    expect(onApply).toHaveBeenCalledWith({ start: 2, end: 8, suggestions: ['ordered', 'order'] }, 'order');
+  });
+
+  it('puts Dismiss on the left and Apply on the right of one row, with no heading, and Apply reads Remove for an empty suggestion', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const { container } = render(<QuestionEditorCard number={1} title="Hello [brand] there" titleMarks={[{ start: 6, end: 13, suggestions: [''] }]} onTitleMarkApply={onApply} onTitleMarkDismiss={vi.fn()} />);
+    await user.click(container.querySelector('[data-mark]')!);
+    const dismiss = screen.getByRole('button', { name: 'Dismiss' });
+    const remove = screen.getByRole('button', { name: 'Remove' });
+    expect(dismiss.parentElement).toBe(remove.parentElement);
+    expect(dismiss.compareDocumentPosition(remove) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/possible typo/i)).not.toBeInTheDocument();
+    await user.click(remove);
+    expect(onApply).toHaveBeenCalledWith({ start: 6, end: 13, suggestions: [''] }, '');
+  });
+
+  it('keeps only one mark card open: opening another closes the previous one', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<QuestionEditorCard number={1} title="I ordred a speling mistake" titleMarks={[{ start: 2, end: 8, suggestions: ['ordered'] }, { start: 11, end: 18, suggestions: ['spelling'] }]} onTitleMarkApply={vi.fn()} onTitleMarkDismiss={vi.fn()} />);
+    const [first, second] = [...container.querySelectorAll('[data-mark]')];
+    await user.click(first);
+    expect(screen.getByText('ordered')).toBeInTheDocument();
+    // A plain click, without the pointer-down that would also dismiss the first card: the second card opening is what must close the first.
+    fireEvent.click(second);
+    expect(screen.getByText('spelling')).toBeInTheDocument();
+    expect(screen.queryByText('ordered')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  });
+
+  it('keeps the title being edited active when the card is clicked outside the field', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<QuestionEditorCard number={1} title="Pick one" maxLength={100} />);
+    await user.click(screen.getByRole('button', { name: /Question title/ }));
+    const field = screen.getByRole('textbox', { name: 'Question title' });
+    expect(field).toHaveFocus();
+    // The card's own padding: the mouse-down is not allowed to move the focus away.
+    const card = container.firstElementChild as HTMLElement;
+    expect(fireEvent.mouseDown(card.firstElementChild!)).toBe(false);
+    expect(field).toHaveFocus();
+    // A button inside the card keeps its own behaviour.
+    const buttons = container.querySelectorAll('button');
+    expect(fireEvent.mouseDown(buttons[buttons.length - 1])).toBe(true);
+  });
+
+  it('does not open the card of the mark that takes the place of one that was just fixed', async () => {
+    const user = userEvent.setup();
+    const marks = (text: string) => (text.includes('[brand]') ? [{ start: 11, end: 18, suggestions: [''] }] : [{ start: 7, end: 11, suggestions: [''] }]);
+    const Wrapper = () => {
+      const [title, setTitle] = React.useState('We ask with [brand].');
+      return <QuestionEditorCard number={1} title={title} titleMarks={marks(title)} onTitleMarkApply={() => setTitle('We ask with.')} onTitleMarkDismiss={vi.fn()} />;
+    };
+    const { container } = render(<Wrapper />);
+    await user.click(container.querySelector('[data-mark]')!);
+    await user.click(screen.getByRole('button', { name: 'Remove' }));
+    expect(container.querySelector('[data-mark]')!.textContent).toBe('with');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

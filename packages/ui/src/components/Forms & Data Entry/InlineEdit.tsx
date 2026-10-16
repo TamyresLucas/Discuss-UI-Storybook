@@ -3,6 +3,9 @@ import { PencilSimple, WarningCircle } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
 import { fieldSurfaceClasses } from './Field';
+import { MarkedText, splitMarks, type InlineEditMark } from './MarkedText';
+
+export type { InlineEditMark };
 
 export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
   /** Controlled value. Pair with `onValueChange`. */
@@ -48,7 +51,7 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /**
    * `default` is a rounded field. A short single-line label shows the pencil and hugs its text; `multiline` (longer
    * text) hides the pencil and fills the width. `question` is for question text: it fills the width with no pencil,
-   * has square corners and shows a 1px bottom border on hover and focus (in the input border colour) that becomes a bolder 2px accent border while `selected`. Enter saves; Shift+Enter adds a
+   * has square corners and shows a 1px bottom border on hover and focus (in the input border colour) that becomes a bolder 2px muted accent border while `selected` (light enough to stay distinct from the destructive underline of a marked word). Enter saves; Shift+Enter adds a
    * line break when `multiline`.
    */
   variant?: 'default' | 'question';
@@ -56,6 +59,19 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   selected?: boolean;
   /** Classes for the displayed/edited text, e.g. a heading text style. The field itself keeps the same box. */
   textClassName?: string;
+  /**
+   * Ranges of the saved text to underline in the destructive colour, for example misspelled words found by a spell checker. `start` is the
+   * first character and `end` the one after the last. Read mode only: the text box shown while editing has no underline. Ranges that are
+   * out of bounds, empty or overlapping are ignored.
+   */
+  marks?: InlineEditMark[];
+  /**
+   * Makes each mark clickable: clicking an underlined word opens a small card with the marked text, its `suggestions` and a Dismiss action,
+   * instead of starting the edit. Called with the mark and the suggestion the reader chose; apply it to the value yourself.
+   */
+  onMarkApply?: (mark: InlineEditMark, replacement: string) => void;
+  /** Called when the reader dismisses a mark from its card. Remove the mark to make the underline go away. */
+  onMarkDismiss?: (mark: InlineEditMark) => void;
 }
 
 /** "150 characters required" (the maximum shows in the live count beside it), or "Up to 500 characters" when there is no minimum. */
@@ -73,6 +89,9 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     {
       className,
       textClassName,
+      marks,
+      onMarkApply,
+      onMarkDismiss,
       value: valueProp,
       defaultValue = '',
       onValueChange,
@@ -177,7 +196,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               'w-full px-3 py-1 outline-none',
               multiline && 'field-sizing-content resize-none',
               question
-                ? cn('rounded-none border-0 border-b-2 bg-transparent', error ? 'border-destructive' : 'border-accent-foreground')
+                ? cn('rounded-none border-0 border-b-2 bg-transparent', error ? 'border-destructive' : 'border-accent-muted')
                 : cn('rounded-md', !error && 'focus-visible:border-input-accent', fieldSurfaceClasses(error ? 'error' : 'default')),
               textClasses,
             ),
@@ -236,19 +255,29 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               'group inline-flex min-w-0 max-w-full items-center gap-2 px-3 text-left outline-none',
               fill && 'w-full',
               question
-                ? // Hover and focus show a 1px bottom border in the input colour; only a selected question gets the 2px accent
+                ? // Hover and focus show a 1px bottom border in the input colour; only a selected question gets the 2px muted accent
                   // one. The extra 1px of bottom padding keeps the height identical so the text never jumps.
                   selected
-                  ? 'rounded-none border-b-2 border-accent-foreground py-1'
+                  ? 'rounded-none border-b-2 border-accent-muted py-1'
                   : 'rounded-none border-b border-transparent pb-1.25 pt-1 enabled:hover:border-input-muted enabled:focus-visible:border-input-muted'
                 : 'rounded-md border border-transparent py-1 enabled:focus-visible:border-input-accent',
               // The text is editable in place, so hovering it shows the text cursor.
-              'enabled:cursor-text enabled:hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50',
+              // A selected question already stands out, so its text field takes no hover background.
+              question && selected ? 'enabled:cursor-text' : 'enabled:cursor-text enabled:hover:bg-secondary',
+              'disabled:cursor-not-allowed disabled:opacity-50',
               textClasses,
             )}
           >
             <span className={cn('min-w-0', multiline ? 'whitespace-pre-wrap' : 'truncate', fill && 'flex-1', !value && placeholderTone === 'muted' && 'text-muted-foreground')}>
-              {value || placeholder}
+              {value
+                ? splitMarks(value, marks).map((piece) =>
+                    piece.mark ? (
+                      <MarkedText key={`${piece.mark.start}:${piece.text}`} mark={piece.mark} text={piece.text} onApply={onMarkApply} onDismiss={onMarkDismiss} />
+                    ) : (
+                      piece.text
+                    ),
+                  )
+                : placeholder}
             </span>
             {!fill && (
               <PencilSimple

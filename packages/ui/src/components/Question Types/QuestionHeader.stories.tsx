@@ -66,3 +66,18 @@ export const EditorDragHandle: Story = {
     />
   ),
 };
+
+/** The "Question N" tag shows the question type's icon by default and when selected; on hover the grip replaces it. */
+export const EditorWithTypeIcon: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6">
+      <QuestionHeader number={1} editor questionType="select-one" title={title} />
+      <QuestionHeader number={2} editor active questionType="open-end" title={title} dragHandleProps={{ role: 'button', tabIndex: 0 }} />
+    </div>
+  ),
+};
+
+/** Misspelled words (or any ranges you pass) are underlined in the destructive colour in the saved title. */
+export const EditorWithMarks: Story = {
+  render: () => <QuestionHeader number={1} editor questionType="open-end" title="Tell me about a speling mistake you made" titleMarks={[{ start: 15, end: 22 }]} />,
+};
