@@ -22,11 +22,13 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   value: React.ReactNode;
   /** Leading icon beside the value (24px). */
   icon?: React.ReactNode;
+  /** Small muted text under the value that says what it refers to or breaks it down ("11 open-ended · 5 closed-ended"). */
+  caption?: React.ReactNode;
 }
 
 // Figma: Activity control (361:5214) › stat-card — a small bordered label/value tile; `warning` tints it yellow, `success` green and `destructive` red.
 export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
-  ({ className, variant, label, value, icon, ...props }, ref) => (
+  ({ className, variant, label, value, icon, caption, ...props }, ref) => (
     <div ref={ref} className={cn(statCardVariants({ variant }), className)} {...props}>
       <p className="truncate text-ui-caption text-secondary-muted-foreground">{label}</p>
       <p className="flex items-center gap-2 text-body-base text-surface-foreground">
@@ -37,6 +39,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
         )}
         {value}
       </p>
+      {caption && <p className="text-ui-caption text-secondary-muted-foreground">{caption}</p>}
     </div>
   ),
 );

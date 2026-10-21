@@ -27,3 +27,6 @@ export const Warning_: Story = {
 export const Success: Story = { args: { variant: 'success', label: 'Issues', value: 'None' } };
 export const Destructive: Story = { args: { variant: 'destructive', label: 'Issues', value: '3' } };
 export const Subtle: Story = { args: { variant: 'subtle' } };
+
+/** Small text under the value says what it refers to. */
+export const WithCaption: Story = { args: { variant: 'subtle', label: 'Questions', value: '16', caption: '11 open-ended · 5 closed-ended' } };
