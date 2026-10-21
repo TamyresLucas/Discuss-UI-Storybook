@@ -505,6 +505,8 @@ describe('QuestionTypeIcon: upload kinds', () => {
     const glyph = (type: 'upload' | 'upload-video' | 'upload-photo' | 'upload-document') => render(<QuestionTypeIcon type={type} />).container.innerHTML;
     const drawn = [glyph('upload'), glyph('upload-video'), glyph('upload-photo'), glyph('upload-document')];
     expect(new Set(drawn).size).toBe(4);
+    // A video upload is not mistaken for a screen recording.
+    expect(glyph('upload-video')).not.toBe(render(<QuestionTypeIcon type="screen-recording" />).container.innerHTML);
   });
 
   it('shows the upload kind icon in the outline row and on the question card header', () => {
