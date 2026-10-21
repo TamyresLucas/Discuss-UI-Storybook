@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { ChatsCircle, CheckSquare, FileArrowUp, FileDoc, Image, ListNumbers, RadioButton, StarHalf, Video, VideoCamera, type IconProps } from '@phosphor-icons/react';
+import { ChatsCircle, CheckSquare, FileArrowUp, FileText, Image, ListNumbers, RadioButton, StarHalf, VideoCamera, type IconProps } from '@phosphor-icons/react';
 
 /**
- * `upload` is the generic file upload; `upload-video`, `upload-photo` and `upload-document` say which kind of file the respondent sends (a video icon, an image icon, a document
- * file icon for PDF/PPTX/DOCX). The video icon is not the camera that marks a screen recording.
+ * `upload` is the generic file upload; `upload-video`, `upload-photo` and `upload-document` say which kind of file the respondent sends (a video icon, an image icon, a file-with-text
+ * icon for PDF/PPTX/DOCX). A video upload shares the video camera with screen recording: no method offers both,
+ * so they never meet in one activity.
  */
 export type QuestionType =
   | 'select-one'
@@ -22,9 +23,9 @@ const icons: Record<QuestionType, React.ComponentType<IconProps>> = {
   'select-multiple': CheckSquare,
   ranking: ListNumbers,
   upload: FileArrowUp,
-  'upload-video': Video,
+  'upload-video': VideoCamera,
   'upload-photo': Image,
-  'upload-document': FileDoc,
+  'upload-document': FileText,
   rating: StarHalf,
   'open-end': ChatsCircle,
   'screen-recording': VideoCamera,
