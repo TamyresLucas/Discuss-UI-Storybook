@@ -9,6 +9,7 @@ import { FileUploadItem, FileUploadZone } from './FileUpload';
 import { ImagePreview, ImageThumbnails, VideoPlayer } from './Media';
 import { OpenEndAnswer } from './OpenEndAnswer';
 import { QuestionCard } from './QuestionCard';
+import { QuestionEditorCard } from './QuestionEditorCard';
 import { QuestionHeader } from './QuestionHeader';
 import { QuestionNavItem } from './QuestionNavItem';
 import { QuestionOption, QuestionOptionEditor, QuestionOtherOption } from './QuestionOption';
@@ -489,7 +490,7 @@ describe('QuestionCard / QuestionTypeIcon', () => {
 });
 
 describe('QuestionTypeIcon', () => {
-  it.each(['select-one', 'select-multiple', 'ranking', 'upload', 'rating', 'open-end', 'screen-recording'] as const)(
+  it.each(['select-one', 'select-multiple', 'ranking', 'upload', 'upload-video', 'upload-photo', 'upload-document', 'rating', 'open-end', 'screen-recording'] as const)(
     'renders a decorative icon for %s',
     (type) => {
       const { container } = render(<QuestionTypeIcon type={type} />);
@@ -497,6 +498,25 @@ describe('QuestionTypeIcon', () => {
       expect(svg).toHaveAttribute('aria-hidden', 'true');
     },
   );
+});
+
+describe('QuestionTypeIcon: upload kinds', () => {
+  it('draws a different glyph for a video, a photo and a document upload, and for the generic upload', () => {
+    const glyph = (type: 'upload' | 'upload-video' | 'upload-photo' | 'upload-document') => render(<QuestionTypeIcon type={type} />).container.innerHTML;
+    const drawn = [glyph('upload'), glyph('upload-video'), glyph('upload-photo'), glyph('upload-document')];
+    expect(new Set(drawn).size).toBe(4);
+    // A video upload is not mistaken for a screen recording.
+    expect(glyph('upload-video')).not.toBe(render(<QuestionTypeIcon type="screen-recording" />).container.innerHTML);
+  });
+
+  it('shows the upload kind icon in the outline row and on the question card header', () => {
+    const row = (type: 'upload' | 'upload-video' | 'upload-photo' | 'upload-document') => render(<QuestionNavItem questionType={type}>Q</QuestionNavItem>).container.innerHTML;
+    const rows = [row('upload'), row('upload-video'), row('upload-photo'), row('upload-document')];
+    expect(new Set(rows).size).toBe(4);
+    const card = (type: 'upload' | 'upload-video' | 'upload-photo' | 'upload-document') => render(<QuestionEditorCard number={1} title="Show us" questionType={type} />).container.innerHTML;
+    const cards = [card('upload'), card('upload-video'), card('upload-photo'), card('upload-document')];
+    expect(new Set(cards).size).toBe(4);
+  });
 });
 
 describe('ImagePreview height', () => {
