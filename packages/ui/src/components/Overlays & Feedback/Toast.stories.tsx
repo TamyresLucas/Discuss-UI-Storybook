@@ -77,6 +77,24 @@ export const InlineWithActions: Story = {
   },
 };
 
+/** `actionsPlacement="bottom"` puts the actions under a message that is long enough to wrap. */
+export const InlineActionsBelow: Story = {
+  render: () => {
+    const actions = (
+      <>
+        <Button size="sm" variant="ghost">Dismiss</Button>
+        <Button size="sm" variant="outline">Apply</Button>
+      </>
+    );
+    return (
+      <div className="flex w-90 flex-col gap-4">
+        <ToastInline variant="warning" actions={actions} actionsPlacement="bottom">Add the basics respondents expect before they start: what the activity is about, how long it takes and that taking part is voluntary.</ToastInline>
+        <ToastInline variant="destructive" actions={actions} actionsPlacement="bottom">Question has no text. Add what respondents will see, or delete the card.</ToastInline>
+      </div>
+    );
+  },
+};
+
 export const Inline: Story = {
   render: () => (
     <div className="flex w-110 flex-col gap-4">
