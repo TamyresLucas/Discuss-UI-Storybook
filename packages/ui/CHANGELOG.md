@@ -1,5 +1,19 @@
 # @discuss-ds/ui
 
+## 0.32.0
+
+### Minor Changes
+
+- [#119](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/119) [`15ebfed`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/15ebfed6c3ae07ffc4dd35477b21db154178b082) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `StatCard` takes an optional `caption`: small muted text under the value that says what it refers to or breaks it down, such as "11 open-ended · 5 closed-ended". Without it the card is unchanged.
+
+- [#120](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/120) [`019b943`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/019b94332ddcb818d0116aa87ce6d060991a2fdc) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `ToastInline` takes an optional `actionsPlacement`: `"end"` (default, unchanged) keeps the actions after the message on the same line, `"bottom"` puts them under the message, for messages long enough to wrap.
+
+- [#116](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/116) [`d197db4`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/d197db4524765401c77d60f54d20da020dcc8678) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - Question types now include `upload-video`, `upload-photo` and `upload-document`, each with its own icon (a video, an image, a document file) in `QuestionTypeIcon`, `QuestionNavItem` and `QuestionEditorCard`/`QuestionHeader` (the `questionType` prop). The generic `upload` type and its icon are unchanged, so nothing existing needs to change.
+
+### Patch Changes
+
+- [#118](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/118) [`9aacac2`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/9aacac2c16147e393c89cc7c4ea696dc092b2c40) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - The `upload-video` question type now uses the video camera icon (Phosphor `VideoCamera`, the same glyph as `screen-recording`) and `upload-document` the file-with-text icon (Phosphor `FileText`), in `QuestionTypeIcon`, `QuestionNavItem` and `QuestionEditorCard`/`QuestionHeader`. `upload-photo` keeps the image icon.
+
 ## 0.31.0
 
 ### Minor Changes
