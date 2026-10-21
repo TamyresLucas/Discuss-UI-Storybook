@@ -56,6 +56,35 @@ describe('ToastInline', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('can put the actions under the message instead of after it, and they still work', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const actions = (
+      <>
+        <button type="button">Dismiss</button>
+        <button type="button" onClick={onApply}>Apply</button>
+      </>
+    );
+    const { rerender } = render(<ToastInline actions={actions}>A long message that wraps.</ToastInline>);
+    // After the message, on the same line: the message is not stacked over the buttons.
+    expect(screen.getByText('A long message that wraps.').parentElement).not.toHaveClass('flex-col');
+    rerender(<ToastInline actions={actions} actionsPlacement="bottom">A long message that wraps.</ToastInline>);
+    const text = screen.getByText('A long message that wraps.');
+    // Under the message: one column holds the text and, below it, the buttons.
+    expect(text.parentElement).toHaveClass('flex-col');
+    expect(text.parentElement).toContainElement(screen.getByRole('button', { name: 'Dismiss' }));
+    // The message comes first in the reading order, the actions after it.
+    expect(text.compareDocumentPosition(screen.getByRole('button', { name: 'Apply' })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    expect(onApply).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the actions at the end when there are none to put below', () => {
+    const { container } = render(<ToastInline actionsPlacement="bottom">Message</ToastInline>);
+    expect(container.querySelectorAll('button')).toHaveLength(0);
+    expect(screen.getByText('Message').parentElement).toHaveAttribute('role', 'status');
+  });
+
   it('shows actions after the message, and each one works', async () => {
     const user = userEvent.setup();
     const onFix = vi.fn();
