@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { QuestionTypeIcon, type QuestionType } from './QuestionTypeIcon';
 
-const types: QuestionType[] = ['select-one', 'select-multiple', 'ranking', 'upload', 'rating', 'open-end', 'screen-recording'];
+const types: QuestionType[] = ['select-one', 'select-multiple', 'ranking', 'upload', 'upload-video', 'upload-photo', 'upload-document', 'rating', 'open-end', 'screen-recording'];
 
 const meta = {
   title: 'Question Types/Question Type Icons',
@@ -26,7 +26,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 export const AllTypes: Story = {
   render: () => (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-4">
       {types.map((type) => (
         <QuestionTypeIcon key={type} type={type} />
       ))}
