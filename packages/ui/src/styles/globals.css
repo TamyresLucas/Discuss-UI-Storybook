@@ -102,6 +102,7 @@
   --color-warning-soft: var(--sys-color-warning-soft);
   --color-warning-soft-foreground: var(--sys-color-warning-soft-foreground);
   --color-warning-soft-border: var(--sys-color-warning-soft-border);
+  --color-warning-background-highlight: var(--sys-color-warning-background-highlight);
   --color-success-soft: var(--sys-color-success-soft);
   --color-success-soft-foreground: var(--sys-color-success-soft-foreground);
   --color-success-soft-border: var(--sys-color-success-soft-border);

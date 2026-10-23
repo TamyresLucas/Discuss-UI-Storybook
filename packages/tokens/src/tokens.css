@@ -196,6 +196,8 @@
   --sys-color-warning-soft: var(--sys-color-dandelion-50);
   --sys-color-warning-soft-foreground: var(--sys-color-dandelion-800);
   --sys-color-warning-soft-border: var(--sys-color-dandelion-200);
+  /* The highlight behind words that carry a warning (a recommendation about wording): pale in light mode, a deep amber in dark mode. */
+  --sys-color-warning-background-highlight: var(--sys-color-dandelion-100);
   --sys-color-success-soft: var(--sys-color-success-50);
   --sys-color-success-soft-foreground: var(--sys-color-success-900);
   --sys-color-success-soft-border: var(--sys-color-success-200);
@@ -507,6 +509,7 @@
   --sys-color-warning-soft: var(--sys-color-dandelion-900);
   --sys-color-warning-soft-foreground: var(--sys-color-dandelion-200);
   --sys-color-warning-soft-border: var(--sys-color-dandelion-800);
+  --sys-color-warning-background-highlight: var(--sys-color-dandelion-800);
   --sys-color-success-soft: var(--sys-color-success-900);
   --sys-color-success-soft-foreground: var(--sys-color-success-100);
   --sys-color-success-soft-border: var(--sys-color-success-800);
