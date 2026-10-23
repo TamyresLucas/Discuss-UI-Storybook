@@ -49,6 +49,16 @@ const questionText = 'Which of the following best describes your primary role?';
 export const Question: Story = {
   args: { variant: 'question', multiline: true, 'aria-label': 'Question title', defaultValue: questionText, textClassName: 'text-heading-h4', className: 'w-120' },
 };
+/** A recommendation about specific words (wording that could be clearer): a warning underline, and a card that says why above Dismiss and Apply. A typo mark keeps the destructive underline and a card without a message. */
+export const WarningMark: Story = {
+  args: {
+    ...Question.args,
+    defaultValue: 'Overall, how satisfied are you with our product/service?',
+    marks: [{ start: 36, end: 55, tone: 'warning', message: 'Asks about two things at once, so answers can’t be told apart. Name the one you mean.', suggestions: ['our subscription box'] }],
+    onMarkApply: fn(),
+    onMarkDismiss: fn(),
+  },
+};
 /** The bottom border stays while the question is selected. */
 export const QuestionSelected: Story = { args: { ...Question.args, selected: true } };
 export const QuestionEmpty: Story = {

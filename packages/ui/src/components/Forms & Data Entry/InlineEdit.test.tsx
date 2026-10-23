@@ -264,4 +264,41 @@ describe('InlineEdit', () => {
     rerender(<InlineEdit aria-label="Name" placeholder="Click to edit" placeholderTone="regular" />);
     expect(screen.getByText('Click to edit').className).not.toContain('text-muted-foreground');
   });
+
+  describe('marks', () => {
+    const text = 'Rate our product/service today';
+    const mark = { start: 5, end: 24 };
+
+    it('underlines in the destructive colour by default, with a card that has no rationale', async () => {
+      const user = userEvent.setup();
+      render(<InlineEdit aria-label="Q" value={text} marks={[{ ...mark, suggestions: ['the box'] }]} onMarkApply={vi.fn()} onMarkDismiss={vi.fn()} />);
+      const marked = screen.getByText('our product/service');
+      expect(marked.className).toContain('border-destructive-foreground');
+      await user.click(marked);
+      expect(screen.getByText('Apply')).toBeInTheDocument();
+      expect(screen.queryByText('Names the product and the service together.')).not.toBeInTheDocument();
+    });
+
+    it('a warning mark has the warning underline, and its card shows the message above Dismiss and Apply', async () => {
+      const user = userEvent.setup();
+      const onApply = vi.fn();
+      const onDismiss = vi.fn();
+      render(
+        <InlineEdit
+          aria-label="Q"
+          value={text}
+          marks={[{ ...mark, suggestions: ['the box'], tone: 'warning', message: 'Names the product and the service together.' }]}
+          onMarkApply={onApply}
+          onMarkDismiss={onDismiss}
+        />,
+      );
+      const marked = screen.getByText('our product/service');
+      expect(marked.className).toContain('border-warning-foreground');
+      expect(marked.className).not.toContain('border-destructive-foreground');
+      await user.click(marked);
+      expect(screen.getByText('Names the product and the service together.')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: 'Apply' }));
+      expect(onApply).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(mark), 'the box');
+    });
+  });
 });
