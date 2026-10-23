@@ -33,46 +33,76 @@ export function splitMarks(text: string, marks: InlineEditMark[] | undefined): {
   return out;
 }
 
-// A solid line under the word, destructive or warning (a warning mark also has the warning highlight behind the words). Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
-const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-warning-background-highlight' : 'border-destructive-foreground');
+// The line under a marked word is destructive or warning (a warning mark also has the warning highlight behind the words). It is not drawn by the word's own box
+// but by one box per line of the word (`MarkLines`), so on a title that wraps every line reaches the field's edges the same way.
+const lineClasses = (tone: InlineEditMark['tone'], hovered: boolean) =>
+  cn('pointer-events-none absolute -z-10 rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-warning-background-highlight' : cn('border-destructive-foreground', hovered && 'bg-destructive-soft'));
+
+interface MarkLine {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+interface FieldBox {
+  top: number;
+  bottom: number;
+  /** The text area inside the field's border and padding. */
+  contentTop: number;
+  contentBottom: number;
+  lineHeight: number;
+}
 
 /**
- * Pads a mark so its background and line line up with the read-mode button. On a single line the mark fills the button's full height, and its
- * bottom edge lands exactly on the button's bottom edge, where the field's own hover and selected underline is drawn (so the mark's line covers it
- * instead of showing a second one). On a wrapped title it only fills its own line, so it never covers the lines around it. The right padding
- * depends on the font and line height, so it is measured.
+ * The box of each line of a marked word, relative to `origin`. Each one is the line's own height, except that the first line reaches the field's top edge and the last
+ * line the field's bottom edge: its line then lands exactly on the field's own bottom border (the field's hover and selected underline), covering it instead of showing a
+ * second one a few pixels above. `rects` are the word's pieces, one per line. Without a field, each piece is its own box.
  */
-function useMarkAlignment(ref: React.RefObject<HTMLSpanElement | null>, text: string) {
-  const [padding, setPadding] = React.useState({ top: 0, bottom: 0 });
-  React.useLayoutEffect(() => {
-    const mark = ref.current;
-    const button = mark?.closest('button');
-    if (!mark || !button) return;
-    const align = () => {
-      const m = mark.getBoundingClientRect();
+export function markLines(rects: { left: number; top: number; width: number; height: number }[], origin: { left: number; top: number }, field?: FieldBox): MarkLine[] {
+  const count = field ? Math.max(1, Math.round((field.contentBottom - field.contentTop) / field.lineHeight)) : 1;
+  return rects
+    .filter((r) => r.width > 0)
+    .map((r) => {
+      if (!field) return { left: r.left - origin.left, top: r.top - origin.top, width: r.width, height: r.height };
+      const index = Math.min(count - 1, Math.max(0, Math.floor((r.top + r.height / 2 - field.contentTop) / field.lineHeight)));
+      const top = index === 0 ? field.top : field.contentTop + index * field.lineHeight;
+      const bottom = index === count - 1 ? field.bottom : field.contentTop + (index + 1) * field.lineHeight;
+      return { left: r.left - origin.left, top: top - origin.top, width: r.width, height: bottom - top };
+    });
+}
+
+const sameLines = (a: MarkLine[], b: MarkLine[]) => a.length === b.length && a.every((l, i) => (Object.keys(l) as (keyof MarkLine)[]).every((k) => Math.abs(l[k] - b[i][k]) < 0.5));
+
+/** Measures the lines of a marked word after every render (a word can move when the text before it changes) and when the field changes size. */
+function useMarkLines(anchorRef: React.RefObject<HTMLSpanElement | null>, markRef: React.RefObject<HTMLSpanElement | null>) {
+  const [lines, setLines] = React.useState<MarkLine[]>([]);
+  const measure = React.useCallback(() => {
+    const anchor = anchorRef.current;
+    const mark = markRef.current;
+    if (!anchor || !mark) return;
+    const button = mark.closest('button');
+    const a = anchor.getBoundingClientRect();
+    let field: FieldBox | undefined;
+    if (button) {
       const b = button.getBoundingClientRect();
-      const markStyle = getComputedStyle(mark);
-      const buttonStyle = getComputedStyle(button);
-      const border = parseFloat(markStyle.borderBottomWidth);
-      // The mark's own text area, without the padding added here.
-      const baseTop = m.top + parseFloat(markStyle.paddingTop);
-      const baseBottom = m.bottom - parseFloat(markStyle.paddingBottom) - border;
-      const contentTop = b.top + parseFloat(buttonStyle.borderTopWidth) + parseFloat(buttonStyle.paddingTop);
-      const contentBottom = b.bottom - parseFloat(buttonStyle.borderBottomWidth) - parseFloat(buttonStyle.paddingBottom);
-      const lineHeight = parseFloat(buttonStyle.lineHeight) || contentBottom - contentTop;
-      const lines = Math.max(1, Math.round((contentBottom - contentTop) / lineHeight));
-      const lineIndex = Math.min(lines - 1, Math.max(0, Math.floor(((baseTop + baseBottom) / 2 - contentTop) / lineHeight)));
-      const targetTop = lineIndex === 0 ? b.top : contentTop + lineIndex * lineHeight;
-      const targetBottom = lineIndex === lines - 1 ? b.bottom : contentTop + (lineIndex + 1) * lineHeight;
-      const next = { top: Math.max(0, baseTop - targetTop), bottom: Math.max(0, targetBottom - baseBottom - border) };
-      setPadding((p) => (Math.abs(p.top - next.top) < 0.5 && Math.abs(p.bottom - next.bottom) < 0.5 ? p : next));
-    };
-    align();
-    const observer = new ResizeObserver(align);
+      const style = getComputedStyle(button);
+      const contentTop = b.top + (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.paddingTop) || 0);
+      const contentBottom = b.bottom - (parseFloat(style.borderBottomWidth) || 0) - (parseFloat(style.paddingBottom) || 0);
+      field = { top: b.top, bottom: b.bottom, contentTop, contentBottom, lineHeight: parseFloat(style.lineHeight) || contentBottom - contentTop };
+    }
+    const next = markLines([...mark.getClientRects()], a, field);
+    setLines((prev) => (sameLines(prev, next) ? prev : next));
+  }, [anchorRef, markRef]);
+  React.useLayoutEffect(measure);
+  React.useLayoutEffect(() => {
+    const button = markRef.current?.closest('button');
+    if (!button) return;
+    const observer = new ResizeObserver(measure);
     observer.observe(button);
     return () => observer.disconnect();
-  }, [ref, text]);
-  return padding;
+  }, [markRef, measure]);
+  return lines;
 }
 
 /**
@@ -147,13 +177,25 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
     },
     [close],
   );
-  const padding = useMarkAlignment(ref, text);
-  const style = { paddingTop: padding.top, paddingBottom: padding.bottom };
+  const anchorRef = React.useRef<HTMLSpanElement>(null);
+  const [hovered, setHovered] = React.useState(false);
+  const lines = useMarkLines(anchorRef, ref);
+  // An empty, positioned anchor just before the word holds one box per line of it; the word comes after it and is positioned too, so its letters are painted over them.
+  const layers = (
+    <span ref={anchorRef} aria-hidden className="relative isolate">
+      {lines.map((line, i) => (
+        <span key={i} data-mark-line className={lineClasses(mark.tone, hovered)} style={line} />
+      ))}
+    </span>
+  );
   if (!onApply && !onDismiss) {
     return (
-      <span ref={ref} data-mark className={markClasses(mark.tone)} style={style}>
-        {text}
-      </span>
+      <>
+        {layers}
+        <span ref={ref} data-mark data-tone={mark.tone ?? 'destructive'} className="relative">
+          {text}
+        </span>
+      </>
     );
   }
   const suggestions = (mark.suggestions ?? []).slice(0, 3);
@@ -173,8 +215,19 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
   const stop = (event: React.SyntheticEvent) => event.stopPropagation();
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
+      {layers}
       <PopoverPrimitive.Trigger asChild>
-        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses(mark.tone), 'cursor-pointer', warning ? '' : 'hover:bg-destructive-soft')}>
+        <span
+          ref={ref}
+          data-mark
+          data-tone={mark.tone ?? 'destructive'}
+          role="button"
+          tabIndex={-1}
+          onClick={stop}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          className="relative cursor-pointer"
+        >
           {text}
         </span>
       </PopoverPrimitive.Trigger>
