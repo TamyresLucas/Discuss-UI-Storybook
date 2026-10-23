@@ -190,7 +190,17 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       >
         {editing ? (
           <>
-          <div className="relative flex w-full min-w-0">
+          {/* With marks, the highlight layer sits behind the field: a one-line or multi-line field with a surface of its own hands it to this wrapper, so the layer shows through. */}
+          <div className={cn('relative flex w-full min-w-0', draftMarks.length > 0 && !question && 'rounded-md bg-surface')}>
+          {draftMarks.length > 0 && (
+            <DraftMarks
+              text={draft}
+              marks={draftMarks}
+              scrollLeft={multiline ? 0 : scroll}
+              // The field's own box and type, so every line lands under its words.
+              className={cn('px-3 py-1', question ? 'border-0 border-b-2 border-transparent' : 'border border-transparent', multiline ? 'whitespace-pre-wrap break-words' : 'whitespace-pre', textClasses)}
+            />
+          )}
           {React.createElement(multiline ? 'textarea' : 'input', {
             ref: fieldRef,
             value: draft,
@@ -200,12 +210,14 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             'aria-describedby': error || showLimits ? errorId : undefined,
             ...(multiline ? { rows: 1 } : { type: 'text' }),
             className: cn(
-              'w-full px-3 py-1 outline-none',
+              'relative w-full px-3 py-1 outline-none',
               multiline && 'field-sizing-content resize-none',
               question
                 ? cn('rounded-none border-0 border-b-2 bg-transparent', error ? 'border-destructive' : 'border-accent-muted')
                 : cn('rounded-md', !error && 'focus-visible:border-input-accent', fieldSurfaceClasses(error ? 'error' : 'default')),
               textClasses,
+              // Transparent over the highlight layer, so the highlight and the browser's text selection show together.
+              draftMarks.length > 0 && 'bg-transparent',
             ),
             onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
               setDraft(event.target.value);
@@ -233,15 +245,6 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               if (!cancelled.current) finish(true, false);
             },
           })}
-          {draftMarks.length > 0 && (
-            <DraftMarks
-              text={draft}
-              marks={draftMarks}
-              scrollLeft={multiline ? 0 : scroll}
-              // The field's own box and type, so every line lands under its words.
-              className={cn('px-3 py-1', question ? 'border-0 border-b-2 border-transparent' : 'border border-transparent', multiline ? 'whitespace-pre-wrap break-words' : 'whitespace-pre', textClasses)}
-            />
-          )}
           </div>
           {(error || showLimits) && (
             <p
