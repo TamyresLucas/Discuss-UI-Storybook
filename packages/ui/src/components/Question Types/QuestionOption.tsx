@@ -4,7 +4,7 @@ import { Check, DotsSixVertical, Plus, Trash, WarningCircle } from '@phosphor-ic
 import { cn } from '../../lib/utils';
 import { Button } from '../Buttons & Actions/Button';
 import { Checkbox } from '../Forms & Data Entry/Checkbox';
-import { MarkedText, splitMarks, type InlineEditMark } from '../Forms & Data Entry/MarkedText';
+import { DraftMarks, MarkedText, remapMarks, splitMarks, type InlineEditMark } from '../Forms & Data Entry/MarkedText';
 import { RadioGroupItem } from '../Forms & Data Entry/RadioGroup';
 
 const optionClasses =
@@ -181,6 +181,10 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
   const [focused, setFocused] = React.useState(false);
   const showMarks = !!marks?.length && !focused && draft === null;
   const fieldRef = React.useRef<HTMLInputElement>(null);
+  // The marks as they stand while the label is edited: carried over keystroke by keystroke (see `remapMarks`).
+  const [editMarks, setEditMarks] = React.useState<InlineEditMark[]>([]);
+  const [scroll, setScroll] = React.useState(0);
+  const typed = guarded ? (draft ?? label) : label;
   // Set while an Escape revert or a save by Enter is pending so the blur that follows does not save again.
   const skipBlur = React.useRef(false);
   const problemWith = (text: string) =>
@@ -279,14 +283,18 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
           value={guarded ? (draft ?? label) : label}
           onFocus={() => {
             setFocused(true);
+            setEditMarks(marks ?? []);
             if (guarded && draft === null) setDraft(label);
           }}
           onChange={(event) => {
+            requestAnimationFrame(() => setScroll(fieldRef.current?.scrollLeft ?? 0));
+            setEditMarks(remapMarks(typed, event.target.value, editMarks));
             if (!guarded) return onLabelChange?.(event.target.value);
             setDraft(event.target.value);
             // After a refused save the message follows what is typed and goes away once the text is acceptable.
             if (error) setError(problemWith(event.target.value));
           }}
+          onScroll={(event) => setScroll(event.currentTarget.scrollLeft)}
           onKeyDown={(event) => {
             if (!guarded) return;
             if (event.key === 'Escape') {
@@ -318,6 +326,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             showMarks && 'text-transparent',
           )}
         />
+        {focused && editMarks.length > 0 && <DraftMarks text={typed} marks={editMarks} scrollLeft={scroll} className="flex items-center whitespace-pre text-body-base" />}
         {showMarks && (
           <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center overflow-hidden whitespace-pre text-body-base text-surface-foreground [&_[data-mark]]:pointer-events-auto">
             {splitMarks(label, marks).map((piece, i) =>

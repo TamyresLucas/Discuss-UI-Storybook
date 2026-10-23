@@ -152,6 +152,20 @@ describe('QuestionOption', () => {
       await user.keyboard('{Escape}');
       await user.click(screen.getByRole('textbox', { name: 'Option label' }));
       expect(container.querySelector('[data-mark]')).not.toBeInTheDocument();
+      // The underline stays while the field is edited: it is only a line (no click), under the same words.
+      expect(container.querySelector('[data-draft-mark]')?.textContent).toBe('varity');
+    });
+
+    it('keeps the underline while editing: it moves with text typed before it and goes when its words are changed', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<QuestionOptionEditor label="Recipe varity" marks={[{ start: 7, end: 13, suggestions: ['variety'] }]} onMarkApply={vi.fn()} onMarkDismiss={vi.fn()} minLength={1} maxLength={40} />);
+      const field = screen.getByRole('textbox', { name: 'Option label' });
+      await user.click(field);
+      await user.keyboard('{Home}New ');
+      expect(container.querySelector('[data-draft-marks]')?.textContent).toBe('New Recipe varity');
+      expect(container.querySelector('[data-draft-mark]')?.textContent).toBe('varity');
+      await user.keyboard('{End}{Backspace}');
+      expect(container.querySelector('[data-draft-mark]')).not.toBeInTheDocument();
     });
 
     it('guards a label with minLength and maxLength: draft, helper line while editing, refusal, save, Escape', async () => {
