@@ -61,7 +61,7 @@ interface FieldBox {
  */
 export function markLines(rects: { left: number; top: number; width: number; height: number }[], origin: { left: number; top: number }, field?: FieldBox): MarkLine[] {
   const count = field ? Math.max(1, Math.round((field.contentBottom - field.contentTop) / field.lineHeight)) : 1;
-  return rects
+  const boxes = rects
     .filter((r) => r.width > 0)
     .map((r) => {
       if (!field) return { left: r.left - origin.left, top: r.top - origin.top, width: r.width, height: r.height };
@@ -70,6 +70,14 @@ export function markLines(rects: { left: number; top: number; width: number; hei
       const bottom = index === count - 1 ? field.bottom : field.contentTop + (index + 1) * field.lineHeight;
       return { left: r.left - origin.left, top: top - origin.top, width: r.width, height: bottom - top };
     });
+  // A line can come in several pieces (the space where the text wraps is one): they make one box.
+  return boxes.reduce<MarkLine[]>((out, box) => {
+    const same = field ? out.find((o) => Math.abs(o.top - box.top) < 0.5 && Math.abs(o.height - box.height) < 0.5) : undefined;
+    if (!same) return [...out, box];
+    const left = Math.min(same.left, box.left);
+    const right = Math.max(same.left + same.width, box.left + box.width);
+    return out.map((o) => (o === same ? { ...o, left, width: right - left } : o));
+  }, []);
 }
 
 const sameLines = (a: MarkLine[], b: MarkLine[]) => a.length === b.length && a.every((l, i) => (Object.keys(l) as (keyof MarkLine)[]).every((k) => Math.abs(l[k] - b[i][k]) < 0.5));
@@ -123,42 +131,59 @@ export function remapMarks(saved: string, draft: string, marks: InlineEditMark[]
 }
 
 /**
- * The underlines (and, for a warning mark, the highlight) of a field's marks drawn BEHIND a field while it is being edited: the same text with invisible
- * letters, so each line lands under its words, and the field's own letters and text selection are painted over it (so the selection shows on top of the highlight).
- * The field must be transparent and positioned after it. It never takes a click (the field does), and it follows the field's horizontal scroll.
- * `className` must give it the field's own box and type.
+ * The highlight and the underline of a field's marks while the field is being edited, drawn in two layers so the field looks as it does when it is not edited:
+ * the same box per line of the marked words (see `markLines`), the first line reaching the field's top and the last line's underline landing on its bottom border.
+ * - `behind` goes before the field and draws the highlight; the field is transparent and painted over it, so its letters and the browser's text selection show over the highlight.
+ * - `over` goes after the field and draws the underlines, so the last line's underline covers the field's own bottom border.
+ * Both hold the same text with invisible letters, to know where each line of the words is and follow the field's horizontal scroll. They never take a click (the field does).
+ * `className` must give the text the field's own padding, border and type; `singleLine` is for a field whose text never wraps.
  */
-export function DraftMarks({ text, marks, className, scrollLeft = 0 }: { text: string; marks: InlineEditMark[]; className?: string; scrollLeft?: number }) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  // A marked piece is only as tall as its letters; the highlight is stretched to the whole line, as it is when the field is not edited.
-  const [pad, setPad] = React.useState(0);
+export function DraftMarks({ text, marks, layer, className, scrollLeft = 0, singleLine }: { text: string; marks: InlineEditMark[]; layer: 'behind' | 'over'; className?: string; scrollLeft?: number; singleLine?: boolean }) {
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const textRef = React.useRef<HTMLDivElement>(null);
+  const [boxes, setBoxes] = React.useState<{ tone: string; box: MarkLine }[]>([]);
   React.useLayoutEffect(() => {
-    const root = ref.current;
-    const first = root?.querySelector('[data-draft-mark]')?.getClientRects()[0];
-    if (!root || !first) return;
-    const lineHeight = parseFloat(getComputedStyle(root).lineHeight);
-    const next = Number.isFinite(lineHeight) ? Math.max(0, (lineHeight - first.height) / 2) : 0;
-    setPad((p) => (Math.abs(p - next) < 0.5 ? p : next));
-  }, [text, marks]);
-  React.useLayoutEffect(() => {
-    if (ref.current) ref.current.scrollLeft = scrollLeft;
+    if (textRef.current) textRef.current.scrollLeft = scrollLeft;
   }, [scrollLeft, text]);
+  // The boxes follow the text after every render, and are only replaced when they moved.
+  React.useLayoutEffect(() => {
+    const root = rootRef.current;
+    const mirror = textRef.current;
+    if (!root || !mirror) return;
+    const r = root.getBoundingClientRect();
+    const style = getComputedStyle(mirror);
+    const contentTop = r.top + (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.paddingTop) || 0);
+    const contentBottom = r.bottom - (parseFloat(style.borderBottomWidth) || 0) - (parseFloat(style.paddingBottom) || 0);
+    const lineHeight = singleLine ? contentBottom - contentTop : parseFloat(style.lineHeight) || contentBottom - contentTop;
+    const field: FieldBox = { top: r.top, bottom: r.bottom, contentTop, contentBottom, lineHeight };
+    const next = [...mirror.querySelectorAll<HTMLElement>('[data-draft-mark]')].flatMap((el) =>
+      markLines([...el.getClientRects()], { left: r.left, top: r.top }, field).map((box) => ({ tone: el.dataset.tone ?? 'destructive', box })),
+    );
+    setBoxes((prev) => (prev.length === next.length && prev.every((p, i) => p.tone === next[i].tone && sameLines([p.box], [next[i].box])) ? prev : next));
+  });
   return (
-    <div ref={ref} aria-hidden data-draft-marks className={cn(className, 'pointer-events-none absolute inset-0 overflow-hidden text-transparent')}>
-      {splitMarks(text, marks).map((piece, i) =>
-        piece.mark ? (
-          <span
-            key={i}
-            data-draft-mark
-            style={{ paddingTop: pad, paddingBottom: pad }}
-            className={cn('rounded-xxs border-b-2', piece.mark.tone === 'warning' ? 'border-warning-foreground bg-warning-background-highlight' : 'border-destructive-foreground')}
-          >
-            {piece.text}
-          </span>
-        ) : (
-          <span key={i}>{piece.text}</span>
-        ),
-      )}
+    <div ref={rootRef} aria-hidden data-draft-marks data-layer={layer} className="pointer-events-none absolute inset-0">
+      <div ref={textRef} className={cn(className, 'absolute inset-0 overflow-hidden text-transparent')}>
+        {splitMarks(text, marks).map((piece, i) =>
+          piece.mark ? (
+            <span key={i} data-draft-mark data-tone={piece.mark.tone ?? 'destructive'}>
+              {piece.text}
+            </span>
+          ) : (
+            <span key={i}>{piece.text}</span>
+          ),
+        )}
+      </div>
+      {/* The boxes may reach a little past the field's edges (the last underline covers its border), but not sideways. */}
+      <div className="absolute inset-0" style={{ clipPath: 'inset(-4px 0)' }}>
+        {boxes.map(({ tone, box }, i) =>
+          layer === 'behind' ? (
+            tone === 'warning' && <span key={i} data-draft-box className="absolute rounded-xxs bg-warning-background-highlight" style={box} />
+          ) : (
+            <span key={i} data-draft-box className={cn('absolute rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground' : 'border-destructive-foreground')} style={box} />
+          ),
+        )}
+      </div>
     </div>
   );
 }
