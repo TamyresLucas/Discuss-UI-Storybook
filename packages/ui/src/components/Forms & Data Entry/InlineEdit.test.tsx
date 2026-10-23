@@ -274,6 +274,7 @@ describe('InlineEdit', () => {
       render(<InlineEdit aria-label="Q" value={text} marks={[{ ...mark, suggestions: ['the box'] }]} onMarkApply={vi.fn()} onMarkDismiss={vi.fn()} />);
       const marked = screen.getByText('our product/service');
       expect(marked.className).toContain('border-destructive-foreground');
+      expect(marked.className).not.toContain('bg-warning-soft');
       await user.click(marked);
       expect(screen.getByText('Apply')).toBeInTheDocument();
       expect(screen.queryByText('Names the product and the service together.')).not.toBeInTheDocument();
@@ -299,6 +300,7 @@ describe('InlineEdit', () => {
       );
       const marked = screen.getByText('our product/service');
       expect(marked.className).toContain('border-warning-foreground');
+      expect(marked.className).toContain('bg-warning-soft');
       expect(marked.className).not.toContain('border-destructive-foreground');
       await user.click(marked);
       expect(screen.getByText('Names the product and the service together.')).toBeInTheDocument();
