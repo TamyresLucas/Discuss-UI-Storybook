@@ -93,11 +93,23 @@ export function remapMarks(saved: string, draft: string, marks: InlineEditMark[]
 }
 
 /**
- * The underlines of a field's marks drawn over the field while it is being edited: the same text with invisible letters, so each line lands under its words.
- * It never takes a click (the field underneath does), and it follows the field's horizontal scroll. `className` must give it the field's own box and type.
+ * The underlines (and, for a warning mark, the highlight) of a field's marks drawn BEHIND a field while it is being edited: the same text with invisible
+ * letters, so each line lands under its words, and the field's own letters and text selection are painted over it (so the selection shows on top of the highlight).
+ * The field must be transparent and positioned after it. It never takes a click (the field does), and it follows the field's horizontal scroll.
+ * `className` must give it the field's own box and type.
  */
 export function DraftMarks({ text, marks, className, scrollLeft = 0 }: { text: string; marks: InlineEditMark[]; className?: string; scrollLeft?: number }) {
   const ref = React.useRef<HTMLDivElement>(null);
+  // A marked piece is only as tall as its letters; the highlight is stretched to the whole line, as it is when the field is not edited.
+  const [pad, setPad] = React.useState(0);
+  React.useLayoutEffect(() => {
+    const root = ref.current;
+    const first = root?.querySelector('[data-draft-mark]')?.getClientRects()[0];
+    if (!root || !first) return;
+    const lineHeight = parseFloat(getComputedStyle(root).lineHeight);
+    const next = Number.isFinite(lineHeight) ? Math.max(0, (lineHeight - first.height) / 2) : 0;
+    setPad((p) => (Math.abs(p - next) < 0.5 ? p : next));
+  }, [text, marks]);
   React.useLayoutEffect(() => {
     if (ref.current) ref.current.scrollLeft = scrollLeft;
   }, [scrollLeft, text]);
@@ -105,7 +117,12 @@ export function DraftMarks({ text, marks, className, scrollLeft = 0 }: { text: s
     <div ref={ref} aria-hidden data-draft-marks className={cn(className, 'pointer-events-none absolute inset-0 overflow-hidden text-transparent')}>
       {splitMarks(text, marks).map((piece, i) =>
         piece.mark ? (
-          <span key={i} data-draft-mark className={cn('rounded-xxs border-b-2', piece.mark.tone === 'warning' ? 'border-warning-foreground' : 'border-destructive-foreground')}>
+          <span
+            key={i}
+            data-draft-mark
+            style={{ paddingTop: pad, paddingBottom: pad }}
+            className={cn('rounded-xxs border-b-2', piece.mark.tone === 'warning' ? 'border-warning-foreground bg-warning-background-highlight' : 'border-destructive-foreground')}
+          >
             {piece.text}
           </span>
         ) : (

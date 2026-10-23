@@ -293,7 +293,14 @@ describe('InlineEdit', () => {
         expect(lines.map((l) => l.textContent)).toEqual(['our product/service', 'today']);
         // The warning line is the warning color, the other the destructive one.
         expect(lines[0].className).toContain('border-warning-foreground');
+        expect(lines[0].className).toContain('bg-warning-background-highlight');
         expect(lines[1].className).toContain('border-destructive-foreground');
+        expect(lines[1].className).not.toContain('bg-warning-background-highlight');
+        // The layer is painted behind the field (it comes first), and the field lets it show through, so the browser's selection shows over the highlight.
+        const field = container.querySelector(multiline ? 'textarea' : 'input')!;
+        expect(overlay.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(field.className).toContain('relative');
+        expect(field.className).toContain('bg-transparent');
         // Typing before the marks keeps them on the same words.
         await user.keyboard('{Home}So ');
         expect([...container.querySelectorAll('[data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service', 'today']);

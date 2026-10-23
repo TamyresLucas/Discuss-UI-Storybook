@@ -273,6 +273,8 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="relative min-w-0">
+        {/* Behind the field, which is transparent and painted over it: the highlight and the browser's text selection show together. */}
+        {focused && editMarks.length > 0 && <DraftMarks text={typed} marks={editMarks} scrollLeft={scroll} className="flex items-center whitespace-pre text-body-base" />}
         <input
           ref={fieldRef}
           aria-label="Option label"
@@ -320,13 +322,12 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             save();
           }}
           className={cn(
-            'w-full min-w-0 bg-transparent text-body-base text-surface-foreground outline-none',
+            'relative w-full min-w-0 bg-transparent text-body-base text-surface-foreground outline-none',
             placeholderTone === 'regular' ? 'placeholder:text-surface-foreground' : 'placeholder:text-muted-foreground',
             // The marked text is drawn over the field, so the field's own letters step aside until it is edited.
             showMarks && 'text-transparent',
           )}
         />
-        {focused && editMarks.length > 0 && <DraftMarks text={typed} marks={editMarks} scrollLeft={scroll} className="flex items-center whitespace-pre text-body-base" />}
         {showMarks && (
           <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center overflow-hidden whitespace-pre text-body-base text-surface-foreground [&_[data-mark]]:pointer-events-auto">
             {splitMarks(label, marks).map((piece, i) =>
