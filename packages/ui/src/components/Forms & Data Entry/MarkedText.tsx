@@ -128,7 +128,8 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
           onKeyDown={stop}
           // The mark is not focusable, and focus jumping back to it would make a card opened next think focus left it.
           onCloseAutoFocus={(event) => event.preventDefault()}
-          className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
+          // A warning mark's card is tinted like the warning inline message (Toast); a destructive one keeps the plain card.
+          className={cn('flex w-72 flex-col gap-3 rounded-md border p-4 text-left text-body-base font-normal shadow-md outline-none', warning ? 'border-warning-soft-border bg-warning-soft' : 'border-border bg-surface')}
         >
           {mark.message && <p className="min-w-0 break-words text-body-small text-surface-foreground">{mark.message}</p>}
           {suggestions.length > 1 && onApply ? (
@@ -153,7 +154,7 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
               </p>
             )
           )}
-          <div className="flex items-center justify-between gap-3">
+          <div className={cn('flex items-center gap-3', warning ? 'justify-end' : 'justify-between')}>
             {onDismiss ? (
               <Button type="button" size="sm" variant="ghost" onClick={() => onDismiss(mark)}>
                 <Trash size={16} aria-hidden /> Dismiss
