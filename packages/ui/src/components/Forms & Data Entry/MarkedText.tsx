@@ -12,6 +12,10 @@ export interface InlineEditMark {
   end: number;
   /** Corrections offered in the mark's card, best first (at most three are shown). Used with `onMarkApply`: with one the card has an Apply button; with several each is a choice applied by a click on it and there is no Apply button. An empty string offers to remove the marked text (the button reads "Remove"). */
   suggestions?: string[];
+  /** The colour of the underline: `destructive` (default, for mistakes such as typos) or `warning` (for a recommendation, such as wording that could be clearer). */
+  tone?: 'destructive' | 'warning';
+  /** Why the words are marked, shown in the mark's card above the suggestions. Without it the card is unchanged. */
+  message?: string;
 }
 
 /** The text split into plain and marked pieces; marks that don't fit the text are dropped. */
@@ -29,8 +33,8 @@ export function splitMarks(text: string, marks: InlineEditMark[] | undefined): {
   return out;
 }
 
-// A solid destructive line under the word. Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
-const markClasses = 'rounded-xxs border-b-2 border-destructive-foreground';
+// A solid line under the word, destructive or warning. Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
+const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground' : 'border-destructive-foreground');
 
 /**
  * Pads a mark so its background and line line up with the read-mode button. On a single line the mark fills the button's full height, and its
@@ -89,12 +93,14 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
   const style = { paddingTop: padding.top, paddingBottom: padding.bottom };
   if (!onApply && !onDismiss) {
     return (
-      <span ref={ref} data-mark className={markClasses} style={style}>
+      <span ref={ref} data-mark className={markClasses(mark.tone)} style={style}>
         {text}
       </span>
     );
   }
   const suggestions = (mark.suggestions ?? []).slice(0, 3);
+  const warning = mark.tone === 'warning';
+  const struck = warning ? 'text-warning-foreground' : 'text-destructive-foreground';
   const handleOpenChange = (next: boolean) => {
     if (next) {
       if (closeOpenMarkCard && closeOpenMarkCard !== close) closeOpenMarkCard();
@@ -109,7 +115,7 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
       <PopoverPrimitive.Trigger asChild>
-        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses, 'cursor-pointer hover:bg-destructive-soft')}>
+        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses(mark.tone), 'cursor-pointer', warning ? 'hover:bg-warning-soft' : 'hover:bg-destructive-soft')}>
           {text}
         </span>
       </PopoverPrimitive.Trigger>
@@ -124,19 +130,20 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
           onCloseAutoFocus={(event) => event.preventDefault()}
           className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
+          {mark.message && <p className="min-w-0 break-words text-body-small text-surface-foreground">{mark.message}</p>}
           {suggestions.length > 1 && onApply ? (
             // Several possible fixes: each one is a choice, applied with a click, so there is no Apply button.
             <div className="flex flex-col gap-1" role="group" aria-label="Choose a correction">
               {suggestions.map((suggestion) => (
                 <Button key={suggestion} type="button" size="sm" variant="ghost" className="h-auto justify-start px-2 py-1 whitespace-normal" onClick={() => onApply(mark, suggestion)}>
-                  <s className="text-destructive-foreground">{text}</s> <span className="font-semibold text-accent-foreground">{suggestion === '' ? 'Remove' : suggestion}</span>
+                  <s className={struck}>{text}</s> <span className="font-semibold text-accent-foreground">{suggestion === '' ? 'Remove' : suggestion}</span>
                 </Button>
               ))}
             </div>
           ) : (
             suggestions.length > 0 && (
               <p className="min-w-0 break-words">
-                <s className="text-destructive-foreground">{text}</s>
+                <s className={struck}>{text}</s>
                 {suggestions[0] !== '' && (
                   <>
                     {' '}
