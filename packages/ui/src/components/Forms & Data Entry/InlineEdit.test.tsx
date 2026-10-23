@@ -274,14 +274,13 @@ describe('InlineEdit', () => {
       render(<InlineEdit aria-label="Q" value={text} marks={[{ ...mark, suggestions: ['the box'] }]} onMarkApply={vi.fn()} onMarkDismiss={vi.fn()} />);
       const marked = screen.getByText('our product/service');
       expect(marked.className).toContain('border-destructive-foreground');
-      expect(marked.className).not.toContain('bg-warning-soft');
+      expect(marked.className).not.toContain('bg-dandelion-200');
       await user.click(marked);
       expect(screen.getByText('Apply')).toBeInTheDocument();
       expect(screen.queryByText('Names the product and the service together.')).not.toBeInTheDocument();
       // The plain card, with Dismiss and Apply at opposite ends.
       const plain = screen.getByRole('dialog');
       expect(plain.className).toContain('bg-surface');
-      expect(plain.className).not.toContain('bg-warning-soft');
       expect(screen.getByRole('button', { name: 'Apply' }).parentElement?.className).toContain('justify-between');
     });
 
@@ -300,14 +299,15 @@ describe('InlineEdit', () => {
       );
       const marked = screen.getByText('our product/service');
       expect(marked.className).toContain('border-warning-foreground');
-      expect(marked.className).toContain('bg-warning-soft');
+      expect(marked.className).toContain('bg-dandelion-200');
       expect(marked.className).not.toContain('border-destructive-foreground');
       await user.click(marked);
       expect(screen.getByText('Names the product and the service together.')).toBeInTheDocument();
-      // Tinted like the warning inline message, with both buttons at the right.
+      // The regular card (not tinted), with both buttons at the right.
       const card = screen.getByRole('dialog');
-      expect(card.className).toContain('bg-warning-soft');
-      expect(card.className).toContain('border-warning-soft-border');
+      expect(card.className).toContain('bg-surface');
+      expect(card.className).toContain('border-border');
+      expect(card.className).not.toContain('bg-warning-soft');
       expect(screen.getByRole('button', { name: 'Apply' }).parentElement?.className).toContain('justify-end');
       await user.click(screen.getByRole('button', { name: 'Apply' }));
       expect(onApply).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(mark), 'the box');
