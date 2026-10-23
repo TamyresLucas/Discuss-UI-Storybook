@@ -303,11 +303,18 @@ describe('InlineEdit', () => {
       expect(marked.className).not.toContain('border-destructive-foreground');
       await user.click(marked);
       expect(screen.getByText('Names the product and the service together.')).toBeInTheDocument();
+      // Order in the card: the correction, then the rationale, then the buttons.
+      const order = (a: Node, b: Node) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(order(screen.getByText('the box'), screen.getByText('Names the product and the service together.'))).toBe(true);
+      expect(order(screen.getByText('Names the product and the service together.'), screen.getByRole('button', { name: 'Apply' }))).toBe(true);
       // The regular card (not tinted), with both buttons at the right.
       const card = screen.getByRole('dialog');
       expect(card.className).toContain('bg-surface');
       expect(card.className).toContain('border-border');
       expect(card.className).not.toContain('bg-warning-soft');
+      // The words that would be replaced are struck through in the destructive color, as in any mark's card.
+      expect(card.querySelector('s')?.className).toContain('text-destructive-foreground');
+      expect(card.querySelector('s')?.className).not.toContain('text-warning-foreground');
       expect(screen.getByRole('button', { name: 'Apply' }).parentElement?.className).toContain('justify-end');
       await user.click(screen.getByRole('button', { name: 'Apply' }));
       expect(onApply).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(mark), 'the box');

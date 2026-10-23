@@ -100,7 +100,8 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
   }
   const suggestions = (mark.suggestions ?? []).slice(0, 3);
   const warning = mark.tone === 'warning';
-  const struck = warning ? 'text-warning-foreground' : 'text-destructive-foreground';
+  // The struck-through words are the destructive color for every tone: they are what would be replaced.
+  const struck = 'text-destructive-foreground';
   const handleOpenChange = (next: boolean) => {
     if (next) {
       if (closeOpenMarkCard && closeOpenMarkCard !== close) closeOpenMarkCard();
@@ -130,7 +131,6 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
           onCloseAutoFocus={(event) => event.preventDefault()}
           className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
-          {mark.message && <p className="min-w-0 break-words text-body-small text-surface-foreground">{mark.message}</p>}
           {suggestions.length > 1 && onApply ? (
             // Several possible fixes: each one is a choice, applied with a click, so there is no Apply button.
             <div className="flex flex-col gap-1" role="group" aria-label="Choose a correction">
@@ -153,6 +153,8 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
               </p>
             )
           )}
+          {/* The rationale comes after the correction it explains, and before the buttons. */}
+          {mark.message && <p className="min-w-0 break-words text-body-small text-surface-foreground">{mark.message}</p>}
           <div className={cn('flex items-center gap-3', warning ? 'justify-end' : 'justify-between')}>
             {onDismiss ? (
               <Button type="button" size="sm" variant="ghost" onClick={() => onDismiss(mark)}>
