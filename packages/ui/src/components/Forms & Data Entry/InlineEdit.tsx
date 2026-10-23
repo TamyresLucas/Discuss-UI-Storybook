@@ -3,7 +3,7 @@ import { PencilSimple, WarningCircle } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
 import { fieldSurfaceClasses } from './Field';
-import { MarkedText, splitMarks, type InlineEditMark } from './MarkedText';
+import { DraftMarks, MarkedText, remapMarks, splitMarks, type InlineEditMark } from './MarkedText';
 
 export type { InlineEditMark };
 
@@ -61,8 +61,9 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   textClassName?: string;
   /**
    * Ranges of the saved text to underline in the destructive colour, for example misspelled words found by a spell checker. `start` is the
-   * first character and `end` the one after the last. Read mode only: the text box shown while editing has no underline. Ranges that are
-   * out of bounds, empty or overlapping are ignored.
+   * first character and `end` the one after the last. While the field is being edited the underlines stay (as plain lines: they take no click),
+   * moving with the text typed after them and going away when the words they mark are changed. Ranges that are out of bounds, empty or
+   * overlapping are ignored.
    */
   marks?: InlineEditMark[];
   /**
@@ -121,6 +122,10 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     const [error, setError] = React.useState<string | null>(null);
     const errorId = React.useId();
     const fieldRef = React.useRef<HTMLInputElement & HTMLTextAreaElement>(null);
+    // A one-line field scrolls sideways when its text is longer than the box; the underlines follow.
+    const [scroll, setScroll] = React.useState(0);
+    // The marks as they stand while the text is edited: carried over keystroke by keystroke (see `remapMarks`).
+    const [draftMarks, setDraftMarks] = React.useState<InlineEditMark[]>([]);
     const readRef = React.useRef<HTMLButtonElement>(null);
     // Set while an Escape revert is pending so the blur that follows it does not commit.
     const cancelled = React.useRef(false);
@@ -146,6 +151,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     const start = () => {
       if (disabled) return;
       setDraft(value);
+      setDraftMarks(marks ?? []);
       setError(null);
       cancelled.current = false;
       setEditing(true);
@@ -184,6 +190,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       >
         {editing ? (
           <>
+          <div className="relative flex w-full min-w-0">
           {React.createElement(multiline ? 'textarea' : 'input', {
             ref: fieldRef,
             value: draft,
@@ -202,6 +209,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             ),
             onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
               setDraft(event.target.value);
+              setDraftMarks(remapMarks(draft, event.target.value, draftMarks));
+              requestAnimationFrame(() => setScroll(fieldRef.current?.scrollLeft ?? 0));
               // After a refused save, the message follows what is typed and goes away as soon as the text is acceptable.
               if (error) setError(problemWith(event.target.value));
               onDraftChange?.(event.target.value);
@@ -219,10 +228,21 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
                 finish(true, true);
               }
             },
+            onScroll: (event: React.UIEvent<HTMLInputElement | HTMLTextAreaElement>) => setScroll(event.currentTarget.scrollLeft),
             onBlur: () => {
               if (!cancelled.current) finish(true, false);
             },
           })}
+          {draftMarks.length > 0 && (
+            <DraftMarks
+              text={draft}
+              marks={draftMarks}
+              scrollLeft={multiline ? 0 : scroll}
+              // The field's own box and type, so every line lands under its words.
+              className={cn('px-3 py-1', question ? 'border-0 border-b-2 border-transparent' : 'border border-transparent', multiline ? 'whitespace-pre-wrap break-words' : 'whitespace-pre', textClasses)}
+            />
+          )}
+          </div>
           {(error || showLimits) && (
             <p
               id={errorId}

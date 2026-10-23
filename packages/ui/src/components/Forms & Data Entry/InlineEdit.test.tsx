@@ -4,6 +4,7 @@ import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
 import { InlineEdit } from './InlineEdit';
+import { remapMarks } from './MarkedText';
 
 describe('InlineEdit', () => {
   it('shows the value as a button and the placeholder when empty', () => {
@@ -263,6 +264,45 @@ describe('InlineEdit', () => {
     expect(screen.getByText('Click to edit').className).toContain('text-muted-foreground');
     rerender(<InlineEdit aria-label="Name" placeholder="Click to edit" placeholderTone="regular" />);
     expect(screen.getByText('Click to edit').className).not.toContain('text-muted-foreground');
+  });
+
+  describe('marks while the field is edited', () => {
+    it('carries marks over to the typed text: kept before the edit, moved after it, dropped when touched', () => {
+      const marks = [{ start: 0, end: 3 }, { start: 8, end: 13 }];
+      expect(remapMarks('abc def ghijk', 'abc def ghijk', marks)).toBe(marks);
+      // Typing at the end or between the marks changes nothing for them; typing before a mark moves it.
+      expect(remapMarks('abc def ghijk', 'abc def ghijk!', marks)).toEqual(marks);
+      expect(remapMarks('abc def ghijk', 'abc XX def ghijk', marks)).toEqual([{ start: 0, end: 3 }, { start: 11, end: 16 }]);
+      expect(remapMarks('abc def ghijk', 'XX abc def ghijk', marks)).toEqual([{ start: 3, end: 6 }, { start: 11, end: 16 }]);
+      // Changing the words a mark is on drops it.
+      expect(remapMarks('abc def ghijk', 'abc def ghXijk', marks)).toEqual([{ start: 0, end: 3 }]);
+      expect(remapMarks('abc def ghijk', 'abc def ghij', marks)).toEqual([{ start: 0, end: 3 }]);
+      expect(remapMarks('abc def ghijk', '', marks)).toEqual([]);
+      expect(remapMarks('abc', 'abcd', undefined)).toEqual([]);
+    });
+
+    it('keeps the underlines visible while the text is edited, in both field kinds, and takes no click', async () => {
+      const user = userEvent.setup();
+      for (const multiline of [false, true]) {
+        const { container, unmount } = render(<InlineEdit aria-label="Q" multiline={multiline} value="Rate our product/service today" marks={[{ start: 5, end: 24, tone: 'warning', message: 'Why.' }, { start: 25, end: 30 }]} onMarkApply={vi.fn()} />);
+        await user.click(screen.getByRole('button', { name: /Edit$/ }));
+        const overlay = container.querySelector('[data-draft-marks]')!;
+        expect(overlay).toHaveAttribute('aria-hidden', 'true');
+        expect(overlay.className).toContain('pointer-events-none');
+        const lines = [...container.querySelectorAll('[data-draft-mark]')];
+        expect(lines.map((l) => l.textContent)).toEqual(['our product/service', 'today']);
+        // The warning line is the warning color, the other the destructive one.
+        expect(lines[0].className).toContain('border-warning-foreground');
+        expect(lines[1].className).toContain('border-destructive-foreground');
+        // Typing before the marks keeps them on the same words.
+        await user.keyboard('{Home}So ');
+        expect([...container.querySelectorAll('[data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service', 'today']);
+        // Changing the words under one drops that line only.
+        await user.keyboard('{End}{Backspace}');
+        expect([...container.querySelectorAll('[data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service']);
+        unmount();
+      }
+    });
   });
 
   describe('marks', () => {

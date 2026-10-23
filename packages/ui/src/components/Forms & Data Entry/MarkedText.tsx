@@ -75,6 +75,47 @@ function useMarkAlignment(ref: React.RefObject<HTMLSpanElement | null>, text: st
   return padding;
 }
 
+/**
+ * The marks of the saved text carried over to the text being edited, so the underlines stay while the field is open: the part before the edit keeps its marks,
+ * the part after it keeps them moved by the change in length, and a mark the edit touches is dropped (those words are being rewritten).
+ */
+export function remapMarks(saved: string, draft: string, marks: InlineEditMark[] | undefined): InlineEditMark[] {
+  if (!marks?.length) return [];
+  if (saved === draft) return marks;
+  const max = Math.min(saved.length, draft.length);
+  let before = 0;
+  while (before < max && saved[before] === draft[before]) before += 1;
+  let after = 0;
+  while (after < max - before && saved[saved.length - 1 - after] === draft[draft.length - 1 - after]) after += 1;
+  const editEnd = saved.length - after;
+  const delta = draft.length - saved.length;
+  return marks.flatMap((m) => (m.end <= before ? [m] : m.start >= editEnd ? [{ ...m, start: m.start + delta, end: m.end + delta }] : []));
+}
+
+/**
+ * The underlines of a field's marks drawn over the field while it is being edited: the same text with invisible letters, so each line lands under its words.
+ * It never takes a click (the field underneath does), and it follows the field's horizontal scroll. `className` must give it the field's own box and type.
+ */
+export function DraftMarks({ text, marks, className, scrollLeft = 0 }: { text: string; marks: InlineEditMark[]; className?: string; scrollLeft?: number }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  React.useLayoutEffect(() => {
+    if (ref.current) ref.current.scrollLeft = scrollLeft;
+  }, [scrollLeft, text]);
+  return (
+    <div ref={ref} aria-hidden data-draft-marks className={cn(className, 'pointer-events-none absolute inset-0 overflow-hidden text-transparent')}>
+      {splitMarks(text, marks).map((piece, i) =>
+        piece.mark ? (
+          <span key={i} data-draft-mark className={cn('rounded-xxs border-b-2', piece.mark.tone === 'warning' ? 'border-warning-foreground' : 'border-destructive-foreground')}>
+            {piece.text}
+          </span>
+        ) : (
+          <span key={i}>{piece.text}</span>
+        ),
+      )}
+    </div>
+  );
+}
+
 /** The card that is open right now, anywhere on the page: opening another one closes it, so only one is ever open. */
 let closeOpenMarkCard: (() => void) | null = null;
 
