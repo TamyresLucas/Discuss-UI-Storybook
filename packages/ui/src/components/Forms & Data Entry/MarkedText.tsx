@@ -34,7 +34,7 @@ export function splitMarks(text: string, marks: InlineEditMark[] | undefined): {
 }
 
 // A solid line under the word, destructive or warning (a warning mark also has a dandelion highlight behind the words). Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
-const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-dandelion-200' : 'border-destructive-foreground');
+const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-dandelion-100' : 'border-destructive-foreground');
 
 /**
  * Pads a mark so its background and line line up with the read-mode button. On a single line the mark fills the button's full height, and its
