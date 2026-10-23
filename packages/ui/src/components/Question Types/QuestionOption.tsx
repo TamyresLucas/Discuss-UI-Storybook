@@ -274,7 +274,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
         <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="relative min-w-0">
         {/* Behind the field, which is transparent and painted over it: the highlight and the browser's text selection show together. */}
-        {focused && editMarks.length > 0 && <DraftMarks text={typed} marks={editMarks} scrollLeft={scroll} className="flex items-center whitespace-pre text-body-base" />}
+        {focused && editMarks.length > 0 && <DraftMarks layer="behind" singleLine text={typed} marks={editMarks} scrollLeft={scroll} className="flex items-center whitespace-pre text-body-base" />}
         <input
           ref={fieldRef}
           aria-label="Option label"
@@ -328,6 +328,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
             showMarks && 'text-transparent',
           )}
         />
+        {focused && editMarks.length > 0 && <DraftMarks layer="over" singleLine text={typed} marks={editMarks} scrollLeft={scroll} className="flex items-center whitespace-pre text-body-base" />}
         {showMarks && (
           <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center overflow-hidden whitespace-pre text-body-base text-surface-foreground [&_[data-mark]]:pointer-events-auto">
             {splitMarks(label, marks).map((piece, i) =>

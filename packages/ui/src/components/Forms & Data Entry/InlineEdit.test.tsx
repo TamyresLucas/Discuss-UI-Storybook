@@ -1,10 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { InlineEdit } from './InlineEdit';
 import { markLines, remapMarks } from './MarkedText';
+
+/** A two-line, 74px field (4px padding, 2px bottom border, 32px lines) for tests that need layout: jsdom has none. Returns what undoes it. */
+function stubFieldLayout(pieces: { left: number; top: number; width: number; height: number }[]) {
+  const rect = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ left: 0, top: 100, right: 459, bottom: 174, width: 459, height: 74, x: 0, y: 100, toJSON: () => ({}) });
+  const rects = vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function (this: HTMLElement) {
+    return (this.hasAttribute('data-mark') || this.hasAttribute('data-draft-mark') ? pieces : []) as unknown as DOMRectList;
+  });
+  const real = window.getComputedStyle.bind(window);
+  const given: Record<string, string> = { lineHeight: '32px', paddingTop: '4px', paddingBottom: '4px', borderTopWidth: '0px', borderBottomWidth: '2px' };
+  const style = vi.spyOn(window, 'getComputedStyle').mockImplementation(
+    (element, pseudo) =>
+      new Proxy(real(element, pseudo), {
+        get: (target, key) => (typeof key === 'string' && key in given ? given[key] : typeof Reflect.get(target, key) === 'function' ? Reflect.get(target, key).bind(target) : Reflect.get(target, key)),
+      }),
+  );
+  return () => [rect, rects, style].forEach((m) => m.mockRestore());
+}
 
 describe('InlineEdit', () => {
   it('shows the value as a button and the placeholder when empty', () => {
@@ -286,33 +303,36 @@ describe('InlineEdit', () => {
       for (const multiline of [false, true]) {
         const { container, unmount } = render(<InlineEdit aria-label="Q" multiline={multiline} value="Rate our product/service today" marks={[{ start: 5, end: 24, tone: 'warning', message: 'Why.' }, { start: 25, end: 30 }]} onMarkApply={vi.fn()} />);
         await user.click(screen.getByRole('button', { name: /Edit$/ }));
-        const overlay = container.querySelector('[data-draft-marks]')!;
-        expect(overlay).toHaveAttribute('aria-hidden', 'true');
-        expect(overlay.className).toContain('pointer-events-none');
-        const lines = [...container.querySelectorAll('[data-draft-mark]')];
-        expect(lines.map((l) => l.textContent)).toEqual(['our product/service', 'today']);
-        // The warning line is the warning color, the other the destructive one.
-        expect(lines[0].className).toContain('border-warning-foreground');
-        expect(lines[0].className).toContain('bg-warning-background-highlight');
-        expect(lines[1].className).toContain('border-destructive-foreground');
-        expect(lines[1].className).not.toContain('bg-warning-background-highlight');
-        // The layer is painted behind the field (it comes first), and the field lets it show through, so the browser's selection shows over the highlight.
+        // Two layers hold the marks: the highlight behind the field and the underlines over it. Neither is read by a screen reader or takes a click.
+        const [behind, over] = [...container.querySelectorAll('[data-draft-marks]')];
+        expect([behind.getAttribute('data-layer'), over.getAttribute('data-layer')]).toEqual(['behind', 'over']);
+        for (const layer of [behind, over]) {
+          expect(layer).toHaveAttribute('aria-hidden', 'true');
+          expect(layer.className).toContain('pointer-events-none');
+          const words = [...layer.querySelectorAll('[data-draft-mark]')];
+          expect(words.map((l) => l.textContent)).toEqual(['our product/service', 'today']);
+          expect(words.map((l) => l.getAttribute('data-tone'))).toEqual(['warning', 'destructive']);
+        }
+        // The highlight layer is painted behind the field (it comes first), the underline layer over it (it comes after), and the field lets the highlight show through, so the browser's selection shows over it.
         const field = container.querySelector(multiline ? 'textarea' : 'input')!;
-        expect(overlay.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(behind.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(field.compareDocumentPosition(over) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
         expect(field.className).toContain('relative');
         expect(field.className).toContain('bg-transparent');
         // Typing before the marks keeps them on the same words.
         await user.keyboard('{Home}So ');
-        expect([...container.querySelectorAll('[data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service', 'today']);
+        expect([...container.querySelectorAll('[data-layer=behind] [data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service', 'today']);
         // Changing the words under one drops that line only.
         await user.keyboard('{End}{Backspace}');
-        expect([...container.querySelectorAll('[data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service']);
+        expect([...container.querySelectorAll('[data-draft-mark]')].map((l) => l.textContent)).toEqual(['our product/service', 'our product/service']);
         unmount();
       }
     });
   });
 
   describe('the line of a marked word', () => {
+    afterEach(() => vi.restoreAllMocks());
+
     // A 74px field (4px padding, 2px bottom border, two 32px lines) whose text wraps, so the word sits on both lines.
     const field = { top: 100, bottom: 174, contentTop: 104, contentBottom: 170, lineHeight: 32 };
     const first = { left: 300, top: 108, width: 33, height: 24 };
@@ -328,12 +348,12 @@ describe('InlineEdit', () => {
       // One line fills the field's full height; a piece with no width (a line break) is skipped; without a field each piece is its own box.
       expect(markLines([{ left: 0, top: 108, width: 50, height: 24 }], { left: 0, top: 100 }, { ...field, bottom: 138, contentBottom: 134 })).toEqual([{ left: 0, top: 0, width: 50, height: 38 }]);
       expect(markLines([{ ...first, width: 0 }, second], { left: 0, top: 0 })).toEqual([{ left: 100, top: 140, width: 135, height: 24 }]);
+      // The pieces of one line (the space at a wrap is one) make a single box.
+      expect(markLines([first, { left: 333, top: 108, width: 6, height: 24 }, second], { left: 290, top: 108 }, field)).toEqual([a, b].map((x, i) => (i === 0 ? { ...x, width: 39 } : x)));
     });
 
     it('draws a line box per line of the word, in the tone of the mark (the warning one with its highlight)', () => {
-      const rects = vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function (this: HTMLElement) {
-        return (this.hasAttribute('data-mark') ? [first, second] : []) as unknown as DOMRectList;
-      });
+      const restore = stubFieldLayout([first, second]);
       for (const [tone, border, highlight] of [['warning', 'border-warning-foreground', true], [undefined, 'border-destructive-foreground', false]] as const) {
         const { container, unmount } = render(<InlineEdit aria-label="Q" value="Rate our product/service today" marks={[{ start: 5, end: 24, tone }]} onMarkApply={vi.fn()} />);
         const lines = [...container.querySelectorAll('[data-mark-line]')];
@@ -345,7 +365,26 @@ describe('InlineEdit', () => {
         }
         unmount();
       }
-      rects.mockRestore();
+      restore();
+    });
+  });
+
+  describe('the boxes of the marks while the field is edited', () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it('draw the highlight behind the field (warning marks only) and the underline of every mark over it, one box per line', async () => {
+      const user = userEvent.setup();
+      const restore = stubFieldLayout([{ left: 300, top: 108, width: 33, height: 24 }, { left: 100, top: 140, width: 135, height: 24 }]);
+      const { container } = render(<InlineEdit aria-label="Q" multiline value="Rate our product/service today" marks={[{ start: 5, end: 24, tone: 'warning' }, { start: 25, end: 30 }]} onMarkApply={vi.fn()} />);
+      await user.click(screen.getByRole('button', { name: /Edit$/ }));
+      const boxes = (layer: string) => [...container.querySelectorAll(`[data-layer=${layer}] [data-draft-box]`)];
+      // Behind: only the warning mark has a highlight (two lines). Over: both marks have an underline on each of their two lines.
+      expect(boxes('behind')).toHaveLength(2);
+      for (const box of boxes('behind')) expect(box.className).toContain('bg-warning-background-highlight');
+      expect(boxes('over')).toHaveLength(4);
+      expect(boxes('over').map((b) => (b.className.includes('border-warning-foreground') ? 'warning' : 'destructive'))).toEqual(['warning', 'warning', 'destructive', 'destructive']);
+      for (const box of boxes('over')) expect(box.className).not.toContain('bg-');
+      restore();
     });
   });
 

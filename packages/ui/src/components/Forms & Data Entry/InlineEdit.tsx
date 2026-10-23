@@ -179,6 +179,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
 
     const textClasses = cn('text-ui-input-value text-surface-foreground', textClassName);
     const question = variant === 'question';
+    const draftMarksClass = cn('px-3 py-1', question ? 'border-0 border-b-2 border-transparent' : 'border border-transparent', multiline ? 'whitespace-pre-wrap break-words' : 'whitespace-pre', textClasses);
     // Longer text and question text fill the box and drop the pencil; a short label hugs its text.
     const fill = multiline || question;
 
@@ -194,11 +195,13 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
           <div className={cn('relative flex w-full min-w-0', draftMarks.length > 0 && !question && 'rounded-md bg-surface')}>
           {draftMarks.length > 0 && (
             <DraftMarks
+              layer="behind"
+              singleLine={!multiline}
               text={draft}
               marks={draftMarks}
               scrollLeft={multiline ? 0 : scroll}
               // The field's own box and type, so every line lands under its words.
-              className={cn('px-3 py-1', question ? 'border-0 border-b-2 border-transparent' : 'border border-transparent', multiline ? 'whitespace-pre-wrap break-words' : 'whitespace-pre', textClasses)}
+              className={draftMarksClass}
             />
           )}
           {React.createElement(multiline ? 'textarea' : 'input', {
@@ -245,6 +248,17 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
               if (!cancelled.current) finish(true, false);
             },
           })}
+          {draftMarks.length > 0 && (
+            <DraftMarks
+              layer="over"
+              singleLine={!multiline}
+              text={draft}
+              marks={draftMarks}
+              scrollLeft={multiline ? 0 : scroll}
+              // The field's own box and type, so every line lands under its words.
+              className={draftMarksClass}
+            />
+          )}
           </div>
           {(error || showLimits) && (
             <p
