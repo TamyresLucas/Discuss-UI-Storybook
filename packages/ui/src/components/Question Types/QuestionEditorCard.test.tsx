@@ -316,7 +316,7 @@ describe('ActivityStructure', () => {
     const { container } = render(<QuestionEditorCard number={1} title="I has a speling mistake" titleMarks={[{ start: 2, end: 5 }, { start: 8, end: 15 }, { start: 20, end: 90 }, { start: 4, end: 4 }]} />);
     const marked = [...container.querySelectorAll('[data-mark]')].map((el) => el.textContent);
     expect(marked).toEqual(['has', 'speling']);
-    expect(container.querySelector('[data-mark]')!.className).toContain('border-destructive-foreground');
+    expect(container.querySelector('[data-mark]')!.getAttribute('data-tone')).toBe('destructive');
     expect(screen.getByRole('button', { name: /Question title/ }).textContent).toBe('I has a speling mistake');
   });
 

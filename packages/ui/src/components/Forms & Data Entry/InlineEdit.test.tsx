@@ -4,7 +4,7 @@ import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
 import { InlineEdit } from './InlineEdit';
-import { remapMarks } from './MarkedText';
+import { markLines, remapMarks } from './MarkedText';
 
 describe('InlineEdit', () => {
   it('shows the value as a button and the placeholder when empty', () => {
@@ -312,6 +312,43 @@ describe('InlineEdit', () => {
     });
   });
 
+  describe('the line of a marked word', () => {
+    // A 74px field (4px padding, 2px bottom border, two 32px lines) whose text wraps, so the word sits on both lines.
+    const field = { top: 100, bottom: 174, contentTop: 104, contentBottom: 170, lineHeight: 32 };
+    const first = { left: 300, top: 108, width: 33, height: 24 };
+    const second = { left: 100, top: 140, width: 135, height: 24 };
+
+    it('gives each line its own box: the first reaches the field top, the last lands on the field bottom border', () => {
+      const [a, b] = markLines([first, second], { left: 290, top: 108 }, field);
+      // First line: from the field's top edge to the end of its own line.
+      expect(a).toEqual({ left: 10, top: -8, width: 33, height: 36 });
+      // Last line: from the end of the line above to the field's bottom edge, so its underline covers the field's own border.
+      expect(b).toEqual({ left: -190, top: 28, width: 135, height: 38 });
+      expect(b.top + 108 + b.height).toBe(field.bottom);
+      // One line fills the field's full height; a piece with no width (a line break) is skipped; without a field each piece is its own box.
+      expect(markLines([{ left: 0, top: 108, width: 50, height: 24 }], { left: 0, top: 100 }, { ...field, bottom: 138, contentBottom: 134 })).toEqual([{ left: 0, top: 0, width: 50, height: 38 }]);
+      expect(markLines([{ ...first, width: 0 }, second], { left: 0, top: 0 })).toEqual([{ left: 100, top: 140, width: 135, height: 24 }]);
+    });
+
+    it('draws a line box per line of the word, in the tone of the mark (the warning one with its highlight)', () => {
+      const rects = vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function (this: HTMLElement) {
+        return (this.hasAttribute('data-mark') ? [first, second] : []) as unknown as DOMRectList;
+      });
+      for (const [tone, border, highlight] of [['warning', 'border-warning-foreground', true], [undefined, 'border-destructive-foreground', false]] as const) {
+        const { container, unmount } = render(<InlineEdit aria-label="Q" value="Rate our product/service today" marks={[{ start: 5, end: 24, tone }]} onMarkApply={vi.fn()} />);
+        const lines = [...container.querySelectorAll('[data-mark-line]')];
+        expect(lines).toHaveLength(2);
+        for (const line of lines) {
+          expect(line.className).toContain(border);
+          expect(line.className.includes('bg-warning-background-highlight')).toBe(highlight);
+          expect(line.className).toContain('pointer-events-none');
+        }
+        unmount();
+      }
+      rects.mockRestore();
+    });
+  });
+
   describe('marks', () => {
     const text = 'Rate our product/service today';
     const mark = { start: 5, end: 24 };
@@ -320,8 +357,7 @@ describe('InlineEdit', () => {
       const user = userEvent.setup();
       render(<InlineEdit aria-label="Q" value={text} marks={[{ ...mark, suggestions: ['the box'] }]} onMarkApply={vi.fn()} onMarkDismiss={vi.fn()} />);
       const marked = screen.getByText('our product/service');
-      expect(marked.className).toContain('border-destructive-foreground');
-      expect(marked.className).not.toContain('bg-warning-background-highlight');
+      expect(marked).toHaveAttribute('data-tone', 'destructive');
       await user.click(marked);
       expect(screen.getByText('Apply')).toBeInTheDocument();
       expect(screen.queryByText('Names the product and the service together.')).not.toBeInTheDocument();
@@ -345,9 +381,7 @@ describe('InlineEdit', () => {
         />,
       );
       const marked = screen.getByText('our product/service');
-      expect(marked.className).toContain('border-warning-foreground');
-      expect(marked.className).toContain('bg-warning-background-highlight');
-      expect(marked.className).not.toContain('border-destructive-foreground');
+      expect(marked).toHaveAttribute('data-tone', 'warning');
       await user.click(marked);
       expect(screen.getByText('Names the product and the service together.')).toBeInTheDocument();
       // Order in the card: the correction, then the rationale, then the buttons.
