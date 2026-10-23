@@ -1,5 +1,33 @@
 # @discuss-ds/ui
 
+## 0.33.0
+
+### Minor Changes
+
+- [#121](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/121) [`45858be`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/45858beb03a60f335a8a110ebc099bee02053e62) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `InlineEdit` marks (and the marks in `QuestionOptionEditor` and the question header) take two new optional properties. `tone: 'warning'` underlines the words in the warning colour instead of the destructive one, for a recommendation rather than a mistake. `message` adds a short rationale to the mark's card, above the suggestions. Without them nothing changes: a mark is still a destructive underline with a card that has the marked text, its corrections and Dismiss.
+
+### Patch Changes
+
+- [#129](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/129) [`db76aa7`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/db76aa7b7887312494fa3f8239a3a5d344dddb28) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - While a field with marks is edited, a `warning` mark keeps its highlight behind the words (as well as its underline), and the browser's text selection shows over it. The highlight layer now sits behind the field, which is transparent for the time it is edited.
+
+- [#131](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/131) [`f5a6599`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/f5a6599e02acf524f01ddda4ccaf739b456e7879) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - While a field with marks is edited, the highlight and underline of a mark now have the same geometry as when it is not edited: the first line reaches the top of the field and the last line's underline lands on the field's own bottom border (covering it). The highlight is drawn behind the field (the text selection still shows over it) and the underline in a layer over the field. Before, while editing they stopped about 4px short of the field's top and bottom edges.
+
+- [#127](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/127) [`a168e3f`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/a168e3f07c3dbe78561b056dbc06135938e43f97) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - In the card of a `warning` mark in `InlineEdit` (and the other text fields that mark words), the struck-through words use the destructive foreground color, as in the card of any other mark, and the `message` comes after the correction and before the buttons.
+
+- [#125](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/125) [`31992d1`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/31992d1bb4cfd93817c9d2f1cf3423e27e6f9da2) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - A `warning` mark in `InlineEdit` (and the other text fields that mark words) is highlighted in dandelion 100 behind the words, and its card is the regular card (the same background and border as any mark's card) with Dismiss and Apply together at the right. A default (destructive) mark is unchanged.
+
+- [#123](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/123) [`73f0a37`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/73f0a37a8794839e070ffc8ac456e42a7e003a25) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - The card of a `warning` mark in `InlineEdit` (and the other text fields that mark words) has the background and border of the warning inline message, and its Dismiss and Apply buttons sit together at the right. The card of a default (destructive) mark is unchanged.
+
+- [#124](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/124) [`b2b0c71`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/b2b0c7101a279cb5477546125aa8338c2f5e3345) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - A `warning` mark in `InlineEdit` (and the other text fields that mark words) has the warning soft background behind the words as well as the warning underline. A default (destructive) mark is unchanged.
+
+- [#130](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/130) [`5ea9e71`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/5ea9e71957b5106e7cafb168a45215b0818a68e2) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - The highlight and underline of a mark are now drawn per line of the marked words instead of with one padding for the whole word. On a title that wraps, the first line reaches the top of the field and the last line's underline lands exactly on the field's own bottom border (covering it), as a single-line word already did; before, the last line stopped a few pixels short. Visually unchanged for a word on one line. The marked word keeps its place in the text and its click; `data-tone` on it tells the tone of the mark.
+
+- [#128](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/128) [`755b6d4`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/755b6d4462b14068480ad3ebf11e914c0f05b41f) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - The underlines of `marks` (in `InlineEdit`, the question header and `QuestionOptionEditor`) now stay while the field is being edited, as plain lines that take no click. They move with the text typed before them and go away when the words they mark are changed. Before, they disappeared as soon as the field was opened.
+
+- [#126](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/126) [`6127b20`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/6127b2066d9f15fb311bbb90d0e65c2f26cfb977) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New color token `--sys-color-warning-background-highlight` (Tailwind: `bg-warning-background-highlight`): the highlight behind words that carry a warning. It is dandelion 100 in light mode and dandelion 800 in dark mode. A `warning` mark in `InlineEdit` (and the other text fields that mark words) uses it instead of a fixed dandelion shade, so the highlight follows the theme.
+- Updated dependencies [[`6127b20`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/6127b2066d9f15fb311bbb90d0e65c2f26cfb977)]:
+  - @discuss-ds/tokens@0.3.0
+
 ## 0.32.0
 
 ### Minor Changes

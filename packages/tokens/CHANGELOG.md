@@ -1,5 +1,11 @@
 # @discuss-ds/tokens
 
+## 0.3.0
+
+### Minor Changes
+
+- [#126](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/126) [`6127b20`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/6127b2066d9f15fb311bbb90d0e65c2f26cfb977) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New color token `--sys-color-warning-background-highlight` (Tailwind: `bg-warning-background-highlight`): the highlight behind words that carry a warning. It is dandelion 100 in light mode and dandelion 800 in dark mode. A `warning` mark in `InlineEdit` (and the other text fields that mark words) uses it instead of a fixed dandelion shade, so the highlight follows the theme.
+
 ## 0.2.0
 
 ### Minor Changes
