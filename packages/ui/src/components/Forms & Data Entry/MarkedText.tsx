@@ -33,8 +33,8 @@ export function splitMarks(text: string, marks: InlineEditMark[] | undefined): {
   return out;
 }
 
-// A solid line under the word, destructive or warning (a warning mark also has the warning background at rest). Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
-const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-warning-soft' : 'border-destructive-foreground');
+// A solid line under the word, destructive or warning (a warning mark also has a dandelion highlight behind the words). Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
+const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-dandelion-100' : 'border-destructive-foreground');
 
 /**
  * Pads a mark so its background and line line up with the read-mode button. On a single line the mark fills the button's full height, and its
@@ -128,8 +128,7 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
           onKeyDown={stop}
           // The mark is not focusable, and focus jumping back to it would make a card opened next think focus left it.
           onCloseAutoFocus={(event) => event.preventDefault()}
-          // A warning mark's card is tinted like the warning inline message (Toast); a destructive one keeps the plain card.
-          className={cn('flex w-72 flex-col gap-3 rounded-md border p-4 text-left text-body-base font-normal shadow-md outline-none', warning ? 'border-warning-soft-border bg-warning-soft' : 'border-border bg-surface')}
+          className="flex w-72 flex-col gap-3 rounded-md border border-border bg-surface p-4 text-left text-body-base font-normal shadow-md outline-none"
         >
           {mark.message && <p className="min-w-0 break-words text-body-small text-surface-foreground">{mark.message}</p>}
           {suggestions.length > 1 && onApply ? (
