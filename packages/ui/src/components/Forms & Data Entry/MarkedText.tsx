@@ -33,8 +33,8 @@ export function splitMarks(text: string, marks: InlineEditMark[] | undefined): {
   return out;
 }
 
-// A solid line under the word, destructive or warning. Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
-const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground' : 'border-destructive-foreground');
+// A solid line under the word, destructive or warning (a warning mark also has the warning background at rest). Its padding is measured (see `useMarkAlignment`) so the line sits on the field's own bottom edge.
+const markClasses = (tone: InlineEditMark['tone']) => cn('rounded-xxs border-b-2', tone === 'warning' ? 'border-warning-foreground bg-warning-soft' : 'border-destructive-foreground');
 
 /**
  * Pads a mark so its background and line line up with the read-mode button. On a single line the mark fills the button's full height, and its
@@ -115,7 +115,7 @@ export function MarkedText({ mark, text, onApply, onDismiss }: { mark: InlineEdi
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
       <PopoverPrimitive.Trigger asChild>
-        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses(mark.tone), 'cursor-pointer', warning ? 'hover:bg-warning-soft' : 'hover:bg-destructive-soft')}>
+        <span ref={ref} data-mark role="button" tabIndex={-1} onClick={stop} style={style} className={cn(markClasses(mark.tone), 'cursor-pointer', warning ? '' : 'hover:bg-destructive-soft')}>
           {text}
         </span>
       </PopoverPrimitive.Trigger>
