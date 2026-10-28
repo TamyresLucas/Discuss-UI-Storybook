@@ -64,6 +64,39 @@ values are not yet in the Figma source — see the "Status" section of
 
 ---
 
+## `@tanstack/react-table` and `@tanstack/react-virtual` added for `DataTable`
+
+**Decision:** `packages/ui` depends on `@tanstack/react-table` (^9.3.1) and
+`@tanstack/react-virtual` (^3.14), consumed only by `DataTable` (Data
+Display). They supply the table state (sorting, selection, pagination,
+visibility, pinning, sizing, ordering, filtering, grouping, aggregation,
+expansion, cell selection and spanning) and row virtualization; all markup and
+styling still come from `Table*`, `Checkbox`, `Input`, `Select`, `SearchBar`,
+`Pagination` and `DropdownMenu`. No other component may import them.
+
+**Why:** TanStack Table is headless, so it adds no visuals of its own, and
+hand-rolling these models is exactly the behaviour a well-tested library should
+own. Declared in `dependencies` (like `react-hook-form`), not as peers, so
+consumers don't manage their versions. v9 is used with explicit
+`tableFeatures`, not the deprecated `useLegacyTable` shim. Every feature is
+registered once at module scope but only does work when its prop is set.
+
+**Notes:** pinned-column offsets and column widths are inline styles because
+they come from TanStack's sizing model at runtime (data, not design values).
+Column ordering is by drag-and-drop on native HTML5 events plus Alt + arrow
+keys, with no drag-and-drop dependency. The row-density toggle is a prop of
+`DataTable`, not a TanStack plugin. Virtualization covers rows only, not
+columns, and does not combine with detail panels or row pinning.
+
+**Alternatives considered:** Re-exporting TanStack's hooks for consumers to
+wire themselves (rejected: every product would rebuild the same Table wiring);
+peer dependencies (rejected: extra setup for no consumer benefit).
+
+**Status:** Settled for `DataTable` specifically. Not a precedent for other
+state libraries in `packages/ui`.
+
+---
+
 ## `react-hook-form` added for `Form`, breaking the "radix-ui only" primitive pattern
 
 **Decision:** `packages/ui` now depends on `react-hook-form` (^7.88.0),
