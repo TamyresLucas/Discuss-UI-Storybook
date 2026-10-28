@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.34.0
+
+### Minor Changes
+
+- [#132](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/132) [`c9a0371`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/c9a0371a0d3aee6bbe2cd63dd46ffe85996d8ca5) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New `DataTable` in Data Display: pass `columns` and `data` and get a `Table` with sorting, a select-all checkbox column, pagination, a column-visibility menu, loading and empty states. It is built on TanStack Table (`@tanstack/react-table`), and any of its state can be controlled from outside. Optional features, each switched on by a prop: column pinning, sizing, resizing and ordering, column and global filtering with counts, grouping with aggregation and a footer, expandable rows and detail panels, row pinning, cell selection and spanning, grouped headers, inline editing, server-side data, virtualized rows (`@tanstack/react-virtual`), infinite scrolling and a compact density. `Table` gains a `TableFooter`, a `containerRef` and a `resizer` slot on `TableHead`.
+
 ## 0.33.0
 
 ### Minor Changes
