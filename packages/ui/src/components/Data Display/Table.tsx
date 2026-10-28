@@ -8,12 +8,14 @@ export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> 
   striped?: boolean;
   /** Class names for the bordered, rounded scroll container around the `<table>`. */
   containerClassName?: string;
+  /** Ref to the scroll container around the `<table>`, e.g. for virtualization or infinite scrolling. */
+  containerRef?: React.Ref<HTMLDivElement>;
 }
 
 // Figma: Tables (27) — 12px-radius bordered container; rows are separated by 1px `border` lines.
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ className, containerClassName, striped, ...props }, ref) => (
-    <div className={cn('relative w-full overflow-auto rounded-lg border border-border bg-surface', containerClassName)}>
+  ({ className, containerClassName, containerRef, striped, ...props }, ref) => (
+    <div ref={containerRef} className={cn('relative w-full overflow-auto rounded-lg border border-border bg-surface', containerClassName)}>
       <table
         ref={ref}
         data-striped={striped ? '' : undefined}
@@ -29,6 +31,13 @@ export const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLA
   ({ className, ...props }, ref) => <thead ref={ref} className={className} {...props} />,
 );
 TableHeader.displayName = 'TableHeader';
+
+export const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
+  ({ className, ...props }, ref) => (
+    <tfoot ref={ref} className={cn('border-t border-border bg-background text-ui-label', className)} {...props} />
+  ),
+);
+TableFooter.displayName = 'TableFooter';
 
 export const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => <tbody ref={ref} className={className} {...props} />,
@@ -68,13 +77,15 @@ export interface TableHeadProps extends Omit<React.ThHTMLAttributes<HTMLTableCel
   onSort?: () => void;
   /** Narrow centred column for a select-all checkbox. */
   checkbox?: boolean;
+  /** Drag handle rendered at the trailing edge of the header, e.g. for column resizing. Makes the cell `relative`. */
+  resizer?: React.ReactNode;
 }
 
 const ariaSort = { none: 'none', asc: 'ascending', desc: 'descending' } as const;
 
 // Figma: Table Header Row (28) › Table Header Cell — 40px, `ui/label` text; sortable cells show a caret.
 export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
-  ({ className, align = 'left', sortable, sort = 'none', onSort, checkbox, children, ...props }, ref) => {
+  ({ className, align = 'left', sortable, sort = 'none', onSort, checkbox, resizer, children, ...props }, ref) => {
     const caret =
       sort === 'asc' ? <CaretUp size={16} aria-hidden className="shrink-0" /> : <CaretDown size={16} aria-hidden className="shrink-0" />;
     return (
@@ -86,6 +97,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
           'h-10 border-b border-border text-ui-label whitespace-nowrap',
           checkbox ? 'w-13 px-0 text-center' : 'px-4 py-3',
           align === 'right' ? 'text-right' : 'text-left',
+          resizer && 'relative',
           className,
         )}
         {...props}
@@ -104,6 +116,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
         ) : (
           children
         )}
+        {resizer}
       </th>
     );
   },

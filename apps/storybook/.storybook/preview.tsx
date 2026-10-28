@@ -97,6 +97,7 @@ const preview: Preview = {
           [
             'Overview',
             'Table',
+            'DataTable',
             'Table Header Row',
             'Table Row',
             'Card',
