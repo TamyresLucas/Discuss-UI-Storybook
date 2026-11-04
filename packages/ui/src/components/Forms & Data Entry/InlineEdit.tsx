@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PencilSimple, WarningCircle } from '@phosphor-icons/react';
 
-import { cn } from '../../lib/utils';
+import { cn, lengthOutOfRange } from '../../lib/utils';
 import { fieldSurfaceClasses } from './Field';
 import { DraftMarks, MarkedText, remapMarks, splitMarks, type InlineEditMark } from './MarkedText';
 
@@ -34,8 +34,8 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   validate?: (value: string) => string | null | undefined;
   /**
    * While editing, shows the allowed length under the field (from `minLength` and `maxLength`) with a live character
-   * counter. After a refused save the same line turns into the error state (error colour and icon) instead of a
-   * different message appears.
+   * counter, but only while the text is too short or too long (the count is an error hint, not a running total). After a
+   * refused save the same line turns into the error state (error colour and icon) instead of a different message appears.
    */
   showLimits?: boolean;
   /**
@@ -121,6 +121,8 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     // The reason the last attempt to save was refused; cleared by the next valid keystroke, Escape or a save.
     const [error, setError] = React.useState<string | null>(null);
     const errorId = React.useId();
+    // The limits and the live count show only when the text is too short or too long (or a save was refused), never while it is fine.
+    const limitsVisible = !!showLimits && (!!error || lengthOutOfRange(draft, minLength, maxLength));
     const fieldRef = React.useRef<HTMLInputElement & HTMLTextAreaElement>(null);
     // A one-line field scrolls sideways when its text is longer than the box; the underlines follow.
     const [scroll, setScroll] = React.useState(0);
@@ -186,7 +188,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     return (
       <div
         ref={ref}
-        className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', editing && (error || showLimits) && 'flex-col gap-1.5', className)}
+        className={cn(fill ? 'flex w-full min-w-0' : 'inline-flex min-w-0 max-w-full', editing && (error || limitsVisible) && 'flex-col gap-1.5', className)}
         {...props}
       >
         {editing ? (
@@ -210,7 +212,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             maxLength,
             'aria-label': ariaLabel,
             'aria-invalid': error ? true : undefined,
-            'aria-describedby': error || showLimits ? errorId : undefined,
+            'aria-describedby': error || limitsVisible ? errorId : undefined,
             ...(multiline ? { rows: 1 } : { type: 'text' }),
             className: cn(
               'relative w-full px-3 py-1 outline-none',
@@ -260,7 +262,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             />
           )}
           </div>
-          {(error || showLimits) && (
+          {(error || limitsVisible) && (
             <p
               id={errorId}
               role={error ? 'alert' : undefined}
@@ -268,11 +270,11 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
             >
               <span className="flex items-start gap-2">
                 {error && <WarningCircle size={16} aria-hidden className="shrink-0" />}
-                {showLimits ? limitsText(minLength, maxLength) : error}
+                {limitsVisible ? limitsText(minLength, maxLength) : error}
                 {/* The line stays the same in the error state; screen readers also get the reason. */}
-                {showLimits && error && <span className="sr-only">{error}</span>}
+                {limitsVisible && error && <span className="sr-only">{error}</span>}
               </span>
-              {showLimits && (
+              {limitsVisible && (
                 <span aria-hidden className="shrink-0 tabular-nums">
                   {draft.length}
                   {maxLength !== undefined && `/${maxLength}`}

@@ -40,22 +40,26 @@ describe('QuestionHeader', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('This question is mandatory.');
   });
 
-  it('editor mode edits the title with inline edit, counting characters live', async () => {
+  it('editor mode edits the title with inline edit, counting characters only when over the maximum', async () => {
     const user = userEvent.setup();
     const Controlled = () => {
       const [text, setText] = React.useState('Hi');
       return <QuestionHeader number={2} editor title={text} onTitleChange={setText} maxLength={20} actions={<button type="button">Delete</button>} />;
     };
-    render(<Controlled />);
+    const { rerender } = render(<Controlled />);
     // Read mode: the title is a button; click it to edit.
     await user.click(screen.getByRole('button', { name: /Question title/ }));
     await user.type(screen.getByRole('textbox', { name: 'Question title' }), '!!');
-    expect(screen.getByText('4/20 characters')).toBeInTheDocument();
+    // Within the limit nothing is counted.
+    expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
     // Enter saves the title and returns to read mode.
     await user.keyboard('{Enter}');
     expect(screen.getByRole('button', { name: /Question title: Hi!!/ })).toBeInTheDocument();
-    expect(screen.getByText('4/20 characters')).toBeInTheDocument();
+    expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+    // A title already over the maximum is counted.
+    rerender(<QuestionHeader number={2} editor title="A title that is far too long" maxLength={20} />);
+    expect(screen.getByText('28/20 characters')).toBeInTheDocument();
   });
 
   it('editor mode keeps the title underline while active', () => {
@@ -176,9 +180,13 @@ describe('QuestionOption', () => {
       expect(screen.queryByText('2 characters required')).not.toBeInTheDocument();
 
       await user.click(field);
-      expect(screen.getByText('2 characters required')).toBeInTheDocument();
+      // Long enough: no helper line and no count.
+      expect(screen.queryByText('2 characters required')).not.toBeInTheDocument();
       await user.clear(field);
       await user.type(field, 'a');
+      // Too short: the helper line and the count appear.
+      expect(screen.getByText('2 characters required')).toBeInTheDocument();
+      expect(screen.getByText('1/10')).toBeInTheDocument();
       expect(onLabelChange).not.toHaveBeenCalled();
 
       // Too short: Enter is refused, the field stays open and says why.
@@ -636,16 +644,14 @@ describe('StimulusCard', () => {
     }
   });
 
-  it('shows a live "n/max characters" counter for an editable caption, and can hide it', async () => {
-    const user = userEvent.setup();
+  it('shows the "n/max characters" counter for an editable caption only when it is over the maximum, and can hide it', () => {
     const { rerender } = render(<StimulusCard caption="Look" onCaptionChange={() => {}} maxLength={2000} />);
-    expect(screen.getByText('4/2000 characters')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: /Stimulus caption/ }));
-    await user.type(screen.getByRole('textbox', { name: /Stimulus caption/ }), '!!');
-    expect(screen.getByText('6/2000 characters')).toBeInTheDocument();
-    rerender(<StimulusCard caption="Look" onCaptionChange={() => {}} maxLength={2000} showCounter={false} />);
     expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
-    rerender(<StimulusCard caption="Look" maxLength={2000} />);
+    rerender(<StimulusCard caption="Looks too long" onCaptionChange={() => {}} maxLength={5} />);
+    expect(screen.getByText('14/5 characters')).toBeInTheDocument();
+    rerender(<StimulusCard caption="Looks too long" onCaptionChange={() => {}} maxLength={5} showCounter={false} />);
+    expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
+    rerender(<StimulusCard caption="Looks too long" maxLength={5} />);
     expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
   });
 

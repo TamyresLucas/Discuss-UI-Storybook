@@ -15,7 +15,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Header of a question card: an eyebrow ("QUESTION 01"), a display title, an optional required asterisk and error banner. In editor mode the title is editable with a character counter, and the actions appear on hover or focus. Source: Custom. Figma: Question card components.',
+          'Header of a question card: an eyebrow ("QUESTION 01"), a display title, an optional required asterisk and error banner. In editor mode the title is editable (the character count shows only when it is over the maximum), and the actions appear on hover or focus. Source: Custom. Figma: Question card components.',
       },
     },
   },

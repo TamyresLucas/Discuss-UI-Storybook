@@ -27,7 +27,7 @@ export interface StimulusCardProps extends Omit<React.HTMLAttributes<HTMLDivElem
   captionPlaceholder?: string;
   /** Editor mode: caption length limit. Also what the counter counts against. */
   maxLength?: number;
-  /** Editor mode: shows the "n/2000 characters" counter under the caption (it counts live while typing). Defaults to `true`; needs `maxLength`. */
+  /** Editor mode: allow the "n/2000 characters" counter under the caption, which shows only when the caption is over `maxLength`. Defaults to `true`; needs `maxLength`. */
   showCounter?: boolean;
   /** Shows the trash button. */
   onRemove?: () => void;
@@ -36,7 +36,7 @@ export interface StimulusCardProps extends Omit<React.HTMLAttributes<HTMLDivElem
 }
 
 // 92px = the card's 98px minimum height minus its padding and border. A one-line caption with the counter showing is exactly that tall,
-// so the card is the same height whether or not the counter is shown.
+// so the card keeps the same height with or without the counter (it shows only when the caption is over the maximum).
 const MIN_THUMBNAIL = 92;
 const MAX_THUMBNAIL = 240;
 
@@ -131,7 +131,7 @@ export const StimulusCard = React.forwardRef<HTMLDivElement, StimulusCardProps>(
             ) : (
               <p className="w-full text-body-base [word-break:break-word]">{caption}</p>
             )}
-            {onCaptionChange && showCounter && maxLength !== undefined && (
+            {onCaptionChange && showCounter && maxLength !== undefined && count > maxLength && (
               <p className="text-ui-caption text-secondary-muted-foreground">
                 {count}/{maxLength} characters
               </p>

@@ -26,7 +26,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The authoring card for each question type. Idle is a flat card; hover (or focus) lifts it and reveals the header actions; `active` adds the accent border, character counter and a footer with the choice count, add and paste buttons. Source: Custom. Figma: Question editor.',
+          'The authoring card for each question type. Idle is a flat card; hover (or focus) lifts it and reveals the header actions; `active` adds the accent border and a footer with the choice count, add and paste buttons. Source: Custom. Figma: Question editor.',
       },
     },
   },
