@@ -44,7 +44,7 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   maxLength?: number;
   /** Editor mode: the question is being edited — the number tag turns accent. */
   active?: boolean;
-  /** Editor mode: show the "n/2000 characters" counter. Defaults to `true`. */
+  /** Editor mode: allow the "n/2000 characters" counter, which shows only when the title is over the maximum. Defaults to `true`. */
   showCounter?: boolean;
   /**
    * Editor mode: turns the "Question N" tag into a drag handle. Spread onto the tag, so it takes anything a drag-and-drop
@@ -162,7 +162,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             textClassName={long ? 'text-body-base' : 'text-heading-h4'}
           />
           {long && titleRecommendedNote != null && <p className="text-ui-caption text-secondary-muted-foreground">{titleRecommendedNote}</p>}
-          {showCounter && titleMinLength === undefined && (
+          {showCounter && titleMinLength === undefined && maxLength !== undefined && count > maxLength && (
             <p className="text-ui-caption text-secondary-muted-foreground">
               {count}/{maxLength} characters
             </p>

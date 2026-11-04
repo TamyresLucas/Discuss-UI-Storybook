@@ -33,7 +33,7 @@ describe('QuestionEditorCard', () => {
     expect(screen.getByText('A fairly long saved title').closest('button')!.className).toContain('text-body-base');
   });
 
-  it('guards the title when titleMinLength is set: limits line only while editing, refusal when too short', async () => {
+  it('guards the title when titleMinLength is set: limits line only while editing and too short, refusal when too short', async () => {
     const user = userEvent.setup();
     const onTitleChange = vi.fn();
     render(<QuestionEditorCard active number={1} title="How old are you?" titleMinLength={10} maxLength={50} onTitleChange={onTitleChange} />);
@@ -41,9 +41,13 @@ describe('QuestionEditorCard', () => {
     // The always-on counter is replaced by the limits line.
     expect(screen.queryByText('16/50 characters')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Question title/ }));
-    expect(screen.getByText('10 characters required')).toBeInTheDocument();
+    // Long enough: no limits line, no count.
+    expect(screen.queryByText('10 characters required')).not.toBeInTheDocument();
     await user.clear(screen.getByRole('textbox', { name: 'Question title' }));
     await user.type(screen.getByRole('textbox', { name: 'Question title' }), 'Why?');
+    // Too short: the limits line and the count appear.
+    expect(screen.getByText('10 characters required')).toBeInTheDocument();
+    expect(screen.getByText('4/50')).toBeInTheDocument();
     await user.keyboard('{Enter}');
     expect(onTitleChange).not.toHaveBeenCalled();
     expect(screen.getByRole('alert')).toHaveTextContent('Enter at least 10 characters');
@@ -67,7 +71,8 @@ describe('QuestionEditorCard', () => {
     expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
     rerender(<QuestionEditorCard active number={1} title="Hi" countLabel="4/20 choices" onAdd={() => {}} />);
     expect(screen.getByText('4/20 choices')).toBeInTheDocument();
-    expect(screen.getByText('2/2000 characters')).toBeInTheDocument();
+    // The character count is shown only when the title is over the maximum.
+    expect(screen.queryByText('2/2000 characters')).not.toBeInTheDocument();
   });
 
   it('shows an inline error at the bottom of the card, in the destructive foreground, with no accessibility violations', async () => {

@@ -53,7 +53,7 @@ function Editable() {
   return <StimulusCard caption={caption} onCaptionChange={setCaption} maxLength={2000} onRemove={() => {}} />;
 }
 
-/** `onCaptionChange` turns the caption into an inline editor: click it, type, Enter saves. `maxLength` adds the limit and the live "n/2000 characters" counter (hide it with `showCounter={false}`, e.g. while the card is not selected). */
+/** `onCaptionChange` turns the caption into an inline editor: click it, type, Enter saves. `maxLength` adds the limit; the "n/2000 characters" counter shows only when the caption is over it (turn it off with `showCounter={false}`). */
 export const EditableCaption: Story = { render: () => <Editable /> };
 
 export const ReadOnly: Story = { args: { onRemove: undefined } };

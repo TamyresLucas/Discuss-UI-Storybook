@@ -44,3 +44,8 @@ const twMerge = extendTailwindMerge({
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/** Whether a length is too short (under the minimum, ignoring surrounding spaces) or too long (over the maximum): the only time a character count is shown. */
+export function lengthOutOfRange(text: string, min?: number, max?: number) {
+  return (min !== undefined && text.trim().length < min) || (max !== undefined && text.length > max);
+}

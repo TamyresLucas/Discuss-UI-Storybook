@@ -65,7 +65,7 @@ export const QuestionEmpty: Story = {
   args: { ...Question.args, defaultValue: '', placeholder: 'Click to write the question text' },
 };
 export const Heading: Story = { args: { textClassName: 'text-heading-h4', 'aria-label': 'Section title', defaultValue: 'Target Audience' } };
-/** A longer text with a length range: leaving it too short (or empty) is refused with a message instead of saved. */
+/** A longer text with a length range: leaving it too short (or empty) is refused with a message instead of saved. The allowed length and the live count show only while the text is too short or too long. */
 export const Validated: Story = {
   args: {
     multiline: true,

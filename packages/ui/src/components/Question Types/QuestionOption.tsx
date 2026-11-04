@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Check, DotsSixVertical, Plus, Trash, WarningCircle } from '@phosphor-icons/react';
 
-import { cn } from '../../lib/utils';
+import { cn, lengthOutOfRange } from '../../lib/utils';
 import { Button } from '../Buttons & Actions/Button';
 import { Checkbox } from '../Forms & Data Entry/Checkbox';
 import { DraftMarks, MarkedText, remapMarks, splitMarks, type InlineEditMark } from '../Forms & Data Entry/MarkedText';
@@ -112,7 +112,7 @@ export interface QuestionOptionEditorProps {
    * Shortest label (in characters, ignoring surrounding spaces) that may be saved. With `minLength` or `maxLength` the label is
    * guarded like an `InlineEdit`: typing only changes a draft, Enter or leaving the field saves it through `onLabelChange`, a label
    * that is too short is not saved (the field stays open and says why), Escape reverts, and while it is being edited a line under
-   * the row shows the allowed range and the live count. An unchanged label is never refused. Without either, `onLabelChange` is
+   * the row shows the allowed range and the live count, but only while the label is too short or too long. An unchanged label is never refused. Without either, `onLabelChange` is
    * called on every keystroke as before.
    */
   minLength?: number;
@@ -337,7 +337,7 @@ export function QuestionOptionEditor({ label, onLabelChange, placeholder, placeh
           </div>
         )}
         </div>
-    {guarded && draft !== null && (
+    {guarded && draft !== null && (error || lengthOutOfRange(draft, minLength, maxLength)) && (
       <p
         id={helperId}
         role={error ? 'alert' : undefined}
