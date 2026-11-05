@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.35.0
+
+### Minor Changes
+
+- [#135](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/135) [`7c03cee`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/7c03ceec8cfd6c3ce6c8677499c254071184a559) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `QuestionNavItem`: the `error` state now shows the exclamation circle (it was the triangle), and a new optional `warning` prop shows the exclamation triangle in the warning colour, with a soft warning hover fill and, when selected or focused, a border in the same colour as the icon. `error` wins when both are set. Nothing changes for rows that set neither.
+
 ## 0.34.0
 
 ### Minor Changes
