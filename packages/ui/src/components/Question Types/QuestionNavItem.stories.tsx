@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'One row of the activity builder\'s question list. Leading icon is the question type, muted by default and accent when `selected`; hover swaps it for a drag handle; `error` shows a warning icon; `selected` marks the open question. Source: Custom. Figma: Question navigation.',
+          'One row of the activity builder\'s question list. Leading icon is the question type, muted by default and accent when `selected`; hover swaps it for a drag handle; `error` shows the exclamation circle in the destructive colour and `warning` the exclamation triangle in the warning colour (`error` wins when both are set); `selected` marks the open question. Source: Custom. Figma: Question navigation.',
       },
     },
   },
@@ -29,6 +29,8 @@ export const ScreenRecording: Story = { args: { questionType: 'screen-recording'
 export const Selected: Story = { args: { selected: true } };
 export const Error: Story = { args: { error: true } };
 export const SelectedWithError: Story = { args: { selected: true, error: true } };
+export const Warning: Story = { args: { warning: true } };
+export const SelectedWithWarning: Story = { args: { selected: true, warning: true } };
 
 export const List: Story = {
   render: () => (
@@ -36,6 +38,7 @@ export const List: Story = {
       <QuestionNavItem questionType="open-end" selected>{label}</QuestionNavItem>
       <QuestionNavItem questionType="rating">How often do you visit?</QuestionNavItem>
       <QuestionNavItem error>Which drinks do you order?</QuestionNavItem>
+      <QuestionNavItem warning>Why do you visit, and how often?</QuestionNavItem>
     </nav>
   ),
 };
