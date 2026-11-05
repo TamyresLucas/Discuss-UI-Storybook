@@ -21,13 +21,13 @@ describe('QuestionNavItem', () => {
     render(<QuestionNavItem warning>Why do you visit?</QuestionNavItem>);
     const button = screen.getByRole('button', { name: /Why do you visit\?/ });
     expect(icon(button)).toHaveClass('text-warning-foreground');
-    expect(button).toHaveClass('hover:bg-warning-soft', 'focus-visible:border-warning');
+    expect(button).toHaveClass('hover:bg-warning-soft', 'focus-visible:border-warning-foreground');
     expect(screen.getByText(', has warnings')).toBeInTheDocument();
   });
 
   it('marks a selected warning row with the warning border', () => {
     render(<QuestionNavItem warning selected>Why?</QuestionNavItem>);
-    expect(screen.getByRole('button')).toHaveClass('border-warning');
+    expect(screen.getByRole('button')).toHaveClass('border-warning-foreground');
   });
 
   it('lets error win over warning', () => {
