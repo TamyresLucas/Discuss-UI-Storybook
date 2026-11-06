@@ -1,5 +1,16 @@
 # @discuss-ds/ui
 
+## 0.36.0
+
+### Minor Changes
+
+- [#137](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/137) [`1c4573c`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1c4573cab4cb9a4c6dc8a37993e92fa84f6a2634) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New overlay token `overlay-destructive-20` (`--sys-color-overlay-destructive-20`, Tailwind `from-overlay-destructive-20`): the coral of the destructive text at 20% opacity. Use it only for the hover of a component that has the `destructive-soft` background (for example a clickable red badge). Nothing existing changes.
+
+### Patch Changes
+
+- Updated dependencies [[`1c4573c`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/1c4573cab4cb9a4c6dc8a37993e92fa84f6a2634)]:
+  - @discuss-ds/tokens@0.4.0
+
 ## 0.35.0
 
 ### Minor Changes
