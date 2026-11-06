@@ -193,6 +193,9 @@
   --sys-color-destructive-soft: var(--sys-color-coral-50);
   --sys-color-destructive-soft-foreground: var(--sys-color-coral-800);
   --sys-color-destructive-soft-border: var(--sys-color-coral-200);
+  /* Hover overlay for a component that has the destructive-soft fill (a red tag or badge that is clickable): the coral of the destructive text at 20%, so the fill gets darker
+     towards the text colour. Only for destructive-soft backgrounds, not for other fills. Derived from the text token, so it follows Dark. */
+  --sys-color-overlay-destructive-20: color-mix(in srgb, var(--sys-color-destructive-soft-foreground) 20%, transparent);
   --sys-color-warning-soft: var(--sys-color-dandelion-50);
   --sys-color-warning-soft-foreground: var(--sys-color-dandelion-800);
   --sys-color-warning-soft-border: var(--sys-color-dandelion-200);
@@ -506,6 +509,8 @@
   --sys-color-destructive-soft: var(--sys-color-coral-950);
   --sys-color-destructive-soft-foreground: var(--sys-color-coral-200);
   --sys-color-destructive-soft-border: var(--sys-color-coral-800);
+  /* Derived from the text token above: redefined in this scope so it follows Dark. */
+  --sys-color-overlay-destructive-20: color-mix(in srgb, var(--sys-color-destructive-soft-foreground) 20%, transparent);
   --sys-color-warning-soft: var(--sys-color-dandelion-900);
   --sys-color-warning-soft-foreground: var(--sys-color-dandelion-200);
   --sys-color-warning-soft-border: var(--sys-color-dandelion-800);
