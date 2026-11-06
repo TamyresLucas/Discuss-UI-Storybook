@@ -157,6 +157,12 @@ tokens mixed from `black-950` — never a literal:
 `--sys-color-overlay-dark-3|5|10` (3% = destructive-soft hover, 5% =
 subtle/selected/editable-tag over `secondary`, 10% = destructive hover) and the
 opaque results `--sys-color-destructive-hover` / `--sys-color-destructive-soft-hover`.
+`--sys-color-overlay-destructive-20` is the one coloured overlay: the coral of
+`destructive-soft-foreground` at 20%, for the hover of a component that has the
+`destructive-soft` fill (a clickable red tag or badge) and for nothing else; use
+it as `bg-linear-to-r from-overlay-destructive-20 to-overlay-destructive-20`
+over `bg-destructive-soft`. It follows Dark because it is derived from the text
+token (and redefined in the Dark scope).
 **Ask design to create matching Figma variables** so these can join the drift
 check.
 
