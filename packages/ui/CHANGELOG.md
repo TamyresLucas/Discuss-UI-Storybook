@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.38.0
+
+### Minor Changes
+
+- [#141](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/141) [`7ed1741`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/7ed1741184eeac5f4b342218aad8538fce2e8c9c) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New `QuestionNumberTag`: the "Question N" tag that `QuestionHeader` and `QuestionEditorCard` draw in editor mode, exported on its own so a list that is not an editor (a study plan, a summary) can number its questions the same way. Props: `number`, `active`, `questionType`, `showDragHandle` (default true) and `dragHandleProps`. `QuestionHeader` now uses it; its tag looks and behaves exactly as before.
+
 ## 0.37.0
 
 ### Minor Changes
