@@ -5,6 +5,7 @@ export * from './QuestionCard';
 export * from './QuestionEditorCard';
 export * from './QuestionHeader';
 export * from './QuestionNavItem';
+export * from './QuestionNumberTag';
 export * from './QuestionOption';
 export * from './QuestionTypeIcon';
 export * from './RankList';
