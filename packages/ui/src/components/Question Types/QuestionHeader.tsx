@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { DotsSixVertical } from '@phosphor-icons/react';
 
 import { cn } from '../../lib/utils';
 import { InlineEdit, type InlineEditMark } from '../Forms & Data Entry/InlineEdit';
 import { ToastInline } from '../Overlays & Feedback/Toast';
-import { QuestionTypeIcon, type QuestionType } from './QuestionTypeIcon';
+import { QuestionNumberTag } from './QuestionNumberTag';
+import { type QuestionType } from './QuestionTypeIcon';
 
 export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'onChange'> {
   /** Question number, shown as "QUESTION 01". */
@@ -93,39 +93,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
         <div ref={ref} className={cn('group/header flex w-full flex-col gap-2', className)} {...props}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-            <span
-              aria-label={dragHandleProps ? `Reorder question ${number}` : undefined}
-              {...dragHandleProps}
-              className={cn(
-                'group/handle inline-flex h-6 items-center gap-1 rounded-sm px-2.5 text-ui-caption',
-                // The tag makes room for the grip on hover, and inside a QuestionEditorCard whenever the card is hovered. With a type icon the grip
-                // takes the icon's place, so the tag keeps its padding and its width.
-                showDragHandle && !questionType && 'hover:pl-1 group-hover/editor:pl-1 group-data-[hovered]/editor:pl-1',
-                active
-                  ? 'bg-accent-soft text-accent-soft-foreground'
-                  : 'bg-secondary bg-linear-to-r from-overlay-dark-5 to-overlay-dark-5 text-surface-foreground',
-                dragHandleProps && 'cursor-grab touch-none select-none',
-                dragHandleProps && showDragHandle && !questionType && 'focus-visible:pl-1',
-                dragHandleProps?.className,
-              )}
-            >
-              {questionType && (
-                <QuestionTypeIcon
-                  type={questionType}
-                  size={16}
-                  // The grip takes the icon's place whenever it shows; a tag that can't be dragged keeps the icon.
-                  className={cn('shrink-0', showDragHandle && 'group-hover/editor:hidden group-data-[hovered]/editor:hidden group-hover/handle:hidden group-focus-visible/handle:hidden')}
-                />
-              )}
-              {showDragHandle && (
-                <DotsSixVertical
-                  size={16}
-                  aria-hidden
-                  className="hidden shrink-0 group-hover/editor:block group-data-[hovered]/editor:block group-hover/handle:block group-focus-visible/handle:block"
-                />
-              )}
-              Question {number}
-            </span>
+            <QuestionNumberTag number={number} active={active} questionType={questionType} showDragHandle={showDragHandle} dragHandleProps={dragHandleProps} />
             {meta}
             </div>
             {actions && (
