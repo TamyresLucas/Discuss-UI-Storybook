@@ -61,6 +61,14 @@ export const WarningMark: Story = {
 };
 /** The bottom border stays while the question is selected. */
 export const QuestionSelected: Story = { args: { ...Question.args, selected: true } };
+/** `editing` opens the field from outside, as when a question card is selected: the text is ready to edit without a second click. */
+export const OpenedByParent: Story = {
+  args: { ...Question.args, selected: true, editing: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('textbox')).toHaveFocus();
+  },
+};
 export const QuestionEmpty: Story = {
   args: { ...Question.args, defaultValue: '', placeholder: 'Click to write the question text' },
 };

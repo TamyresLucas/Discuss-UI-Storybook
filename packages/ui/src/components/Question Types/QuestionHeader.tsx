@@ -69,6 +69,8 @@ export interface QuestionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEl
   onTitleMarkApply?: (mark: InlineEditMark, replacement: string) => void;
   /** Editor mode: called when a mark is dismissed from its card. See `InlineEdit`'s `onMarkDismiss`. */
   onTitleMarkDismiss?: (mark: InlineEditMark) => void;
+  /** Editor mode: opens the title for editing when it turns true, for example when the question is selected. See `InlineEdit`'s `editing`. */
+  titleEditing?: boolean;
 }
 
 const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
@@ -76,7 +78,7 @@ const eyebrow = 'text-ui-caption uppercase text-secondary-muted-foreground';
 // Figma: Question card components (357:4761) › Question_Header — eyebrow + display title; error and editor variants.
 export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderProps>(
   (
-    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, titleMarks, onTitleMarkApply, onTitleMarkDismiss, ...props },
+    { className, number, title, required, error, onDismissError, editor, onTitleChange, titlePlaceholder = 'Click to write the question text', titlePlaceholderTone, titleMinLength, titleRecommendedMax, titleRecommendedNote, actions, meta, maxLength = 2000, active, showCounter = true, dragHandleProps, showDragHandle = true, questionType, titleMarks, onTitleMarkApply, onTitleMarkDismiss, titleEditing, ...props },
     ref,
   ) => {
     // Editor mode: live title length while typing; null once editing ends so the saved title is the source of truth.
@@ -111,6 +113,7 @@ export const QuestionHeader = React.forwardRef<HTMLDivElement, QuestionHeaderPro
             variant="question"
             multiline
             selected={active}
+            editing={titleEditing}
             className="-mx-3 w-auto"
             aria-label="Question title"
             placeholder={titlePlaceholder}

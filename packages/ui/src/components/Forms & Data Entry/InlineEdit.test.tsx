@@ -45,6 +45,32 @@ describe('InlineEdit', () => {
     expect(screen.getByRole('button')).toHaveFocus();
   });
 
+  it('opens for editing when editing turns true, focused without scrolling, and again after it was set back', async () => {
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus');
+    const onEditingChange = vi.fn();
+    const { rerender } = render(<InlineEdit aria-label="Title" defaultValue="Hello" onEditingChange={onEditingChange} />);
+    expect(screen.queryByRole('textbox')).toBeNull();
+    rerender(<InlineEdit aria-label="Title" defaultValue="Hello" onEditingChange={onEditingChange} editing />);
+    const field = screen.getByRole('textbox', { name: 'Title' });
+    expect(field).toHaveFocus();
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true });
+    expect(onEditingChange).toHaveBeenLastCalledWith(true);
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('textbox')).toBeNull();
+    // Still true: nothing reopens it until the request turns false and true again.
+    rerender(<InlineEdit aria-label="Title" defaultValue="Hello" onEditingChange={onEditingChange} editing />);
+    expect(screen.queryByRole('textbox')).toBeNull();
+    rerender(<InlineEdit aria-label="Title" defaultValue="Hello" onEditingChange={onEditingChange} editing={false} />);
+    rerender(<InlineEdit aria-label="Title" defaultValue="Hello" onEditingChange={onEditingChange} editing />);
+    expect(screen.getByRole('textbox', { name: 'Title' })).toHaveFocus();
+    focus.mockRestore();
+  });
+
+  it('does not open from editing while disabled', () => {
+    render(<InlineEdit aria-label="Title" defaultValue="Hello" disabled editing />);
+    expect(screen.queryByRole('textbox')).toBeNull();
+  });
+
   it('commits on blur', async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

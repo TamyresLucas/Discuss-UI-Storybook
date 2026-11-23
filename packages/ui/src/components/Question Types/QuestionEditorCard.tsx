@@ -73,6 +73,8 @@ export interface QuestionEditorCardProps extends Omit<
   onTitleMarkApply?: (mark: InlineEditMark, replacement: string) => void;
   /** Called when a mark is dismissed from its card. */
   onTitleMarkDismiss?: (mark: InlineEditMark) => void;
+  /** Opens the question text for editing when it turns true, for example when the card is selected by a click. See `QuestionHeader`'s `titleEditing`. */
+  titleEditing?: boolean;
 }
 
 // Figma: Question editor (351:5944) — the authoring card for every question type. Idle is a flat bordered card, hover
@@ -112,6 +114,7 @@ export const QuestionEditorCard = React.forwardRef<
       titleMarks,
       onTitleMarkApply,
       onTitleMarkDismiss,
+      titleEditing,
       children,
       ...props
     },
@@ -156,6 +159,7 @@ export const QuestionEditorCard = React.forwardRef<
                 titleMarks={titleMarks}
                 onTitleMarkApply={onTitleMarkApply}
                 onTitleMarkDismiss={onTitleMarkDismiss}
+                titleEditing={titleEditing}
                 meta={meta}
                 maxLength={maxLength}
                 actions={
