@@ -15,9 +15,9 @@ export const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimiti
       className={cn(
         'peer inline-flex size-4 shrink-0 items-center justify-center rounded-xxs border-2 border-input bg-surface transition-colors',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        // Brand override: selected controls use `ring`, not `primary`/`accent`.
-        'data-[state=checked]:border-ring data-[state=checked]:bg-ring data-[state=checked]:text-label',
-        'data-[state=indeterminate]:border-ring data-[state=indeterminate]:bg-ring data-[state=indeterminate]:text-label',
+        // Selected controls use the accent foreground, the same colour as the other accent icons and text (they used the lighter `ring` before).
+        'data-[state=checked]:border-accent-foreground data-[state=checked]:bg-accent-foreground data-[state=checked]:text-label',
+        'data-[state=indeterminate]:border-accent-foreground data-[state=indeterminate]:bg-accent-foreground data-[state=indeterminate]:text-label',
         className,
       )}
       {...props}

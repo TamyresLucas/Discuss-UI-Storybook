@@ -25,13 +25,13 @@ export const RadioGroupItem = React.forwardRef<
     className={cn(
       'peer inline-flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-input bg-surface transition-colors',
       'disabled:cursor-not-allowed disabled:opacity-50',
-      // Brand override: selected controls use `ring`, not `primary`/`accent`.
-      'data-[state=checked]:border-ring',
+      // Selected controls use the accent foreground, the same colour as the other accent icons and text (they used the lighter `ring` before).
+      'data-[state=checked]:border-accent-foreground',
       className,
     )}
     {...props}
   >
-    <RadioGroupPrimitive.Indicator className="size-2 rounded-full bg-ring" />
+    <RadioGroupPrimitive.Indicator className="size-2 rounded-full bg-accent-foreground" />
   </RadioGroupPrimitive.Item>
 ));
 RadioGroupItem.displayName = 'RadioGroupItem';

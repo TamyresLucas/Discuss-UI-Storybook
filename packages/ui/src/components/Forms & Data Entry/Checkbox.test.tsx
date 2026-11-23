@@ -23,6 +23,15 @@ describe('Checkbox', () => {
     expect(checkbox).toBeChecked();
   });
 
+  it('fills a checked or indeterminate box with the accent foreground, not the lighter ring', () => {
+    render(<Checkbox aria-label="On" defaultChecked />);
+    const box = screen.getByRole('checkbox', { name: 'On' });
+    expect(box.className).toContain('data-[state=checked]:bg-accent-foreground');
+    expect(box.className).toContain('data-[state=checked]:border-accent-foreground');
+    expect(box.className).toContain('data-[state=indeterminate]:bg-accent-foreground');
+    expect(box.className).not.toMatch(/\bbg-ring\b|\bborder-ring\b/);
+  });
+
   it('does not toggle when disabled', async () => {
     const user = userEvent.setup();
     const onCheckedChange = vi.fn();
