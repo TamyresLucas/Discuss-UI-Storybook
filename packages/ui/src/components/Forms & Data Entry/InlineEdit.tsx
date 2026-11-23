@@ -44,6 +44,12 @@ export interface InlineEditProps extends Omit<React.HTMLAttributes<HTMLDivElemen
    */
   submitOnEnter?: boolean;
   disabled?: boolean;
+  /**
+   * Opens the field for editing when it turns `true` (or is `true` on mount), as if the read button was clicked, for example when the
+   * row or card it belongs to is selected. The field is focused without scrolling the page. Editing still ends the usual way (Enter,
+   * blur or Escape) and `onEditingChange` reports it; set `editing` back to `false` before asking again. Leave it out to open on click only.
+   */
+  editing?: boolean;
   /** Called when editing starts or ends. */
   onEditingChange?: (editing: boolean) => void;
   /** Called on every keystroke while editing (and with the saved value when editing ends), e.g. for a live character counter. */
@@ -105,6 +111,7 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       showLimits,
       submitOnEnter,
       disabled,
+      editing: openRequested,
       onEditingChange,
       onDraftChange,
       variant = 'default',
@@ -132,10 +139,13 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
     // Set while an Escape revert is pending so the blur that follows it does not commit.
     const cancelled = React.useRef(false);
     const restoreFocus = React.useRef(false);
+    // Set when the `editing` prop opened the field: it is focused without scrolling the page.
+    const openedByProp = React.useRef(false);
 
     React.useEffect(() => {
       if (editing) {
-        fieldRef.current?.focus();
+        fieldRef.current?.focus(openedByProp.current ? { preventScroll: true } : undefined);
+        openedByProp.current = false;
         fieldRef.current?.select();
       } else if (restoreFocus.current) {
         restoreFocus.current = false;
@@ -159,6 +169,16 @@ export const InlineEdit = React.forwardRef<HTMLDivElement, InlineEditProps>(
       setEditing(true);
       onEditingChange?.(true);
     };
+    // The parent asks for edit mode: open once each time `editing` turns true.
+    React.useEffect(() => {
+      if (openRequested && !editing && !disabled) {
+        openedByProp.current = true;
+        start();
+      }
+      // Only a change of the request opens the field; a value change while it is true does not reopen it.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openRequested]);
+
     const finish = (commit: boolean, refocus: boolean) => {
       if (commit && draft !== value) {
         // An edit that fails validation is not saved: the field stays open and says why.
