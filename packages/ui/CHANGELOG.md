@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.39.1
+
+### Patch Changes
+
+- [#145](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/145) [`0c94b7e`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/0c94b7e4076177e42ef6c636c1287a0a5bf7f338) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - Checked Checkbox and Radio now use the accent foreground colour (the same purple as the other accent icons and text) for their border and fill, instead of the lighter `ring` colour. Nothing else about them changes.
+
 ## 0.39.0
 
 ### Minor Changes
