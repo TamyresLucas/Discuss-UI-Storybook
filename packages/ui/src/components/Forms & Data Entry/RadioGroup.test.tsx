@@ -18,6 +18,18 @@ describe('RadioGroup', () => {
     expect(screen.getByRole('radio', { name: 'Portuguese' })).not.toBeChecked();
   });
 
+  it('draws a selected radio in the accent foreground, not the lighter ring', () => {
+    render(
+      <RadioGroup aria-label="Language" defaultValue="en">
+        <RadioGroupItem value="en" aria-label="English" />
+      </RadioGroup>,
+    );
+    const radio = screen.getByRole('radio', { name: 'English' });
+    expect(radio.className).toContain('data-[state=checked]:border-accent-foreground');
+    expect(radio.querySelector('span')?.className).toContain('bg-accent-foreground');
+    expect(radio.className).not.toMatch(/\bborder-ring\b/);
+  });
+
   it('is 16px (same as the checkbox) with a half-size centre dot', () => {
     render(
       <RadioGroup aria-label="Language" defaultValue="en">
