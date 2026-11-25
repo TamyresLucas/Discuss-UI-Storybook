@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.40.1
+
+### Patch Changes
+
+- [#149](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/149) [`fd68778`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/fd68778bdb4437b925ea1a03c7155f8ff6e866a3) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `NavRailItem` hover now matches Figma: the icon square fills with `accent-soft` and the icon and caption turn `accent-soft-foreground`, on selected and unselected items alike (it was a grey `secondary` square with a darker caption).
+
 ## 0.40.0
 
 ### Minor Changes
