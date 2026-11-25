@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.40.0
+
+### Minor Changes
+
+- [#147](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/147) [`02ca762`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/02ca762059f00998b099c0b4429bd51aa1d85f16) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - Add `NavRail` and `NavRailItem`: a 64px vertical rail (Figma "Design rail") whose items are an icon on a 36px square with a caption under it. The selected item (`selected`, read as `aria-current="page"`) gets a filled square and a darker caption. An optional `footer` sits at the bottom. Nothing existing changes.
+
 ## 0.39.1
 
 ### Patch Changes
