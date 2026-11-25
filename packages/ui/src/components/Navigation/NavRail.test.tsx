@@ -32,6 +32,20 @@ describe('NavRail', () => {
     expect(ask.firstElementChild).not.toHaveClass('bg-secondary');
   });
 
+  it('uses the accent-soft colours on hover, selected or not (Figma Hover=Yes)', () => {
+    render(
+      <NavRail aria-label="Panels">
+        <NavRailItem icon={<svg />} label="Outline" selected />
+        <NavRailItem icon={<svg />} label="Ask AI" />
+      </NavRail>,
+    );
+    for (const name of ['Outline', 'Ask AI']) {
+      const item = screen.getByRole('button', { name });
+      expect(item).toHaveClass('hover:text-accent-soft-foreground');
+      expect(item.firstElementChild).toHaveClass('group-hover:bg-accent-soft');
+    }
+  });
+
   it('calls onClick when an item is picked', () => {
     const onClick = vi.fn();
     render(

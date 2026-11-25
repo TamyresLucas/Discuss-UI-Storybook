@@ -39,7 +39,9 @@ export const NavRailItem = React.forwardRef<HTMLButtonElement, NavRailItemProps>
       aria-current={selected ? 'page' : undefined}
       className={cn(
         'group flex w-full cursor-pointer flex-col items-center gap-1 rounded-md text-body-xxs outline-offset-2 disabled:pointer-events-none disabled:opacity-50',
-        selected ? 'text-surface-foreground' : 'text-secondary-muted-foreground hover:text-surface-foreground',
+        // Hover (selected or not, Figma "Primary menu items" Hover=Yes): the caption and icon in accent-soft-foreground.
+        selected ? 'text-surface-foreground' : 'text-secondary-muted-foreground',
+        'hover:text-accent-soft-foreground',
         className,
       )}
       {...props}
@@ -48,7 +50,9 @@ export const NavRailItem = React.forwardRef<HTMLButtonElement, NavRailItemProps>
         aria-hidden="true"
         className={cn(
           'flex size-9 items-center justify-center rounded-md transition-colors [&>svg]:size-4',
-          selected ? 'bg-secondary text-surface-foreground' : 'group-hover:bg-secondary',
+          // Hover fills the square with accent-soft, over the selected fill too.
+          selected ? 'bg-secondary' : '',
+          'group-hover:bg-accent-soft',
         )}
       >
         {icon}
