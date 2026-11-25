@@ -36,7 +36,7 @@ recorded rationale.
 
 | # | Component | Source | Stage |
 |---|---|---|---|
-| 1 | Org Rail (App Sidebar) | Custom | Planned |
+| 1 | Org Rail (App Sidebar): `NavRail` | Custom | Done |
 | 2 | Icon Button | shadcn | Planned |
 | 3 | Project Sidebar | Custom | Planned |
 | 4 | Sidebar Nav Item | Custom | Planned |
