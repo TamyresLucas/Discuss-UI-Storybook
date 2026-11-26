@@ -5,9 +5,13 @@ import { describe, expect, it, vi } from 'vitest';
 import { ProjectSidebar } from './ProjectSidebar';
 import { SidebarNavItem } from './SidebarNavItem';
 
-function Sidebar(props: { onProjectClick?: () => void; onPick?: () => void }) {
+function Sidebar(props: { onCollapse?: () => void; onPick?: () => void }) {
   return (
-    <ProjectSidebar aria-label="Project" project="Meal kit retention" onProjectClick={props.onProjectClick}>
+    <ProjectSidebar
+      aria-label="Project"
+      project="Meal kit retention"
+      action={props.onCollapse && <button type="button" onClick={props.onCollapse}>Collapse sidebar</button>}
+    >
       <SidebarNavItem icon={<svg />} label="Overview" selected />
       <SidebarNavItem icon={<svg />} label="Insights" expandable onClick={props.onPick} />
       <SidebarNavItem icon={<svg />} label="Calendar" />
@@ -19,14 +23,25 @@ describe('ProjectSidebar', () => {
   it('is a named navigation with the project name in its header', () => {
     render(<Sidebar />);
     expect(screen.getByRole('navigation', { name: 'Project' })).toHaveTextContent('Meal kit retention');
-    expect(screen.queryByRole('button', { name: 'Meal kit retention' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Collapse sidebar' })).not.toBeInTheDocument();
   });
 
-  it('makes the header a button when onProjectClick is given', () => {
-    const onProjectClick = vi.fn();
-    render(<Sidebar onProjectClick={onProjectClick} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Meal kit retention' }));
-    expect(onProjectClick).toHaveBeenCalledOnce();
+  it('shows the action at the right of the header', () => {
+    const onCollapse = vi.fn();
+    render(<Sidebar onCollapse={onCollapse} />);
+    const collapse = screen.getByRole('button', { name: 'Collapse sidebar' });
+    expect(collapse.parentElement).toHaveClass('h-16', 'border-b');
+    fireEvent.click(collapse);
+    expect(onCollapse).toHaveBeenCalledOnce();
+  });
+
+  it('shows the section label above the items and names the list with it', () => {
+    render(
+      <ProjectSidebar aria-label="Project navigation" project="Meal kit retention" label="Project">
+        <SidebarNavItem icon={<svg />} label="Overview" />
+      </ProjectSidebar>,
+    );
+    expect(screen.getByRole('list', { name: 'Project' })).toBeInTheDocument();
   });
 
   it('marks the selected item current and fills it', () => {
@@ -53,7 +68,7 @@ describe('ProjectSidebar', () => {
   });
 
   it('has no accessibility violations', async () => {
-    const { container } = render(<Sidebar onProjectClick={() => {}} />);
+    const { container } = render(<Sidebar onCollapse={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();
   });
 });
