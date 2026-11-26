@@ -1,5 +1,23 @@
 # @discuss-ds/ui
 
+## 0.41.0
+
+### Minor Changes
+
+- [#151](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/151) [`af23d1f`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/af23d1fd8458bf772ea66c11e064de449f0e81d4) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New `Avatar` (a 40px rounded square on orchid-200 with the person's photo, or their initials when there is none or it fails to load) and `OrgMonogram` (the organization's initial on a 40px coral square, e.g. in a primary `NavRail`'s header).
+
+- [#151](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/151) [`0b5bbdd`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/0b5bbddd19f6bc407c10d9ce93a3d232fbdfe671) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `NavRail` gets `hierarchy="primary"` for the organization's rail (Figma "Application navigation"): 72px wide, 40px squares with 24px icons, the selected square filled with primary and its caption in primary. New optional `header` (a 64px band with a border under it). The default secondary rail is unchanged.
+
+- [#151](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/151) [`b3aba2f`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/b3aba2fefc6fea8f4cf8ab2a1685a32329321e7a) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - New `ProjectSidebar` and `SidebarNavItem` (Figma "Project navigation"): a 240px project navigation with the project's name and an optional `action` (e.g. a collapse button) in its header, an optional section `label` above the items, and 32px rows with an icon, a label, an optional caret for a group (`expandable`, `expanded`) and a filled `selected` state.
+
+- [#151](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/151) [`af23d1f`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/af23d1fd8458bf772ea66c11e064de449f0e81d4) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `VideoPlayer` gets `controls="hover"`: the control bar shows only while the pointer is over the video or one of its controls has keyboard focus. The default (`always`) is unchanged.
+
+- [#151](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/151) [`787fe64`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/787fe64014a8d45ae18e91398efa6307b9bcd5e3) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `VideoPlayer` gets `moreIn="info"` (the "more" button as a small ghost button at the right of the name instead of in the control bar) and `badge` (laid over the video's top-left corner, e.g. a sentiment `Tag`). `MediaInfo` gets an `actions` slot. Defaults are unchanged.
+
+### Patch Changes
+
+- [#153](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/153) [`70f9280`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/70f92808ad95f1b2af3ebda4953b2162d8af86b4) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `MediaInfo` (and so `VideoPlayer moreIn="info"`) puts its `actions` on the name's line, so the name and its buttons line up and the details run underneath.
+
 ## 0.40.1
 
 ### Patch Changes
