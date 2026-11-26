@@ -1,8 +1,8 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { List, Sparkle } from '@phosphor-icons/react';
+import { Brain, ChartDonut, FolderSimple, GearSix, List, Sparkle, UserCircle } from '@phosphor-icons/react';
 
-import { NavRail, NavRailItem } from './NavRail';
+import { NavRail, NavRailItem, NavRailMonogram } from './NavRail';
 
 const meta = {
   title: 'Navigation/Nav Rail (App Sidebar)',
@@ -37,4 +37,19 @@ function Switcher() {
 
 export const Default: Story = {
   render: () => <Switcher />,
+};
+
+/** The organization's rail (Figma "Application navigation", hierarchy Primary): monogram in the header, 24px icons, the selected item filled with primary. */
+export const Primary: Story = {
+  render: () => (
+    <div className="h-screen">
+      <NavRail aria-label="Organization" hierarchy="primary" header={<NavRailMonogram>O</NavRailMonogram>}>
+        <NavRailItem icon={<FolderSimple weight="fill" />} label="Projects" selected />
+        <NavRailItem icon={<UserCircle />} label="Personas" />
+        <NavRailItem icon={<Brain />} label="Intelligence" />
+        <NavRailItem icon={<ChartDonut />} label="Segments" />
+        <NavRailItem icon={<GearSix />} label="Admin" />
+      </NavRail>
+    </div>
+  ),
 };

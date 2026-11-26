@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
-import { NavRail, NavRailItem } from './NavRail';
+import { NavRail, NavRailItem, NavRailMonogram } from './NavRail';
 
 describe('NavRail', () => {
   it('is a named navigation with one button per item, the selected one marked current', () => {
@@ -71,6 +71,44 @@ describe('NavRail', () => {
       <NavRail aria-label="Panels">
         <NavRailItem icon={<svg />} label="Outline" selected />
         <NavRailItem icon={<svg />} label="Ask AI" />
+      </NavRail>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe('NavRail hierarchy="primary" (org rail)', () => {
+  it('is 72px wide with a header band, 40px squares and a primary-filled selected square', () => {
+    render(
+      <NavRail aria-label="Organization" hierarchy="primary" header={<NavRailMonogram>O</NavRailMonogram>}>
+        <NavRailItem icon={<svg />} label="Projects" selected />
+        <NavRailItem icon={<svg />} label="Admin" />
+      </NavRail>,
+    );
+    const nav = screen.getByRole('navigation', { name: 'Organization' });
+    expect(nav).toHaveClass('w-18');
+    expect(screen.getByText('O')).toHaveClass('bg-coral-500');
+    expect(screen.getByText('O').parentElement).toHaveClass('h-16', 'border-b');
+    const projects = screen.getByRole('button', { name: 'Projects' });
+    expect(projects).toHaveClass('text-primary');
+    expect(projects.firstElementChild).toHaveClass('size-10', 'bg-primary', 'text-primary-foreground');
+    expect(screen.getByRole('button', { name: 'Admin' }).firstElementChild).not.toHaveClass('bg-primary');
+  });
+
+  it('keeps the secondary rail as before by default', () => {
+    render(
+      <NavRail aria-label="Panels">
+        <NavRailItem icon={<svg />} label="Outline" selected />
+      </NavRail>,
+    );
+    expect(screen.getByRole('navigation')).toHaveClass('w-16');
+    expect(screen.getByRole('button', { name: 'Outline' }).firstElementChild).toHaveClass('size-9', 'bg-secondary');
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <NavRail aria-label="Organization" hierarchy="primary" header={<NavRailMonogram>O</NavRailMonogram>}>
+        <NavRailItem icon={<svg />} label="Projects" selected />
       </NavRail>,
     );
     expect(await axe(container)).toHaveNoViolations();
