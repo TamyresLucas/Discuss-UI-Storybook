@@ -13,7 +13,7 @@ export interface MediaInfoProps extends Omit<React.HTMLAttributes<HTMLDivElement
   removeLabel?: string;
   /** Larger name / details (the image preview uses these). */
   large?: boolean;
-  /** Buttons at the right of the name, e.g. a small ghost "more" button. */
+  /** Buttons on the name's line, at its right, e.g. a small ghost "more" button. */
   actions?: React.ReactNode;
 }
 
@@ -22,7 +22,11 @@ export function MediaInfo({ name, details, onRemove, removeLabel, large, actions
   return (
     <div className={cn('flex items-center justify-between border-t border-border bg-surface px-6 py-4', className)} {...props}>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <p className={cn('truncate text-surface-foreground', large ? 'text-body-section' : 'text-ui-label')}>{name}</p>
+        {/* The actions sit on the name's line, so the name and its buttons line up and the details run underneath. */}
+        <div className="flex min-w-0 items-center gap-2">
+          <p className={cn('min-w-0 flex-1 truncate text-surface-foreground', large ? 'text-body-section' : 'text-ui-label')}>{name}</p>
+          {actions}
+        </div>
         {details && (
           <p className={cn('flex items-center gap-2 text-secondary-muted-foreground', large ? 'text-body-small' : 'text-ui-caption')}>
             {details.map((part, index) => (
@@ -34,7 +38,6 @@ export function MediaInfo({ name, details, onRemove, removeLabel, large, actions
           </p>
         )}
       </div>
-      {actions}
       {onRemove && (
         <Button type="button" variant="destructive" size="icon" aria-label={removeLabel ?? `Remove ${name}`} onClick={onRemove}>
           <Trash size={16} aria-hidden />
