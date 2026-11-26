@@ -30,6 +30,8 @@ describe('VideoPlayer more button and badge', () => {
     const more = screen.getByRole('button', { name: 'More' });
     expect(more.closest('.bg-surface-foreground')).toBeNull();
     expect(more).toHaveClass('size-8');
+    // On the name's line, not centred on the name and details together.
+    expect(more.parentElement).toContainElement(screen.getByText('Clip'));
     fireEvent.click(more);
     expect(onMore).toHaveBeenCalledOnce();
   });
