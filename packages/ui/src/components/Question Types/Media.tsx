@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CornersOut, DotsThree, Image as ImageIcon, Pause, Play, SpeakerSimpleHigh, SpeakerSimpleX, Trash } from '@phosphor-icons/react';
+import { CornersOut, DotsThree, DotsThreeVertical, Image as ImageIcon, Pause, Play, SpeakerSimpleHigh, SpeakerSimpleX, Trash } from '@phosphor-icons/react';
 import { Slider as SliderPrimitive, ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
 
 import { cn } from '../../lib/utils';
@@ -13,10 +13,12 @@ export interface MediaInfoProps extends Omit<React.HTMLAttributes<HTMLDivElement
   removeLabel?: string;
   /** Larger name / details (the image preview uses these). */
   large?: boolean;
+  /** Buttons at the right of the name, e.g. a small ghost "more" button. */
+  actions?: React.ReactNode;
 }
 
 // Figma: File upload › video-info-section / image preview — file name + details with a trash button.
-export function MediaInfo({ name, details, onRemove, removeLabel, large, className, ...props }: MediaInfoProps) {
+export function MediaInfo({ name, details, onRemove, removeLabel, large, actions, className, ...props }: MediaInfoProps) {
   return (
     <div className={cn('flex items-center justify-between border-t border-border bg-surface px-6 py-4', className)} {...props}>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -32,6 +34,7 @@ export function MediaInfo({ name, details, onRemove, removeLabel, large, classNa
           </p>
         )}
       </div>
+      {actions}
       {onRemove && (
         <Button type="button" variant="destructive" size="icon" aria-label={removeLabel ?? `Remove ${name}`} onClick={onRemove}>
           <Trash size={16} aria-hidden />
@@ -139,11 +142,15 @@ export interface VideoPlayerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   initialDuration?: number;
   /** `always` (default) keeps the control bar on screen; `hover` shows it only while the pointer is over the video or a control has keyboard focus. */
   controls?: 'always' | 'hover';
+  /** Where the "more" (…) button sits: in the control bar (default) or as a small ghost button at the right of the name. */
+  moreIn?: 'controls' | 'info';
+  /** Laid over the top-left corner of the video, e.g. a `Tag` with the clip's sentiment. */
+  badge?: React.ReactNode;
 }
 
 // Figma: File upload › Video player — preview area with a dark control bar (play, seek, time, volume, full screen), then file info.
 export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
-  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', ...props }, ref) => {
+  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', moreIn = 'controls', badge, ...props }, ref) => {
     const video = React.useRef<HTMLVideoElement>(null);
     const [playing, setPlaying] = React.useState(false);
     const [time, setTime] = React.useState(initialTime);
@@ -173,6 +180,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
               onVolumeChange={(event) => setVolume(event.currentTarget.muted ? 0 : event.currentTarget.volume)}
             />
           )}
+          {badge && <div className="absolute top-3 left-3">{badge}</div>}
           <div
             className={cn(
               'relative flex w-full flex-col gap-2 bg-surface-foreground bg-linear-to-r from-primary/30 to-primary/30 px-4 pt-3 pb-4 text-surface',
@@ -229,19 +237,34 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
                 >
                   <CornersOut size={16} aria-hidden />
                 </button>
-                <button
-                  type="button"
-                  aria-label="More"
-                  onClick={onMore}
-                  className="inline-flex size-10 items-center justify-center rounded-md text-surface transition-colors hover:bg-surface/12"
-                >
-                  <DotsThree size={16} aria-hidden />
-                </button>
+                {moreIn === 'controls' && (
+                  <button
+                    type="button"
+                    aria-label="More"
+                    onClick={onMore}
+                    className="inline-flex size-10 items-center justify-center rounded-md text-surface transition-colors hover:bg-surface/12"
+                  >
+                    <DotsThree size={16} aria-hidden />
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
-        {name && <MediaInfo name={name} details={details} onRemove={onRemove} />}
+        {name && (
+          <MediaInfo
+            name={name}
+            details={details}
+            onRemove={onRemove}
+            actions={
+              moreIn === 'info' && (
+                <Button type="button" variant="ghost" size="icon-sm" aria-label="More" onClick={onMore}>
+                  <DotsThreeVertical size={16} aria-hidden />
+                </Button>
+              )
+            }
+          />
+        )}
         <span className="sr-only" aria-live="polite">
           {muted ? 'Muted' : ''}
         </span>
