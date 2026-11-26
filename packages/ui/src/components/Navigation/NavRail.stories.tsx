@@ -2,7 +2,8 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Brain, ChartDonut, FolderSimple, GearSix, List, Sparkle, UserCircle } from '@phosphor-icons/react';
 
-import { NavRail, NavRailItem, NavRailMonogram } from './NavRail';
+import { OrgMonogram } from '../Identity & People/OrgMonogram';
+import { NavRail, NavRailItem } from './NavRail';
 
 const meta = {
   title: 'Navigation/Nav Rail (App Sidebar)',
@@ -43,7 +44,7 @@ export const Default: Story = {
 export const Primary: Story = {
   render: () => (
     <div className="h-screen">
-      <NavRail aria-label="Organization" hierarchy="primary" header={<NavRailMonogram>O</NavRailMonogram>}>
+      <NavRail aria-label="Organization" hierarchy="primary" header={<OrgMonogram>O</OrgMonogram>}>
         <NavRailItem icon={<FolderSimple weight="fill" />} label="Projects" selected />
         <NavRailItem icon={<UserCircle />} label="Personas" />
         <NavRailItem icon={<Brain />} label="Intelligence" />

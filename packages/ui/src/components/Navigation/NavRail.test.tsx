@@ -2,7 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import { describe, expect, it, vi } from 'vitest';
 
-import { NavRail, NavRailItem, NavRailMonogram } from './NavRail';
+import { OrgMonogram } from '../Identity & People/OrgMonogram';
+import { NavRail, NavRailItem } from './NavRail';
 
 describe('NavRail', () => {
   it('is a named navigation with one button per item, the selected one marked current', () => {
@@ -80,7 +81,7 @@ describe('NavRail', () => {
 describe('NavRail hierarchy="primary" (org rail)', () => {
   it('is 72px wide with a header band, 40px squares and a primary-filled selected square', () => {
     render(
-      <NavRail aria-label="Organization" hierarchy="primary" header={<NavRailMonogram>O</NavRailMonogram>}>
+      <NavRail aria-label="Organization" hierarchy="primary" header={<OrgMonogram>O</OrgMonogram>}>
         <NavRailItem icon={<svg />} label="Projects" selected />
         <NavRailItem icon={<svg />} label="Admin" />
       </NavRail>,
@@ -107,7 +108,7 @@ describe('NavRail hierarchy="primary" (org rail)', () => {
 
   it('has no accessibility violations', async () => {
     const { container } = render(
-      <NavRail aria-label="Organization" hierarchy="primary" header={<NavRailMonogram>O</NavRailMonogram>}>
+      <NavRail aria-label="Organization" hierarchy="primary" header={<OrgMonogram>O</OrgMonogram>}>
         <NavRailItem icon={<svg />} label="Projects" selected />
       </NavRail>,
     );

@@ -27,6 +27,11 @@ export const Video: Story = {
   args: { name: 'video_response.mp4', details: ['443KB'], onRemove: () => {}, initialTime: 84, initialDuration: 225 },
 };
 
+/** The control bar shows only while the pointer is over the video (or a control has keyboard focus). */
+export const VideoControlsOnHover: Story = {
+  args: { name: 'Highlight Reel Test', details: ['No Tags Added'], onMore: () => {}, initialDuration: 52, controls: 'hover' },
+};
+
 function Photos() {
   const [selected, setSelected] = React.useState('1');
   const images = [

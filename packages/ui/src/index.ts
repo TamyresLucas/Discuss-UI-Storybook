@@ -14,3 +14,4 @@ export * from './components/Data Display';
 export * from './components/Research-Specific';
 export * from './components/Tags & Badges';
 export * from './components/Utility';
+export * from './components/Identity & People';

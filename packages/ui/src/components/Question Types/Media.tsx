@@ -137,11 +137,13 @@ export interface VideoPlayerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   /** Initial time values for static previews (seconds). */
   initialTime?: number;
   initialDuration?: number;
+  /** `always` (default) keeps the control bar on screen; `hover` shows it only while the pointer is over the video or a control has keyboard focus. */
+  controls?: 'always' | 'hover';
 }
 
 // Figma: File upload › Video player — preview area with a dark control bar (play, seek, time, volume, full screen), then file info.
 export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
-  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, ...props }, ref) => {
+  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', ...props }, ref) => {
     const video = React.useRef<HTMLVideoElement>(null);
     const [playing, setPlaying] = React.useState(false);
     const [time, setTime] = React.useState(initialTime);
@@ -158,7 +160,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
 
     return (
       <div ref={ref} className={cn('flex w-full flex-col overflow-hidden rounded-lg border border-border bg-surface', className)} {...props}>
-        <div className="relative flex h-60.5 w-full items-end bg-accent-soft">
+        <div className="group/player relative flex h-60.5 w-full items-end bg-accent-soft">
           {src && (
             <video
               ref={video}
@@ -171,7 +173,12 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
               onVolumeChange={(event) => setVolume(event.currentTarget.muted ? 0 : event.currentTarget.volume)}
             />
           )}
-          <div className="relative flex w-full flex-col gap-2 bg-surface-foreground bg-linear-to-r from-primary/30 to-primary/30 px-4 pt-3 pb-4 text-surface">
+          <div
+            className={cn(
+              'relative flex w-full flex-col gap-2 bg-surface-foreground bg-linear-to-r from-primary/30 to-primary/30 px-4 pt-3 pb-4 text-surface',
+              controls === 'hover' && 'opacity-0 transition-opacity group-focus-within/player:opacity-100 group-hover/player:opacity-100',
+            )}
+          >
             <SliderPrimitive.Root
               min={0}
               max={duration || 1}

@@ -15,7 +15,7 @@ export interface NavRailProps extends React.HTMLAttributes<HTMLElement> {
   'aria-label': string;
   /** Pinned at the bottom of the rail (e.g. an account avatar). */
   footer?: React.ReactNode;
-  /** A 64px band at the top with a border under it (e.g. the organization's `NavRailMonogram`). */
+  /** A 64px band at the top with a border under it (e.g. the organization's `OrgMonogram`). */
   header?: React.ReactNode;
   hierarchy?: NavRailHierarchy;
 }
@@ -82,14 +82,3 @@ export const NavRailItem = React.forwardRef<HTMLButtonElement, NavRailItemProps>
   );
 });
 NavRailItem.displayName = 'NavRailItem';
-
-export interface NavRailMonogramProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** The organization's initial(s). */
-  children: React.ReactNode;
-}
-
-/** The organization's monogram for a primary rail's header (Figma "Org Monogram"): a 40px coral square with the initial in white. */
-export const NavRailMonogram = React.forwardRef<HTMLSpanElement, NavRailMonogramProps>(({ className, ...props }, ref) => (
-  <span ref={ref} className={cn('flex size-10 items-center justify-center rounded-md bg-coral-500 text-ui-label font-semibold text-surface', className)} {...props} />
-));
-NavRailMonogram.displayName = 'NavRailMonogram';
