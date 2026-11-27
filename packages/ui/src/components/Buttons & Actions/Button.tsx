@@ -23,7 +23,7 @@ const buttonVariants = cva(
         outline:
           'border border-border bg-surface text-surface-foreground hover:border-input-muted hover:bg-accent-soft hover:text-accent-soft-foreground disabled:bg-transparent disabled:border-input-muted disabled:text-muted-foreground',
         ghost:
-          'text-surface-foreground hover:text-accent-foreground disabled:text-muted-foreground',
+          'text-surface-foreground hover:bg-accent-soft hover:text-accent-soft-foreground disabled:text-muted-foreground',
         link: 'text-surface-foreground underline hover:text-accent-foreground',
       },
       size: {
@@ -59,18 +59,6 @@ const buttonVariants = cva(
   },
 );
 
-/** A Phosphor icon (a component element, not a DOM tag) without its own `weight`, given the fill weight. Anything else is returned as is. */
-function fillIcon(child: React.ReactNode): React.ReactNode {
-  if (!React.isValidElement<{ weight?: string }>(child) || typeof child.type === 'string' || child.props.weight !== undefined) return child;
-  const name = (child.type as { displayName?: string }).displayName ?? '';
-  return /Icon$|^[A-Z][A-Za-z]*$/.test(name) && isPhosphor(child.type) ? React.cloneElement(child, { weight: 'fill' }) : child;
-}
-
-/** Phosphor's icons are forwardRef components whose render function draws through its IconBase; checked by the `weights` map they carry. */
-function isPhosphor(type: unknown): boolean {
-  return typeof type === 'object' && type !== null && '$$typeof' in type;
-}
-
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -82,35 +70,12 @@ export interface ButtonProps
    * an `HTMLButtonElement`.
    */
   asChild?: boolean;
-  /** A ghost button's icons switch from line to fill while hovered; `false` keeps them as they are (e.g. a table row's action buttons). Default `true`. */
-  fillIconOnHover?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, fillIconOnHover = true, children, onPointerEnter, onPointerLeave, ...props }, ref) => {
-    const [hovered, setHovered] = React.useState(false);
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot.Root : 'button';
-    // A ghost button's icons switch from line to fill while hovered: each child component that takes Phosphor's `weight` and has none set
-    // gets `weight="fill"` (set directly, not through IconContext, which an app with its own copy of the icon package would not see).
-    // Not with `asChild`: Slot needs its single child as is.
-    const fillOnHover = variant === 'ghost' && !asChild && fillIconOnHover;
-    return (
-      <Comp
-        ref={ref}
-        className={cn(buttonVariants({ variant, size }), className)}
-        onPointerEnter={(event: React.PointerEvent<HTMLButtonElement>) => {
-          if (fillOnHover) setHovered(true);
-          onPointerEnter?.(event);
-        }}
-        onPointerLeave={(event: React.PointerEvent<HTMLButtonElement>) => {
-          if (fillOnHover) setHovered(false);
-          onPointerLeave?.(event);
-        }}
-        {...props}
-      >
-        {fillOnHover && hovered ? React.Children.map(children, fillIcon) : children}
-      </Comp>
-    );
+    return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
   },
 );
 Button.displayName = 'Button';
