@@ -15,12 +15,14 @@ export interface MediaInfoProps extends Omit<React.HTMLAttributes<HTMLDivElement
   large?: boolean;
   /** Buttons on the name's line, at its right, e.g. a small ghost "more" button. */
   actions?: React.ReactNode;
+  /** 8px padding all round instead of 16px top and bottom and 24px at the sides, for small cards. */
+  compact?: boolean;
 }
 
 // Figma: File upload › video-info-section / image preview — file name + details with a trash button.
-export function MediaInfo({ name, details, onRemove, removeLabel, large, actions, className, ...props }: MediaInfoProps) {
+export function MediaInfo({ name, details, onRemove, removeLabel, large, actions, compact = false, className, ...props }: MediaInfoProps) {
   return (
-    <div className={cn('flex items-center justify-between border-t border-border bg-surface px-6 py-4', className)} {...props}>
+    <div className={cn('flex items-center justify-between border-t border-border bg-surface', compact ? 'p-2' : 'px-6 py-4', className)} {...props}>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         {/* The actions sit on the name's line, so the name and its buttons line up and the details run underneath. */}
         <div className="flex min-w-0 items-center gap-2">
@@ -151,11 +153,13 @@ export interface VideoPlayerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   badge?: React.ReactNode;
   /** `fixed` (default) keeps the 242px preview area; `video` makes it 16:9 (Full HD proportions) at whatever width the player has. */
   aspect?: 'fixed' | 'video';
+  /** The name and details below the video with 8px padding (`MediaInfo compact`). */
+  compactInfo?: boolean;
 }
 
 // Figma: File upload › Video player — preview area with a dark control bar (play, seek, time, volume, full screen), then file info.
 export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
-  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', moreIn = 'controls', badge, aspect = 'fixed', ...props }, ref) => {
+  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', moreIn = 'controls', badge, aspect = 'fixed', compactInfo = false, ...props }, ref) => {
     const video = React.useRef<HTMLVideoElement>(null);
     const [playing, setPlaying] = React.useState(false);
     const [time, setTime] = React.useState(initialTime);
@@ -261,6 +265,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
             name={name}
             details={details}
             onRemove={onRemove}
+            compact={compactInfo}
             actions={
               moreIn === 'info' && (
                 <Button type="button" variant="ghost" size="icon-sm" aria-label="More" onClick={onMore}>
