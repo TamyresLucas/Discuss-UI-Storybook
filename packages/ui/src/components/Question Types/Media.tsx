@@ -149,11 +149,13 @@ export interface VideoPlayerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   moreIn?: 'controls' | 'info';
   /** Laid over the top-left corner of the video, e.g. a `Tag` with the clip's sentiment. */
   badge?: React.ReactNode;
+  /** `fixed` (default) keeps the 242px preview area; `video` makes it 16:9 (Full HD proportions) at whatever width the player has. */
+  aspect?: 'fixed' | 'video';
 }
 
 // Figma: File upload › Video player — preview area with a dark control bar (play, seek, time, volume, full screen), then file info.
 export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
-  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', moreIn = 'controls', badge, ...props }, ref) => {
+  ({ className, src, name, details, onRemove, onMore, initialTime = 0, initialDuration = 0, controls = 'always', moreIn = 'controls', badge, aspect = 'fixed', ...props }, ref) => {
     const video = React.useRef<HTMLVideoElement>(null);
     const [playing, setPlaying] = React.useState(false);
     const [time, setTime] = React.useState(initialTime);
@@ -170,7 +172,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
 
     return (
       <div ref={ref} className={cn('flex w-full flex-col overflow-hidden rounded-lg border border-border bg-surface', className)} {...props}>
-        <div className="group/player relative flex h-60.5 w-full items-end bg-accent-soft">
+        <div className={cn('group/player relative flex w-full items-end bg-accent-soft', aspect === 'video' ? 'aspect-video' : 'h-60.5')}>
           {src && (
             <video
               ref={video}

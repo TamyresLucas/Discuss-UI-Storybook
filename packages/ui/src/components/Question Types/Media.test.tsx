@@ -41,3 +41,17 @@ describe('VideoPlayer more button and badge', () => {
     expect(screen.getByText('Neutral Sentiment').parentElement).toHaveClass('absolute', 'top-3', 'left-3');
   });
 });
+
+describe('VideoPlayer aspect', () => {
+  it('keeps the fixed 242px preview by default', () => {
+    render(<VideoPlayer name="Clip" />);
+    expect(screen.getByRole('button', { name: 'Play' }).closest('.group\\/player')).toHaveClass('h-60.5');
+  });
+
+  it('is 16:9 with aspect="video"', () => {
+    render(<VideoPlayer name="Clip" aspect="video" />);
+    const area = screen.getByRole('button', { name: 'Play' }).closest('.group\\/player');
+    expect(area).toHaveClass('aspect-video');
+    expect(area).not.toHaveClass('h-60.5');
+  });
+});

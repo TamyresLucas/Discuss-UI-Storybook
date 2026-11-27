@@ -29,7 +29,7 @@ export const Video: Story = {
 
 /** The control bar shows only while the pointer is over the video (or a control has keyboard focus); "more" sits beside the name. */
 export const VideoControlsOnHover: Story = {
-  args: { name: 'Highlight Reel Test', details: ['No Tags Added'], onMore: () => {}, initialDuration: 52, controls: 'hover', moreIn: 'info' },
+  args: { name: 'Highlight Reel Test', details: ['No Tags Added'], onMore: () => {}, initialDuration: 52, controls: 'hover', moreIn: 'info', aspect: 'video' },
 };
 
 function Photos() {
