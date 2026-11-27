@@ -1,5 +1,11 @@
 # @discuss-ds/ui
 
+## 0.42.1
+
+### Patch Changes
+
+- [#157](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/157) [`c2bf901`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/c2bf9012c45f1ef264338c34a14d3c0796d247d5) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - An unselected tab in the default (filter) `TabNavigation` turns its text accent-foreground on hover (was the lighter accent).
+
 ## 0.42.0
 
 ### Minor Changes
