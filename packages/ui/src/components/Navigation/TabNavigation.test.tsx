@@ -27,6 +27,13 @@ describe('TabNavigation / TabItem', () => {
     expect(screen.getByText('All rows')).toBeVisible();
   });
 
+  it('turns the text of an unselected filter tab accent-foreground on hover', () => {
+    render(<Example />);
+    const tab = screen.getByRole('tab', { name: 'Active' });
+    expect(tab).toHaveClass('hover:text-accent-foreground');
+    expect(tab).not.toHaveClass('hover:text-accent');
+  });
+
   it('switches tabs on click', async () => {
     const user = userEvent.setup();
     render(<Example />);

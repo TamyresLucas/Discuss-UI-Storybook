@@ -11,7 +11,7 @@ const base =
   'inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap px-2.5 py-1 text-ui-label transition-colors disabled:pointer-events-none disabled:opacity-50';
 // `relative` puts the tab above the TabNavigation's sliding indicator, which draws the selected tab's background.
 const filter =
-  'relative rounded-full text-surface-foreground hover:text-accent data-[state=active]:hover:bg-accent-soft data-[state=active]:hover:text-accent-soft-foreground disabled:text-muted-foreground';
+  'relative rounded-full text-surface-foreground hover:text-accent-foreground data-[state=active]:hover:bg-accent-soft data-[state=active]:hover:text-accent-soft-foreground disabled:text-muted-foreground';
 const toggle =
   'relative rounded-sm text-secondary-muted-foreground hover:text-surface-foreground data-[state=active]:text-surface-foreground';
 
