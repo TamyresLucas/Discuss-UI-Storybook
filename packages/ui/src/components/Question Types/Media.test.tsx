@@ -57,13 +57,13 @@ describe('VideoPlayer aspect', () => {
 });
 
 describe('MediaInfo compact', () => {
-  it('keeps 16px by 24px padding by default and 8px with compactInfo', () => {
+  it('keeps 16px by 24px padding by default and 16px all round with compactInfo', () => {
     const { unmount } = render(<VideoPlayer name="Clip" />);
     expect(screen.getByText('Clip').closest('.border-t')).toHaveClass('px-6', 'py-4');
     unmount();
     render(<VideoPlayer name="Clip" compactInfo />);
     const info = screen.getByText('Clip').closest('.border-t');
-    expect(info).toHaveClass('p-2');
+    expect(info).toHaveClass('p-4');
     expect(info).not.toHaveClass('px-6');
   });
 });
