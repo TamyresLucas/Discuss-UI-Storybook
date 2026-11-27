@@ -1,5 +1,13 @@
 # @discuss-ds/ui
 
+## 0.42.0
+
+### Minor Changes
+
+- [#156](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/156) [`c2b4b3e`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/c2b4b3e8f86c7b6e8b1f7f8d07fe09447d39ff15) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `MediaInfo` gets `compact` (16px padding all round instead of 16px by 24px) and `VideoPlayer` passes it through as `compactInfo`, for players in small cards. Defaults are unchanged.
+
+- [#154](https://github.com/TamyresLucas/Discuss-UI-Storybook/pull/154) [`6a3c7f1`](https://github.com/TamyresLucas/Discuss-UI-Storybook/commit/6a3c7f1c701f995bf2fba5376e3690971e2be375) Thanks [@TamyresLucas](https://github.com/TamyresLucas)! - `VideoPlayer` gets `aspect="video"`: the preview area is 16:9 (Full HD proportions) at the player's width instead of a fixed 242px. The default (`fixed`) is unchanged.
+
 ## 0.41.0
 
 ### Minor Changes
